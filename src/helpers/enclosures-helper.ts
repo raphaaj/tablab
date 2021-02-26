@@ -1,38 +1,18 @@
 import { StringHelper } from './string-helper';
 
+const openingClosingEnclosureMap: Record<string, string> = {
+  '(': ')',
+  '[': ']',
+  '{': '}',
+  '<': '>',
+};
+
 export class EnclosuresHelper {
-  private static openingClosingEnclosureMap: Record<string, string> = {
-    '(': ')',
-    '[': ']',
-    '{': '}',
-    '<': '>',
-  };
+  static readonly closingEnclosures: string[] = Object.values(openingClosingEnclosureMap);
 
-  public static readonly openingEnclosures: string[] = Object.keys(
-    EnclosuresHelper.openingClosingEnclosureMap
-  );
+  static readonly openingEnclosures: string[] = Object.keys(openingClosingEnclosureMap);
 
-  public static readonly closingEnclosures: string[] = Object.values(
-    EnclosuresHelper.openingClosingEnclosureMap
-  );
-
-  public static isOpeningEnclosure(char: string): boolean {
-    return EnclosuresHelper.openingEnclosures.indexOf(char) > -1;
-  }
-
-  public static isClosingEnclosure(char: string): boolean {
-    return EnclosuresHelper.closingEnclosures.indexOf(char) > -1;
-  }
-
-  public static hasOpeningEnclosure(str: string): boolean {
-    return EnclosuresHelper.hasEnclosures(str, EnclosuresHelper.openingEnclosures);
-  }
-
-  public static hasClosingEnclosure(str: string): boolean {
-    return EnclosuresHelper.hasEnclosures(str, EnclosuresHelper.closingEnclosures);
-  }
-
-  public static getClosingEnclosureFromOpeningEnclosure(openingEnclosure: string): string {
+  static getClosingEnclosureFromOpeningEnclosure(openingEnclosure: string): string {
     if (!EnclosuresHelper.isOpeningEnclosure(openingEnclosure))
       throw new Error(
         'The parameter openingEnclosure must be one of ' +
@@ -41,14 +21,10 @@ export class EnclosuresHelper {
           )}". Received value was "${openingEnclosure}".`
       );
 
-    return EnclosuresHelper.openingClosingEnclosureMap[openingEnclosure];
+    return openingClosingEnclosureMap[openingEnclosure];
   }
 
-  public static getValueInsideEnclosure(
-    str: string,
-    openingEnclosure: string,
-    start?: number
-  ): string {
+  static getValueInsideEnclosure(str: string, openingEnclosure: string, start?: number): string {
     if (!EnclosuresHelper.isOpeningEnclosure(openingEnclosure))
       throw new Error(
         'The parameter openingEnclosure must be one of ' +
@@ -70,6 +46,22 @@ export class EnclosuresHelper {
     }
 
     return '';
+  }
+
+  static hasClosingEnclosure(str: string): boolean {
+    return EnclosuresHelper.hasEnclosures(str, EnclosuresHelper.closingEnclosures);
+  }
+
+  static hasOpeningEnclosure(str: string): boolean {
+    return EnclosuresHelper.hasEnclosures(str, EnclosuresHelper.openingEnclosures);
+  }
+
+  static isClosingEnclosure(char: string): boolean {
+    return EnclosuresHelper.closingEnclosures.indexOf(char) > -1;
+  }
+
+  static isOpeningEnclosure(char: string): boolean {
+    return EnclosuresHelper.openingEnclosures.indexOf(char) > -1;
   }
 
   private static hasEnclosures(str: string, enclosures: string[]): boolean {

@@ -6,5 +6,52 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
   extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'prettier'],
-  rules: {},
+  rules: {
+    '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'no-public' }],
+    '@typescript-eslint/member-ordering': [
+      'warn',
+      {
+        default: {
+          memberTypes: [
+            // Static Fields
+            'public-static-field',
+            'protected-static-field',
+            'private-static-field',
+
+            // Static Methods
+            'public-static-method',
+            'protected-static-method',
+            'private-static-method',
+
+            // Instance Fields
+            'public-instance-field',
+            'public-abstract-field',
+            'protected-instance-field',
+            'protected-abstract-field',
+            'private-instance-field',
+            'private-abstract-field',
+
+            'constructor',
+
+            // Instance Methods
+            'public-instance-method',
+            'public-abstract-method',
+            'protected-instance-method',
+            'protected-abstract-method',
+            'private-instance-method',
+            'private-abstract-method',
+          ],
+          order: 'alphabetically',
+        },
+        interfaces: {
+          memberTypes: ['signature', 'field', 'constructor', 'method'],
+          order: 'alphabetically',
+        },
+        typeLiterals: {
+          memberTypes: ['signature', 'field', 'constructor', 'method'],
+          order: 'alphabetically',
+        },
+      },
+    ],
+  },
 };
