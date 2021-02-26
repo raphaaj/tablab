@@ -1,6 +1,50 @@
 import { StringHelper } from '../../src/helpers/string-helper';
 
 describe(`[${StringHelper.name} extensions]`, () => {
+  describe('[format]', () => {
+    it('should return the original string if no replacers are given', () => {
+      const replacers: string[] = [];
+      const str = 'the test parameter A is {0} and the test parameter B is {1}.';
+
+      const formattedStr = StringHelper.format(str, replacers);
+
+      expect(formattedStr).toBe(str);
+    });
+
+    it('should return the original string if no replacement markup is found', () => {
+      const replacers: string[] = ['TEST_REPLACER1', 'TEST_REPLACER2'];
+      const str = 'the test parameter A is EMPTY and the test parameter B is EMPTY.';
+
+      const formattedStr = StringHelper.format(str, replacers);
+
+      expect(formattedStr).toBe(str);
+    });
+
+    it('should replace the replacement markups with the given replacers', () => {
+      const replacers: string[] = ['TEST_REPLACER1', 'TEST_REPLACER2'];
+      const str = 'the test parameter A is {0} and the test parameter B is {1}.';
+
+      const expectedFormattedStr =
+        'the test parameter A is TEST_REPLACER1 and the test parameter B is TEST_REPLACER2.';
+
+      const formattedStr = StringHelper.format(str, replacers);
+
+      expect(formattedStr).toBe(expectedFormattedStr);
+    });
+
+    it('should replace the replacement markups with the matching given replacers', () => {
+      const replacers: string[] = ['TEST_REPLACER1', 'TEST_REPLACER2'];
+      const str = 'the test parameter A is {1} and the test parameter B is {0}.';
+
+      const expectedFormattedStr =
+        'the test parameter A is TEST_REPLACER2 and the test parameter B is TEST_REPLACER1.';
+
+      const formattedStr = StringHelper.format(str, replacers);
+
+      expect(formattedStr).toBe(expectedFormattedStr);
+    });
+  });
+
   describe(`[indexOfDifferent]`, () => {
     it('should throw if iteration is 0', () => {
       const str = 'test';

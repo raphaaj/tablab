@@ -3,6 +3,16 @@ import { EnclosuresHelper } from './enclosures-helper';
 type IterationEndVerification = (idx: number) => boolean;
 
 export class StringHelper {
+  static format(thisString: string, replacers: string[]): string {
+    const POSITION_MATHC_REGEX = /{(\d+)}/g;
+    return thisString.replace(POSITION_MATHC_REGEX, (match: string, p1: string): string => {
+      const replacerIndex = Number(p1);
+
+      if (isNaN(replacerIndex) || replacerIndex >= replacers.length) return match;
+      else return replacers[replacerIndex];
+    });
+  }
+
   static getIndexOfDifferent(
     thisString: string,
     searchString: string,
