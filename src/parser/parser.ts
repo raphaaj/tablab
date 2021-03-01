@@ -1,32 +1,7 @@
 import { EnclosuresHelper } from '../helpers/enclosures-helper';
 import { StringHelper } from '../helpers/string-helper';
-
-class MethodInstructionParamsDTO {
-  constructor(
-    readonly method: string | null,
-    readonly args: string | null,
-    readonly targets: string | null
-  ) {}
-}
-
-class MethodInstructionResultDTO {
-  constructor(
-    readonly method: string | null,
-    readonly args: (string | number)[] | null,
-    readonly targets: ParserResult[] | null
-  ) {}
-}
-
-export class ParserResult {
-  constructor(
-    public value: string,
-    public readFromIdx: number,
-    public readToIdx: number,
-    public method: string | null,
-    public args: (string | number)[] | null,
-    public targets: ParserResult[] | null
-  ) {}
-}
+import { MethodResult } from './method-result';
+import { ParserResult } from './parser-result';
 
 export interface ParserConfig {
   instructionsSeparator?: string;
@@ -40,13 +15,6 @@ export class Parser {
   static readonly DEFAULT_METHOD_INSTRUCTION_ARGS_OPENING_ENCLOSURE = '(';
   static readonly DEFAULT_METHOD_INSTRUCTION_ARGS_SEPARATOR = ',';
   static readonly DEFAULT_METHOD_INSTRUCTION_TARGETS_OPENING_ENCLOSURE = '{';
-
-  private static readInstructionMethod(parsedInstruction: string): string | null {
-    const extractionReg = /^([a-z]+)(?!-)/gim;
-    const methodRegexMatchResult = extractionReg.exec(parsedInstruction);
-
-    return methodRegexMatchResult ? methodRegexMatchResult[1] : null;
-  }
 
   get instructionsSeparator(): string {
     return this._instructionsSeparator;
@@ -124,17 +92,17 @@ export class Parser {
       this.methodInstructionTargetsOpeningEnclosure = methodInstructionTargetsOpeningEnclosure;
   }
 
-  parseAll(instructions: string): ParserResult[] {
+  parseAll(instructions: string, startIndexReference = 0): ParserResult[] {
     const results: ParserResult[] = [];
 
     let startIndex = 0;
     let result = null;
     do {
-      result = this.parseNextInstruction(instructions, startIndex);
+      result = this._parseNextInstruction(instructions, startIndex, startIndexReference);
 
       if (result !== null) {
         results.push(result);
-        startIndex = result.readToIdx + 1;
+        startIndex = result.readToIndex + 1 - startIndexReference;
       }
     } while (result !== null);
 
@@ -151,8 +119,8 @@ export class Parser {
     });
   }
 
-  parseOne(instruction: string): ParserResult | null {
-    return this.parseNextInstruction(instruction, 0);
+  parseOne(instruction: string, startIndexReference = 0): ParserResult | null {
+    return this._parseNextInstruction(instruction, 0, startIndexReference);
   }
 
   async parseOneAsync(instruction: string): Promise<ParserResult | null> {
@@ -165,7 +133,7 @@ export class Parser {
     });
   }
 
-  private correctEndForOpeningEnclosureAfter(
+  private _correctEndForOpeningEnclosureAfter(
     instructions: string,
     instructionStartIndex: number,
     instructionEndIndexCandidate: number
@@ -189,14 +157,14 @@ export class Parser {
 
     if (closingBracketIndex < 0) return instructions.length - 1;
 
-    return this.correctEndForOpeningEnclosureAfter(
+    return this._correctEndForOpeningEnclosureAfter(
       instructions,
       instructionStartIndex,
       closingBracketIndex
     );
   }
 
-  private correctEndForOpeningEnclosureBefore(
+  private _correctEndForOpeningEnclosureBefore(
     instructions: string,
     instructionStartIndex: number,
     instructionEndIndexCandidate: number
@@ -220,20 +188,20 @@ export class Parser {
     return closingBracketIndex;
   }
 
-  private indexOfInstructionEnd(instructions: string, instructionStartIndex: number): number {
+  private _getIndexOfInstructionEnd(instructions: string, instructionStartIndex: number): number {
     const nextSeparatorIndex = instructions.indexOf(
       this.instructionsSeparator,
       instructionStartIndex
     );
     if (nextSeparatorIndex < 0) return instructions.length - 1;
 
-    let endOfInstructionIndex = this.correctEndForOpeningEnclosureBefore(
+    let endOfInstructionIndex = this._correctEndForOpeningEnclosureBefore(
       instructions,
       instructionStartIndex,
       nextSeparatorIndex - 1
     );
 
-    endOfInstructionIndex = this.correctEndForOpeningEnclosureAfter(
+    endOfInstructionIndex = this._correctEndForOpeningEnclosureAfter(
       instructions,
       instructionStartIndex,
       endOfInstructionIndex
@@ -242,7 +210,48 @@ export class Parser {
     return endOfInstructionIndex;
   }
 
-  private parseNextInstruction(instructions: string, fromIndex: number): ParserResult | null {
+  private _getMethodResult(
+    parsedInstruction: string,
+    parsedInstructionStartIndex: number
+  ): MethodResult | null {
+    let result = null;
+
+    const methodAlias = MethodResult.extractMethodAlias(parsedInstruction);
+    if (methodAlias) {
+      const methodArguments = MethodResult.extractMethodArguments(
+        parsedInstruction,
+        this.methodInstructionArgsOpeningEnclosure,
+        this.methodInstructionArgsSeparator
+      );
+
+      const methodTargetExtractionResult = MethodResult.extractMethodTarget(
+        parsedInstruction,
+        this.methodInstructionTargetsOpeningEnclosure
+      );
+
+      let methodTargets: ParserResult[] = [];
+      if (methodTargetExtractionResult) {
+        methodTargets = this.parseAll(
+          methodTargetExtractionResult.target,
+          parsedInstructionStartIndex + methodTargetExtractionResult.indexAtInstruction
+        );
+      }
+
+      result = new MethodResult({
+        alias: methodAlias,
+        args: methodArguments,
+        targets: methodTargets,
+      });
+    }
+
+    return result;
+  }
+
+  private _parseNextInstruction(
+    instructions: string,
+    fromIndex: number,
+    fromIndexReference: number
+  ): ParserResult | null {
     if (fromIndex > instructions.length - 1) return null;
 
     const instructionStartIndex = StringHelper.getIndexOfDifferent(
@@ -252,96 +261,22 @@ export class Parser {
     );
     if (instructionStartIndex < 0) return null;
 
-    const instructionEndIndex = this.indexOfInstructionEnd(instructions, instructionStartIndex);
+    const instructionEndIndex = this._getIndexOfInstructionEnd(instructions, instructionStartIndex);
 
     const parsedInstruction = instructions
       .slice(instructionStartIndex, instructionEndIndex + 1)
       .trim();
-    const { method, args, targets } = this.readAsMethodInstruction(
-      parsedInstruction,
-      instructionStartIndex
-    );
 
-    return new ParserResult(
-      parsedInstruction,
-      instructionStartIndex,
-      instructionEndIndex,
-      method,
-      args,
-      targets
-    );
-  }
+    const instructionGlobalStartIndex = instructionStartIndex + fromIndexReference;
+    const instructionGlobalEndIndex = instructionEndIndex + fromIndexReference;
 
-  private readAsMethodInstruction(
-    parsedInstruction: string,
-    parsedInstructionStartIdx: number
-  ): MethodInstructionResultDTO {
-    const { method, args, targets } = this.readMethodInstructionParams(parsedInstruction);
+    const methodResult = this._getMethodResult(parsedInstruction, instructionGlobalStartIndex);
 
-    const readArgs = args ? this.readMethodInstructionArgs(args) : null;
-
-    const readTargets = targets
-      ? this.readMethodInstructionTargets(targets, parsedInstruction, parsedInstructionStartIdx)
-      : null;
-
-    return new MethodInstructionResultDTO(method, readArgs, readTargets);
-  }
-
-  private readMethodInstructionArgs(args: string): (string | number)[] {
-    return args.split(this.methodInstructionArgsSeparator).map((arg) => {
-      const argNumber = Number(arg);
-      return isNaN(argNumber) ? arg.trim() : argNumber;
-    });
-  }
-  private readMethodInstructionParams(parsedInstruction: string): MethodInstructionParamsDTO {
-    const method = Parser.readInstructionMethod(parsedInstruction);
-    const args = EnclosuresHelper.getValueInsideEnclosure(
-      parsedInstruction,
-      this.methodInstructionArgsOpeningEnclosure
-    );
-
-    const targets = EnclosuresHelper.getValueInsideEnclosure(
-      parsedInstruction,
-      this.methodInstructionTargetsOpeningEnclosure
-    );
-
-    return new MethodInstructionParamsDTO(method, args, targets);
-  }
-
-  private readMethodInstructionTargets(
-    targets: string,
-    parsedInstruction: string,
-    parsedInstructionStartIdx: number
-  ): ParserResult[] {
-    let parsedTargets = this.parseAll(targets);
-    parsedTargets = this.updateParsedTargetsIndexesReference(
-      parsedTargets,
-      parsedInstruction,
-      parsedInstructionStartIdx
-    );
-
-    return parsedTargets;
-  }
-
-  private updateParsedTargetsIndexesReference(
-    parsedTargets: ParserResult[],
-    parsedInstruction: string,
-    parsedInstructionStartIdx: number
-  ): ParserResult[] {
-    return parsedTargets.map((parsedTarget) => {
-      parsedTarget.readFromIdx =
-        parsedInstructionStartIdx + parsedInstruction.indexOf(parsedTarget.value);
-      parsedTarget.readToIdx = parsedTarget.readFromIdx + parsedTarget.value.length - 1;
-
-      if (parsedTarget.targets) {
-        this.updateParsedTargetsIndexesReference(
-          parsedTarget.targets,
-          parsedTarget.value,
-          parsedTarget.readFromIdx
-        );
-      }
-
-      return parsedTarget;
+    return new ParserResult({
+      value: parsedInstruction,
+      readFromIndex: instructionGlobalStartIndex,
+      readToIndex: instructionGlobalEndIndex,
+      methodResult,
     });
   }
 }

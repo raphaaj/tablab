@@ -174,7 +174,7 @@ describe(`[${Parser.name}]`, () => {
       expect(parserResult?.value).toBe(instruction.trim());
     });
 
-    it('should read the instruction args', () => {
+    it('should read the instruction arguments', () => {
       const methodInstructionArgsSeparator = '|';
       const methodInstructionArgsOpeningEnclosure = '<';
 
@@ -187,10 +187,10 @@ describe(`[${Parser.name}]`, () => {
 
       const parserResult = parser.parseOne(instruction);
 
-      expect(parserResult?.args).toEqual(args);
+      expect(parserResult?.method?.args).toEqual(args);
     });
 
-    it('should read the instruction args, even with spaces', () => {
+    it('should read the instruction arguments, even with spaces', () => {
       const methodInstructionArgsSeparator = '|';
       const methodInstructionArgsOpeningEnclosure = '<';
 
@@ -203,7 +203,7 @@ describe(`[${Parser.name}]`, () => {
 
       const parserResult = parser.parseOne(instruction);
 
-      expect(parserResult?.args).toEqual(args);
+      expect(parserResult?.method?.args).toEqual(args);
     });
 
     it('should read the instruction targets', () => {
@@ -216,7 +216,7 @@ describe(`[${Parser.name}]`, () => {
       });
 
       const parserResult = parser.parseOne(instruction);
-      const resultTargetValues = parserResult?.targets?.map((target) => target.value);
+      const resultTargetValues = parserResult?.method?.targets?.map((target) => target.value);
 
       expect(resultTargetValues).toEqual(targets);
     });
@@ -231,51 +231,51 @@ describe(`[${Parser.name}]`, () => {
       });
 
       const parserResult = parser.parseOne(instruction);
-      const resultTargetValues = parserResult?.targets?.map((target) => target.value);
+      const resultTargetValues = parserResult?.method?.targets?.map((target) => target.value);
 
       expect(resultTargetValues).toEqual(targets);
     });
 
-    it('should update inner targets positions to the global reference', () => {
+    it('should keep inner targets positions at the global reference', () => {
       const innerTargets = ['6-1', '6-2'];
       const target = `instr{${innerTargets.join(' ')}}`;
       const instruction = `instr{${target}}`;
       const parser = new Parser();
 
       const parserResult = parser.parseOne(instruction);
-      const resultTargets = parserResult?.targets;
-      const resultInnerTargets = resultTargets ? resultTargets[0]?.targets : null;
+      const resultTargets = parserResult?.method?.targets;
+      const resultInnerTargets = resultTargets ? resultTargets[0]?.method?.targets : null;
 
       expect(resultInnerTargets).not.toBeNull();
       expect(resultInnerTargets).toBeDefined();
       if (resultInnerTargets) {
         innerTargets.forEach((target, idx) => {
           expect(resultInnerTargets[idx].value).toBe(target);
-          expect(resultInnerTargets[idx].readFromIdx).toBe(instruction.indexOf(target));
-          expect(resultInnerTargets[idx].readToIdx).toBe(
+          expect(resultInnerTargets[idx].readFromIndex).toBe(instruction.indexOf(target));
+          expect(resultInnerTargets[idx].readToIndex).toBe(
             instruction.indexOf(target) + target.length - 1
           );
         });
       }
     });
 
-    it('should upadete inner targets positions to the global reference, even with spaces', () => {
+    it('should keep inner targets positions at the global reference, even with spaces', () => {
       const innerTargets = ['6-1', '6-2'];
       const target = `  instr  {  ${innerTargets.join('  ')}  }  `;
       const instruction = `  instr  {  ${target}  }  `;
       const parser = new Parser();
 
       const parserResult = parser.parseOne(instruction);
-      const resultTargets = parserResult?.targets;
-      const resultInnerTargets = resultTargets ? resultTargets[0]?.targets : null;
+      const resultTargets = parserResult?.method?.targets;
+      const resultInnerTargets = resultTargets ? resultTargets[0]?.method?.targets : null;
 
       expect(resultInnerTargets).not.toBeNull();
       expect(resultInnerTargets).toBeDefined();
       if (resultInnerTargets) {
         innerTargets.forEach((target, idx) => {
           expect(resultInnerTargets[idx].value).toBe(target);
-          expect(resultInnerTargets[idx].readFromIdx).toBe(instruction.indexOf(target));
-          expect(resultInnerTargets[idx].readToIdx).toBe(
+          expect(resultInnerTargets[idx].readFromIndex).toBe(instruction.indexOf(target));
+          expect(resultInnerTargets[idx].readToIndex).toBe(
             instruction.indexOf(target) + target.length - 1
           );
         });

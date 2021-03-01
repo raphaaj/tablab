@@ -126,4 +126,24 @@ describe(`[${StringHelper.name} extensions]`, () => {
       expect(idx).toBe(7);
     });
   });
+
+  describe('[tryConvertToNumber]', () => {
+    it('should return the given string if it is not a valid number', () => {
+      const str = ' test string ';
+
+      expect(StringHelper.tryConvertToNumber(str)).toBe(str);
+    });
+
+    it('should return the expected number if the string is actually a number', () => {
+      const number = 1234;
+
+      expect(StringHelper.tryConvertToNumber(number.toString())).toBe(number);
+    });
+
+    it('should return the given string if it is empty', () => {
+      const str = '';
+
+      expect(StringHelper.tryConvertToNumber(str)).toBe(str);
+    });
+  });
 });

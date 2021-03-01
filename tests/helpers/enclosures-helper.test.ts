@@ -138,21 +138,10 @@ describe(`[${EnclosuresHelper.name}]`, () => {
   });
 
   describe('[getValueInsideEnclosure]', () => {
-    it('should throw if opening enclosure is not valid', () => {
-      const invalidOpeningEnclosure = 'test';
+    it('should throw if there is not a opening enclosure at the given index', () => {
+      const str = 'test';
 
-      expect(() =>
-        EnclosuresHelper.getValueInsideEnclosure(invalidOpeningEnclosure, invalidOpeningEnclosure)
-      ).toThrow();
-    });
-
-    it('should return an empty string if the given opening enclosure is not found at the given string', () => {
-      const str = 'test without enclosures';
-      const openingEnclosure = '(';
-
-      const value = EnclosuresHelper.getValueInsideEnclosure(str, openingEnclosure);
-
-      expect(value).toBe('');
+      expect(() => EnclosuresHelper.getValueInsideEnclosure(str, 0)).toThrow();
     });
 
     it('should return the string from the opening enclosure to the end if no matching closing enclosure is found', () => {
@@ -160,7 +149,7 @@ describe(`[${EnclosuresHelper.name}]`, () => {
       const openingEnclosure = '(';
       const str = `test with ${openingEnclosure}${expectedValue}`;
 
-      const value = EnclosuresHelper.getValueInsideEnclosure(str, openingEnclosure);
+      const value = EnclosuresHelper.getValueInsideEnclosure(str, str.indexOf(openingEnclosure));
 
       expect(value).toBe(expectedValue);
     });
@@ -170,7 +159,7 @@ describe(`[${EnclosuresHelper.name}]`, () => {
       const openingEnclosure = '(';
       const str = `test with ${openingEnclosure}${expectedValue}) some extra text`;
 
-      const value = EnclosuresHelper.getValueInsideEnclosure(str, openingEnclosure);
+      const value = EnclosuresHelper.getValueInsideEnclosure(str, str.indexOf(openingEnclosure));
 
       expect(value).toBe(expectedValue);
     });

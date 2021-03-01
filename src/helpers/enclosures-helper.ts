@@ -24,28 +24,17 @@ export class EnclosuresHelper {
     return openingClosingEnclosureMap[openingEnclosure];
   }
 
-  static getValueInsideEnclosure(str: string, openingEnclosure: string, start?: number): string {
-    if (!EnclosuresHelper.isOpeningEnclosure(openingEnclosure))
-      throw new Error(
-        'The parameter openingEnclosure must be one of ' +
-          `"${EnclosuresHelper.openingEnclosures.join(
-            '", "'
-          )}". Received value was "${openingEnclosure}".`
-      );
+  static getValueInsideEnclosure(str: string, openingEnclosureIndex: number): string {
+    const closingEnclosureIndex = StringHelper.getIndexOfMatchingClosingEnclosure(
+      str,
+      openingEnclosureIndex
+    );
 
-    const openingEnclosureIndex = str.indexOf(openingEnclosure, start);
-    if (openingEnclosureIndex > -1) {
-      const matchingClosingEnclosureIndex = StringHelper.getIndexOfMatchingClosingEnclosure(
-        str,
-        openingEnclosureIndex
-      );
+    let value: string;
+    if (closingEnclosureIndex < 0) value = str.slice(openingEnclosureIndex + 1, str.length);
+    else value = str.slice(openingEnclosureIndex + 1, closingEnclosureIndex);
 
-      return matchingClosingEnclosureIndex < 0
-        ? str.slice(openingEnclosureIndex + 1, str.length)
-        : str.slice(openingEnclosureIndex + 1, matchingClosingEnclosureIndex);
-    }
-
-    return '';
+    return value;
   }
 
   static hasClosingEnclosure(str: string): boolean {
