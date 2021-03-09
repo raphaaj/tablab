@@ -243,8 +243,8 @@ export class TabBlock {
   }
 
   private _getStringsOutOfRangeOnNotes(notes: Note[]): number[] {
-    return this._getUniqueStringsFromNotes(notes).filter(
-      (string) => !(string > 0 && string <= this._tab.rows)
+    return this._getUniqueStringsFromNotes(
+      notes.filter((note) => !this._tab.isNoteInStringsRange(note))
     );
   }
 

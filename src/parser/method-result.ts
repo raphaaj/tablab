@@ -1,19 +1,18 @@
 import { EnclosuresHelper } from '../helpers/enclosures-helper';
-import { StringHelper } from '../helpers/string-helper';
 import { ParserResult } from './parser-result';
-
-export type MethodArgument = string | number;
+import { InstructionMethodData } from '../instruction/core/instruction-factory-base';
 
 export type TargetExtractionResult = {
   indexAtInstruction: number;
   target: string;
 };
 
-export interface MethodResultData {
+export type MethodResultData = {
   alias: string;
-  args: MethodArgument[];
+  args: string[];
+  identifier: string | null;
   targets: ParserResult[];
-}
+};
 
 export class MethodResult {
   static extractMethodAlias(instruction: string): string | null {
@@ -32,7 +31,7 @@ export class MethodResult {
     instruction: string,
     argumentsOpeningEnclosure: string,
     argumentsSeparator: string
-  ): MethodArgument[] {
+  ): string[] {
     const indexOfArgumentsOpeningEnclosure = instruction.indexOf(argumentsOpeningEnclosure);
     if (indexOfArgumentsOpeningEnclosure < 0) return [];
 
@@ -41,8 +40,7 @@ export class MethodResult {
       indexOfArgumentsOpeningEnclosure
     )
       .split(argumentsSeparator)
-      .filter((argument) => argument && argument.trim())
-      .map((argument) => StringHelper.tryConvertToNumber(argument.trim()));
+      .map((argument) => argument.trim());
 
     return methodArguments;
   }
@@ -63,12 +61,22 @@ export class MethodResult {
   }
 
   alias: string;
-  args: MethodArgument[];
+  args: string[];
+  identifier: string | null;
   targets: ParserResult[];
 
-  constructor({ alias, args, targets }: MethodResultData) {
+  constructor({ alias, args, identifier, targets }: MethodResultData) {
     this.alias = alias;
     this.args = args;
+    this.identifier = identifier || null;
     this.targets = targets;
+  }
+
+  asInstructionMethodData(): InstructionMethodData {
+    return {
+      args: this.args,
+      identifier: this.identifier,
+      targets: this.targets.map((target) => target.asInstructionData()),
+    };
   }
 }

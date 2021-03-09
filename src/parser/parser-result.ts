@@ -1,4 +1,5 @@
 import { MethodResult } from './method-result';
+import { InstructionData } from '../instruction/core/instruction-factory-base';
 
 export type ParserResultData = {
   methodResult: MethodResult | null;
@@ -12,7 +13,7 @@ export class ParserResult {
     return this.method !== null;
   }
 
-  method: MethodResult | null = null;
+  method: MethodResult | null;
   readFromIndex: number;
   readToIndex: number;
   value: string;
@@ -22,5 +23,12 @@ export class ParserResult {
     this.readFromIndex = readFromIndex;
     this.readToIndex = readToIndex;
     this.method = methodResult;
+  }
+
+  asInstructionData(): InstructionData {
+    return {
+      value: this.value,
+      method: this.method ? this.method.asInstructionMethodData() : null,
+    };
   }
 }

@@ -127,6 +127,26 @@ describe(`[${StringHelper.name} extensions]`, () => {
     });
   });
 
+  describe('[isNumber]', () => {
+    it('should return true if the string is a number value', () => {
+      const str = '1234';
+
+      expect(StringHelper.isNumber(str)).toBe(true);
+    });
+
+    it('should return false if the string is not a number value', () => {
+      const str = 'test string';
+
+      expect(StringHelper.isNumber(str)).toBe(false);
+    });
+
+    it('should return false if the string is empty', () => {
+      const str = '';
+
+      expect(StringHelper.isNumber(str)).toBe(false);
+    });
+  });
+
   describe('[tryConvertToNumber]', () => {
     it('should return the given string if it is not a valid number', () => {
       const str = ' test string ';

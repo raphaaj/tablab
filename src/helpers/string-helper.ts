@@ -77,15 +77,16 @@ export class StringHelper {
     return -1;
   }
 
+  static isNumber(thisString: string): boolean {
+    const trimmedArgument = thisString.trim();
+    const argumentAsNumber = Number(trimmedArgument);
+    const argumentIsNumber = trimmedArgument.length > 0 && !isNaN(argumentAsNumber);
+
+    return argumentIsNumber;
+  }
+
   static tryConvertToNumber(thisString: string): string | number {
-    const trimmedString = thisString.trim();
-
-    let result: string | number = thisString;
-    if (trimmedString) {
-      const stringAsNumber = Number(trimmedString);
-      result = isNaN(stringAsNumber) ? thisString : stringAsNumber;
-    }
-
-    return result;
+    if (StringHelper.isNumber(thisString)) return Number(thisString);
+    else return thisString;
   }
 }

@@ -1,8 +1,12 @@
 import { Tab } from '../../tab/tab';
-import { Instruction } from './instruction';
+import { InstructionBase } from '../core/instruction-base';
+import {
+  InstructionWriteResult,
+  SuccessInstructionWriteResult,
+} from '../core/instruction-write-result';
 
-export class WriteHeaderInstruction extends Instruction {
-  header: string;
+export class WriteHeaderInstruction extends InstructionBase {
+  readonly header: string;
 
   constructor(header: string) {
     super();
@@ -10,7 +14,17 @@ export class WriteHeaderInstruction extends Instruction {
     this.header = header;
   }
 
-  writeOnTab(tab: Tab): void {
-    tab.writeHeader(this.header);
+  writeOnTab(tab: Tab): InstructionWriteResult {
+    let result: InstructionWriteResult;
+
+    try {
+      tab.writeHeader(this.header);
+
+      result = new SuccessInstructionWriteResult();
+    } catch (e) {
+      result = this.getUnmappepFailureResult();
+    }
+
+    return result;
   }
 }

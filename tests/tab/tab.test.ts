@@ -159,6 +159,29 @@ describe(`[${Tab.name}]`, () => {
     });
   });
 
+  describe('[isNoteInStringsRange]', () => {
+    it('should return true if the note string is in tab strings range', () => {
+      const tab = new Tab();
+      const note = new Note(1, '0');
+
+      expect(tab.isNoteInStringsRange(note)).toBe(true);
+    });
+
+    it('should return false if the note string is smaller than minimum tab string value', () => {
+      const tab = new Tab();
+      const note = new Note(0, '0');
+
+      expect(tab.isNoteInStringsRange(note)).toBe(false);
+    });
+
+    it('should return false if the note string is greater than the maximum tab string value', () => {
+      const tab = new Tab();
+      const note = new Note(tab.rows + 1, '0');
+
+      expect(tab.isNoteInStringsRange(note)).toBe(false);
+    });
+  });
+
   describe('[removeSpacing]', () => {
     it('should remove spacing from the last tab block', () => {
       const spacing = 1;

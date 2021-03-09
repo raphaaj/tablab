@@ -1,8 +1,12 @@
 import { Tab } from '../../tab/tab';
-import { Instruction } from './instruction';
+import { InstructionBase } from '../core/instruction-base';
+import {
+  InstructionWriteResult,
+  SuccessInstructionWriteResult,
+} from '../core/instruction-write-result';
 
-export class SetSpacingInstruction extends Instruction {
-  spacing: number;
+export class SetSpacingInstruction extends InstructionBase {
+  readonly spacing: number;
 
   constructor(spacing: number) {
     super();
@@ -10,7 +14,17 @@ export class SetSpacingInstruction extends Instruction {
     this.spacing = spacing;
   }
 
-  writeOnTab(tab: Tab): void {
-    tab.spacing = this.spacing;
+  writeOnTab(tab: Tab): InstructionWriteResult {
+    let result: InstructionWriteResult;
+
+    try {
+      tab.spacing = this.spacing;
+
+      result = new SuccessInstructionWriteResult();
+    } catch (e) {
+      result = this.getUnmappepFailureResult();
+    }
+
+    return result;
   }
 }

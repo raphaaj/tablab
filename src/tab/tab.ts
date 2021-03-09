@@ -111,6 +111,10 @@ export class Tab {
     return this;
   }
 
+  isNoteInStringsRange(note: Note): boolean {
+    return note.string > 0 && note.string <= this.rows;
+  }
+
   removeSpacing(spacing?: number | undefined): Tab {
     this._currentBlock.removeSpacing(spacing);
     return this;

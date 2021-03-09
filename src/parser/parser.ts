@@ -1,10 +1,12 @@
 import { EnclosuresHelper } from '../helpers/enclosures-helper';
 import { StringHelper } from '../helpers/string-helper';
+import { InstructionMethodIdentifier } from '../instruction/enums/instruction-method-identifier';
 import { MethodResult } from './method-result';
 import { ParserResult } from './parser-result';
 
 export interface ParserConfig {
   instructionsSeparator?: string;
+  methodInstructionAlias2IdentifierMap?: Record<string, string>;
   methodInstructionArgsOpeningEnclosure?: string;
   methodInstructionArgsSeparator?: string;
   methodInstructionTargetsOpeningEnclosure?: string;
@@ -12,6 +14,14 @@ export interface ParserConfig {
 
 export class Parser {
   static readonly DEFAULT_INSTRUCTIONS_SEPARATOR = ' ';
+  static readonly DEFAULT_METHOD_INSTRUCTION_ALIAS_2_IDENTIFIER_MAP: Record<string, string> = {
+    break: InstructionMethodIdentifier.Break,
+    footer: InstructionMethodIdentifier.WriteFooter,
+    header: InstructionMethodIdentifier.WriteHeader,
+    merge: InstructionMethodIdentifier.Merge,
+    repeat: InstructionMethodIdentifier.Repeat,
+    spacing: InstructionMethodIdentifier.SetSpacing,
+  };
   static readonly DEFAULT_METHOD_INSTRUCTION_ARGS_OPENING_ENCLOSURE = '(';
   static readonly DEFAULT_METHOD_INSTRUCTION_ARGS_SEPARATOR = ',';
   static readonly DEFAULT_METHOD_INSTRUCTION_TARGETS_OPENING_ENCLOSURE = '{';
@@ -67,6 +77,7 @@ export class Parser {
     this._methodInstructionTargetsOpeningEnclosure = value;
   }
 
+  methodInstructionAlias2IdentifierMap = Parser.DEFAULT_METHOD_INSTRUCTION_ALIAS_2_IDENTIFIER_MAP;
   private _instructionsSeparator = Parser.DEFAULT_INSTRUCTIONS_SEPARATOR;
   private _methodInstructionArgsOpeningEnclosure =
     Parser.DEFAULT_METHOD_INSTRUCTION_ARGS_OPENING_ENCLOSURE;
@@ -76,11 +87,15 @@ export class Parser {
 
   constructor({
     instructionsSeparator,
+    methodInstructionAlias2IdentifierMap,
     methodInstructionArgsSeparator,
     methodInstructionArgsOpeningEnclosure,
     methodInstructionTargetsOpeningEnclosure,
   }: ParserConfig = {}) {
     if (instructionsSeparator !== undefined) this.instructionsSeparator = instructionsSeparator;
+
+    if (methodInstructionAlias2IdentifierMap !== undefined)
+      this.methodInstructionAlias2IdentifierMap = methodInstructionAlias2IdentifierMap;
 
     if (methodInstructionArgsSeparator !== undefined)
       this.methodInstructionArgsSeparator = methodInstructionArgsSeparator;
@@ -240,6 +255,7 @@ export class Parser {
       result = new MethodResult({
         alias: methodAlias,
         args: methodArguments,
+        identifier: this.methodInstructionAlias2IdentifierMap[methodAlias],
         targets: methodTargets,
       });
     }

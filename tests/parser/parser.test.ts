@@ -6,6 +6,9 @@ describe(`[${Parser.name}]`, () => {
       const parser = new Parser();
 
       expect(parser.instructionsSeparator).toBe(Parser.DEFAULT_INSTRUCTIONS_SEPARATOR);
+      expect(parser.methodInstructionAlias2IdentifierMap).toBe(
+        Parser.DEFAULT_METHOD_INSTRUCTION_ALIAS_2_IDENTIFIER_MAP
+      );
       expect(parser.methodInstructionArgsSeparator).toBe(
         Parser.DEFAULT_METHOD_INSTRUCTION_ARGS_SEPARATOR
       );
@@ -22,6 +25,13 @@ describe(`[${Parser.name}]`, () => {
       const parser = new Parser({ instructionsSeparator });
 
       expect(parser.instructionsSeparator).toBe(instructionsSeparator);
+    });
+
+    it('should set methodInstructionAlias2IdentifierMap if one is set at instantiation', () => {
+      const alias2IdentifierMap: Record<string, string> = {};
+      const parser = new Parser({ methodInstructionAlias2IdentifierMap: alias2IdentifierMap });
+
+      expect(parser.methodInstructionAlias2IdentifierMap).toBe(alias2IdentifierMap);
     });
 
     it('should set methodInstructionArgsSeparator if one is set at instantiation', () => {
@@ -178,7 +188,7 @@ describe(`[${Parser.name}]`, () => {
       const methodInstructionArgsSeparator = '|';
       const methodInstructionArgsOpeningEnclosure = '<';
 
-      const args = [1, 1.11, 'some text input'];
+      const args = ['1', '1.11', 'some text input'];
       const instruction = `instr<${args.join(methodInstructionArgsSeparator)}>`;
       const parser = new Parser({
         methodInstructionArgsSeparator,
@@ -194,7 +204,7 @@ describe(`[${Parser.name}]`, () => {
       const methodInstructionArgsSeparator = '|';
       const methodInstructionArgsOpeningEnclosure = '<';
 
-      const args = [1, 1.11, 'some text input'];
+      const args = ['1', '1.11', 'some text input'];
       const instruction = `  instr  <  ${args.join(`  ${methodInstructionArgsSeparator}  `)}  >  `;
       const parser = new Parser({
         methodInstructionArgsSeparator,
