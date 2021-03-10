@@ -1,89 +1,87 @@
+import { TabElement, TabElementConfig } from './tab-element';
 import { StringHelper } from '../helpers/string-helper';
 import { Note } from './note';
-import { Tab } from './tab';
 
-interface FooterInsertPreparationDTO {
+type FooterInsertPreparation = {
   fillersToAdd: number;
   footerInsertStartIdx: number;
   footerToAdd: string;
-}
+};
 
-export class TabBlock {
+export class TabBlock extends TabElement {
   get block(): string[] {
-    if (!this._isInternalBlockSet) this._setupInternalBlock();
+    if (!this._isBlockSet) this._setupInternalBlock();
     return this._block;
   }
+
   get header(): string {
-    return this.block[this.blockHeaderIdx];
+    return this.block[this._blockHeaderIdx];
   }
 
   get footer(): string {
-    return this.block[this.blockFooterIdx];
+    return this.block[this._blockFooterIdx];
   }
 
   get rows(): string[] {
-    return this.block.slice(this.blockRowsStartIdx, this.blockRowsEndIdx + 1);
-  }
-
-  readonly blockFooterIdx: number;
-  readonly blockHeaderIdx: number;
-
-  get blockRowsEndIdx(): number {
-    return this.blockFooterIdx - 1;
-  }
-
-  get blockRowsStartIdx(): number {
-    return this.blockHeaderIdx + 1;
+    return this.block.slice(this._blockRowsStartIdx, this._blockRowsEndIdx + 1);
   }
 
   private _block: string[];
+  private _blockFooterIdx: number;
+  private _blockHeaderIdx: number;
+  private _blockRowsEndIdx: number;
+  private _blockRowsStartIdx: number;
   private _footer: string;
   private _header: string;
-  private _isInternalBlockSet: boolean;
+  private _isBlockSet: boolean;
   private _rows: string[];
-
   private get _rowsLength(): number {
     return this._rows[0].length;
   }
 
-  private readonly _tab: Tab;
+  constructor(tabBlockConfig: TabElementConfig = {}) {
+    super(tabBlockConfig);
 
-  constructor(tab: Tab) {
-    this._tab = tab;
+    this._blockFooterIdx = this.numberOfRows + 1;
+    this._blockHeaderIdx = 0;
+    this._blockRowsStartIdx = this._blockHeaderIdx + 1;
+    this._blockRowsEndIdx = this._blockFooterIdx - 1;
 
-    this.blockFooterIdx = this._tab.rows + 1;
-    this.blockHeaderIdx = 0;
-
-    this._block = [];
     this._footer = '';
     this._header = '';
-    this._isInternalBlockSet = false;
-    this._rows = Array(tab.rows).fill('');
+    this._rows = Array(this.numberOfRows).fill('');
+
+    this._block = [];
+    this._isBlockSet = false;
 
     this.addSpacing();
   }
 
-  addSpacing(spacing?: number | undefined): TabBlock {
-    const spacingToAdd = spacing ?? this._tab.spacing;
+  addSpacing(spacing?: number): TabBlock {
+    const spacingToAdd = spacing ?? this.spacing;
 
     if (spacingToAdd < 1)
       throw new Error(
         `The parameter spacing must be a positive integer. Received value was ${spacing}.`
       );
 
-    const rowFiller = this._getRowFiller(spacingToAdd);
+    const rowFiller = this.getRowsFiller(spacingToAdd);
     this._rows.forEach((row, rowIdx) => (this._rows[rowIdx] = row + rowFiller));
 
-    this._isInternalBlockSet = false;
+    this._isBlockSet = false;
 
     return this;
   }
 
+  format(): string[][] {
+    return [this.block];
+  }
+
   getMaximumRemovableSpacing(): number {
-    return this._rows.reduce((maxRemovableSpacing: number, row) => {
+    return this._rows.reduce((maxRemovableSpacing, row) => {
       const nonFillerLastIdx = StringHelper.getIndexOfDifferent(
         row,
-        this._tab.filler,
+        this.filler,
         row.length - 1,
         -1
       );
@@ -115,7 +113,7 @@ export class TabBlock {
       (row, rowIdx) => (this._rows[rowIdx] = row.slice(0, row.length - spacingToRemove))
     );
 
-    this._isInternalBlockSet = false;
+    this._isBlockSet = false;
 
     return this;
   }
@@ -130,15 +128,15 @@ export class TabBlock {
     );
 
     if (fillersToAdd > 0) {
-      this._header += this._getSectionFiller(fillersToAdd);
-      this._rows.forEach((row, idx) => (this._rows[idx] = row + this._getRowFiller(fillersToAdd)));
+      this._header += this.getSectionFiller(fillersToAdd);
+      this._rows.forEach((row, idx) => (this._rows[idx] = row + this.getRowsFiller(fillersToAdd)));
     }
 
-    const sectionFinalizer = this._tab.sectionSymbol + this._getSectionFiller(this._tab.spacing);
+    const sectionFinalizer = this.sectionSymbol + this.getSectionFiller(this.spacing);
     this._footer = this._footer.slice(0, footerInsertStartIdx) + footerToAdd + sectionFinalizer;
 
     this._header += sectionFinalizer;
-    this._rows.forEach((row, idx) => (this._rows[idx] = row + this._tab.sectionSymbol));
+    this._rows.forEach((row, idx) => (this._rows[idx] = row + this.sectionSymbol));
     this.addSpacing();
 
     return this;
@@ -150,17 +148,14 @@ export class TabBlock {
     this._setupForNewSection();
 
     this._header +=
-      this._tab.sectionSymbol +
-      this._tab.sectionFiller +
-      header +
-      this._getSectionFiller(this._tab.spacing);
+      this.sectionSymbol + this.sectionFiller + header + this.getSectionFiller(this.spacing);
 
-    this._rows.forEach((row, idx) => (this._rows[idx] = row + this._tab.sectionSymbol));
+    this._rows.forEach((row, idx) => (this._rows[idx] = row + this.sectionSymbol));
     this.addSpacing();
 
-    this._footer += this._tab.sectionSymbol + this._tab.sectionFiller;
+    this._footer += this.sectionSymbol + this.sectionFiller;
 
-    this._isInternalBlockSet = false;
+    this._isBlockSet = false;
 
     return this;
   }
@@ -174,7 +169,7 @@ export class TabBlock {
     if (stringsOutOfRange.length > 0)
       throw new Error(
         `The strings ${stringsOutOfRange.join(', ')} are out of tab strings range. ` +
-          `Strings must be between 1 and ${this._tab.rows}`
+          `Strings must be between 1 and ${this.numberOfRows}`
       );
 
     const stringsWithConcurrentNotes = this._getStringsWithConcurrentNotes(notes);
@@ -190,13 +185,20 @@ export class TabBlock {
     return this;
   }
 
-  private _getFooterInsertPreparation(footer: string): FooterInsertPreparationDTO {
-    const footerToAdd =
-      this._getSectionFiller(this._tab.spacing) + footer + this._tab.sectionFiller;
+  protected onSpacingChange(oldValue: number, value: number): void {
+    const spacingDiff = value - oldValue;
+
+    if (spacingDiff === 0) return;
+    else if (spacingDiff > 0) this.addSpacing(spacingDiff);
+    else this.removeSpacing(-spacingDiff);
+  }
+
+  private _getFooterInsertPreparation(footer: string): FooterInsertPreparation {
+    const footerToAdd = this.getSectionFiller(this.spacing) + footer + this.sectionFiller;
 
     const nonSectionFillerFooterIdx = StringHelper.getIndexOfDifferent(
       this._footer,
-      this._tab.sectionFiller,
+      this.sectionFiller,
       -1,
       -1
     );
@@ -223,28 +225,20 @@ export class TabBlock {
   private _getMinimumSectionLength(section: string): number {
     const nonSectionFillerIdx = StringHelper.getIndexOfDifferent(
       section,
-      this._tab.sectionFiller,
+      this.sectionFiller,
       -1,
       -1
     );
 
     const minimumSectionLenth =
-      nonSectionFillerIdx > -1 ? nonSectionFillerIdx + this._tab.spacing + 1 : 0;
+      nonSectionFillerIdx > -1 ? nonSectionFillerIdx + this.spacing + 1 : 0;
 
     return minimumSectionLenth;
   }
 
-  private _getRowFiller(fillerLength: number): string {
-    return Array(fillerLength + 1).join(this._tab.filler);
-  }
-
-  private _getSectionFiller(fillerLength: number): string {
-    return Array(fillerLength + 1).join(this._tab.sectionFiller);
-  }
-
   private _getStringsOutOfRangeOnNotes(notes: Note[]): number[] {
     return this._getUniqueStringsFromNotes(
-      notes.filter((note) => !this._tab.isNoteInStringsRange(note))
+      notes.filter((note) => !this.isNoteInStringsRange(note))
     );
   }
 
@@ -269,11 +263,9 @@ export class TabBlock {
   }
 
   private _setupForNewSection(): void {
-    this._setupInternalBlock();
-
-    this._header = this.block[this.blockHeaderIdx];
-    this._footer = this.block[this.blockFooterIdx];
-    this._rows = this.block.slice(this.blockRowsStartIdx, this.blockRowsEndIdx + 1);
+    this._header = this.block[this._blockHeaderIdx];
+    this._footer = this.block[this._blockFooterIdx];
+    this._rows = this.block.slice(this._blockRowsStartIdx, this._blockRowsEndIdx + 1);
   }
 
   private _setupInternalBlock(): void {
@@ -285,20 +277,20 @@ export class TabBlock {
 
     const header =
       this._header.length <= endBlockLength
-        ? this._header + this._getSectionFiller(endBlockLength - this._header.length)
+        ? this._header + this.getSectionFiller(endBlockLength - this._header.length)
         : this._header.slice(0, endBlockLength);
 
     const footer =
       this._footer.length <= endBlockLength
-        ? this._footer + this._getSectionFiller(endBlockLength - this._footer.length)
+        ? this._footer + this.getSectionFiller(endBlockLength - this._footer.length)
         : this._footer.slice(0, endBlockLength);
 
     const rows = this._rows.map((row) =>
-      row.length < endBlockLength ? row + this._getRowFiller(endBlockLength - row.length) : row
+      row.length < endBlockLength ? row + this.getRowsFiller(endBlockLength - row.length) : row
     );
 
     this._block = [header, ...rows, footer];
-    this._isInternalBlockSet = true;
+    this._isBlockSet = true;
   }
 
   private _writeInstructionsToRows(notes: Note[]): void {
@@ -310,12 +302,12 @@ export class TabBlock {
       const noteToWrite = notes.find((note) => note.string === idx + 1);
       if (noteToWrite) {
         const rowFillerLength = maxInstructionLength - noteToWrite.fret.length;
-        this._rows[idx] = row + noteToWrite.fret + this._getRowFiller(rowFillerLength);
+        this._rows[idx] = row + noteToWrite.fret + this.getRowsFiller(rowFillerLength);
       } else {
-        this._rows[idx] = row + this._getRowFiller(maxInstructionLength);
+        this._rows[idx] = row + this.getRowsFiller(maxInstructionLength);
       }
     });
 
-    this._isInternalBlockSet = false;
+    this._isBlockSet = false;
   }
 }

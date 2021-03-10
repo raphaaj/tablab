@@ -29,7 +29,7 @@ export class WriteNoteInstruction extends MergeableInstructionBase {
         result = this.getUnmappepFailureResult();
       }
     } else {
-      result = this._getStringOutOfTabRangeFailureResult(tab.rows);
+      result = this._getStringOutOfTabRangeFailureResult(tab.numberOfRows);
     }
 
     return result;

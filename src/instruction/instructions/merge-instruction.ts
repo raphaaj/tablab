@@ -27,7 +27,7 @@ export class MergeInstruction extends InstructionBase {
     const notes = this.instructions.map((instruction) => instruction.note);
     const notesOutOfTabStringsRange = notes.filter((note) => !tab.isNoteInStringsRange(note));
     if (notesOutOfTabStringsRange.length > 0) {
-      result = this._getNotesStringOutOfTabRangeFailureResult(tab.rows);
+      result = this._getNotesStringOutOfTabRangeFailureResult(tab.numberOfRows);
     } else {
       try {
         tab.writeParallelNotes(notes);
