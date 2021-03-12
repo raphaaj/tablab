@@ -8,22 +8,30 @@ type FooterInsertPreparation = {
   footerToAdd: string;
 };
 
+type BlockSplitResult = {
+  left: string[];
+  right?: string[];
+};
+
 export class TabBlock extends TabElement {
+  static readonly MINIMUM_BLOCK_END_FILLER_LENGTH = 1;
+  static readonly MINIMUM_BLOCK_LENGTH = 15;
+
   get block(): string[] {
     if (!this._isBlockSet) this._setupInternalBlock();
     return this._block;
   }
 
   get header(): string {
-    return this.block[this._blockHeaderIdx];
+    return this._getBlockHeader(this.block);
   }
 
   get footer(): string {
-    return this.block[this._blockFooterIdx];
+    return this._getBlockFooter(this.block);
   }
 
   get rows(): string[] {
-    return this.block.slice(this._blockRowsStartIdx, this._blockRowsEndIdx + 1);
+    return this._getBlockRows(this.block);
   }
 
   private _block: string[];
@@ -73,8 +81,30 @@ export class TabBlock extends TabElement {
     return this;
   }
 
-  format(): string[][] {
-    return [this.block];
+  format(blockLength: number): string[][] {
+    if (blockLength < TabBlock.MINIMUM_BLOCK_LENGTH)
+      throw new Error(
+        `The block length must be at least ${TabBlock.MINIMUM_BLOCK_LENGTH}.` +
+          ` Received values was ${blockLength}.`
+      );
+
+    let blockToFormat: string[] | undefined = [...this.block];
+
+    const formattedBlock: string[][] = [];
+    while (blockToFormat) {
+      const blockTargetLength = blockLength - TabBlock.MINIMUM_BLOCK_END_FILLER_LENGTH;
+      const blockSplitIndex = this._getBlockSplitIndexForTargetLength(
+        blockToFormat,
+        blockTargetLength
+      );
+
+      const blockSplitResult = this._splitBlockAtIndex(blockToFormat, blockSplitIndex);
+      formattedBlock.push(this._fillBlockToTargetLength(blockSplitResult.left, blockLength));
+
+      blockToFormat = blockSplitResult.right;
+    }
+
+    return formattedBlock;
   }
 
   getMaximumRemovableSpacing(): number {
@@ -193,6 +223,50 @@ export class TabBlock extends TabElement {
     else this.removeSpacing(-spacingDiff);
   }
 
+  private _fillBlockToTargetLength(block: string[], blockTargetLength: number): string[] {
+    const header = this._getBlockHeader(block);
+    const footer = this._getBlockFooter(block);
+    const rows = this._getBlockRows(block);
+
+    const formattedHeader = header + this.getSectionFiller(blockTargetLength - header.length);
+    const formattedFooter = footer + this.getSectionFiller(blockTargetLength - footer.length);
+    const formattedRows = rows.map(
+      (row) => row + this.getRowsFiller(blockTargetLength - row.length)
+    );
+
+    return [formattedHeader, ...formattedRows, formattedFooter];
+  }
+
+  private _getBlockFooter(block: string[]): string {
+    return block[this._blockFooterIdx];
+  }
+
+  private _getBlockHeader(block: string[]): string {
+    return block[this._blockHeaderIdx];
+  }
+
+  private _getBlockLength(block: string[]): number {
+    return block[0].length;
+  }
+
+  private _getBlockRows(block: string[]): string[] {
+    return block.slice(this._blockRowsStartIdx, this._blockRowsEndIdx + 1);
+  }
+
+  private _getBlockSplitIndexForTargetLength(block: string[], targetBlockLength: number): number {
+    const blockLength = this._getBlockLength(block);
+    const initialSplitIndex = Math.min(blockLength - 1, targetBlockLength - 1);
+
+    let splitIndex = initialSplitIndex;
+    while (splitIndex > 0 && !this._isBlockSplittableAtIndex(block, splitIndex)) {
+      splitIndex--;
+    }
+
+    if (splitIndex === 0) splitIndex = initialSplitIndex;
+
+    return splitIndex;
+  }
+
   private _getFooterInsertPreparation(footer: string): FooterInsertPreparation {
     const footerToAdd = this.getSectionFiller(this.spacing) + footer + this.sectionFiller;
 
@@ -262,10 +336,53 @@ export class TabBlock extends TabElement {
       .filter((string, index, strings) => strings.indexOf(string) === index);
   }
 
+  private _isBlockFooterSplittableAtIndex(block: string[], splitIndex: number): boolean {
+    const footer = this._getBlockFooter(block);
+
+    return this._isBlockSectionSplittableAtIndex(footer, splitIndex);
+  }
+
+  private _isBlockHeaderSplittableAtIndex(block: string[], splitIndex: number): boolean {
+    const header = this._getBlockHeader(block);
+
+    return this._isBlockSectionSplittableAtIndex(header, splitIndex);
+  }
+
+  private _isBlockRowsSplittableAtIndex(block: string[], splitIndex: number): boolean {
+    const rows = this._getBlockRows(block);
+
+    const rowsSplittableAtIndex = rows.reduce((rowsSplittableAtIndex, row) => {
+      const nextCharacter = row[splitIndex + 1];
+      return (
+        rowsSplittableAtIndex && (nextCharacter === this.filler || nextCharacter === undefined)
+      );
+    }, true);
+
+    return rowsSplittableAtIndex;
+  }
+
+  private _isBlockSectionSplittableAtIndex(section: string, splitIndex: number): boolean {
+    const thisCharacter = section[splitIndex];
+    const nextCharacter = section[splitIndex + 1];
+
+    return (
+      thisCharacter === this.sectionFiller &&
+      (nextCharacter === this.sectionFiller || nextCharacter === undefined)
+    );
+  }
+
+  private _isBlockSplittableAtIndex(block: string[], splitIndex: number): boolean {
+    return (
+      this._isBlockHeaderSplittableAtIndex(block, splitIndex) &&
+      this._isBlockRowsSplittableAtIndex(block, splitIndex) &&
+      this._isBlockFooterSplittableAtIndex(block, splitIndex)
+    );
+  }
+
   private _setupForNewSection(): void {
-    this._header = this.block[this._blockHeaderIdx];
-    this._footer = this.block[this._blockFooterIdx];
-    this._rows = this.block.slice(this._blockRowsStartIdx, this._blockRowsEndIdx + 1);
+    this._header = this._getBlockHeader(this.block);
+    this._footer = this._getBlockFooter(this.block);
+    this._rows = this._getBlockRows(this.block);
   }
 
   private _setupInternalBlock(): void {
@@ -291,6 +408,33 @@ export class TabBlock extends TabElement {
 
     this._block = [header, ...rows, footer];
     this._isBlockSet = true;
+  }
+
+  private _splitBlockAtIndex(block: string[], splitIndex: number): BlockSplitResult {
+    const blockLength = this._getBlockLength(block);
+    const header = this._getBlockHeader(block);
+    const footer = this._getBlockFooter(block);
+    const rows = this._getBlockRows(block);
+
+    const leftSplit = [
+      header.slice(0, splitIndex + 1),
+      ...rows.map((row) => row.slice(0, splitIndex + 1)),
+      footer.slice(0, splitIndex + 1),
+    ];
+
+    let rightSplit;
+    if (splitIndex + 1 < blockLength) {
+      rightSplit = [
+        header.slice(splitIndex + 1),
+        ...rows.map((row) => row.slice(splitIndex + 1)),
+        footer.slice(splitIndex + 1),
+      ];
+    }
+
+    return {
+      left: leftSplit,
+      right: rightSplit,
+    };
   }
 
   private _writeInstructionsToRows(notes: Note[]): void {

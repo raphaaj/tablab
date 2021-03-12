@@ -82,7 +82,7 @@ export abstract class TabElement {
 
   abstract addSpacing(spacing?: number): TabElement;
 
-  abstract format(): string[][];
+  abstract format(targetLength: number): string[][];
 
   abstract removeSpacing(spacing?: number): TabElement;
 

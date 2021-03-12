@@ -179,13 +179,297 @@ describe(`[${TabBlock.name}]`, () => {
   });
 
   describe('[format]', () => {
-    it('should return the block formatted', () => {
+    it('should throw if the given block length is smaller than the minimum acceptable length', () => {
+      const blockLength = TabBlock.MINIMUM_BLOCK_LENGTH - 1;
       const tabBlock = new TabBlock();
 
-      const formattedBlock = tabBlock.format();
+      expect(() => tabBlock.format(blockLength)).toThrow();
+    });
 
-      expect(formattedBlock.length).toBe(1);
-      expect(formattedBlock[0]).toEqual(tabBlock.block);
+    it('should return 1 block with the given block length if the block length is smaller than the given block length', () => {
+      const filler = '-';
+      const numberOfRows = 2;
+      const spacing = 7;
+      const sectionFiller = ' ';
+      const tabBlock = new TabBlock({ filler, numberOfRows, sectionFiller, spacing });
+      const string = 1;
+      const fret = '0';
+      const blockLength = 20;
+
+      const expectedFormattedBlock = [
+        [
+          '                    ',
+          '-------0------------',
+          '--------------------',
+          '                    ',
+        ],
+      ];
+
+      tabBlock.writeNote(new Note(string, fret));
+      const formattedTabBlock = tabBlock.format(blockLength);
+
+      expect(formattedTabBlock).toEqual(expectedFormattedBlock);
+    });
+
+    it('should split the block in multiple blocks with the given block length if the block length is greater than the given block length', () => {
+      const filler = '-';
+      const numberOfRows = 2;
+      const spacing = 15;
+      const sectionFiller = ' ';
+      const tabBlock = new TabBlock({ filler, numberOfRows, sectionFiller, spacing });
+      const string = 1;
+      const fret = '0';
+      const blockLength = 20;
+
+      const expectedFormattedBlock = [
+        [
+          '                    ',
+          '---------------0----',
+          '--------------------',
+          '                    ',
+        ],
+        [
+          '                    ',
+          '--------------------',
+          '--------------------',
+          '                    ',
+        ],
+      ];
+
+      tabBlock.writeNote(new Note(string, fret));
+      const formattedTabBlock = tabBlock.format(blockLength);
+
+      expect(formattedTabBlock).toEqual(expectedFormattedBlock);
+    });
+
+    it('should not split the block in the middle of a header, when possible', () => {
+      const filler = '-';
+      const numberOfRows = 2;
+      const spacingBeforeHeader = 10;
+      const spacingAfterHeader = 2;
+      const sectionFiller = ' ';
+      const sectionSymbol = '|';
+      const tabBlock = new TabBlock({
+        filler,
+        numberOfRows,
+        sectionFiller,
+        sectionSymbol,
+        spacing: spacingBeforeHeader,
+      });
+      const header = 'test header';
+      const blockLength = 20;
+
+      const expectedFormattedBlock = [
+        [
+          '                    ',
+          '--------------------',
+          '--------------------',
+          '                    ',
+        ],
+        [
+          ' | test header      ',
+          '-|------------------',
+          '-|------------------',
+          ' |                  ',
+        ],
+      ];
+
+      tabBlock.writeHeader(header);
+      tabBlock.spacing = spacingAfterHeader;
+      const formattedTabBlock = tabBlock.format(blockLength);
+
+      expect(formattedTabBlock).toEqual(expectedFormattedBlock);
+    });
+
+    it('should not split the block in the middle of a footer, when possible', () => {
+      const filler = '-';
+      const numberOfRows = 2;
+      const spacingBeforeFooter = 10;
+      const spacingAfterFooter = 2;
+      const sectionFiller = ' ';
+      const sectionSymbol = '|';
+      const tabBlock = new TabBlock({
+        filler,
+        numberOfRows,
+        sectionFiller,
+        sectionSymbol,
+        spacing: spacingBeforeFooter,
+      });
+      const footer = 'test footer';
+      const blockLength = 20;
+
+      const expectedFormattedBlock = [
+        [
+          '                    ',
+          '--------------------',
+          '--------------------',
+          '                    ',
+        ],
+        [
+          '             |      ',
+          '-------------|------',
+          '-------------|------',
+          ' test footer |      ',
+        ],
+      ];
+
+      tabBlock.writeFooter(footer);
+      tabBlock.spacing = spacingAfterFooter;
+      const formattedTabBlock = tabBlock.format(blockLength);
+
+      expect(formattedTabBlock).toEqual(expectedFormattedBlock);
+    });
+
+    it('should not split the block in the middle of a row fret instruction, when possible', () => {
+      const filler = '-';
+      const numberOfRows = 2;
+      const spacingBeforeNote = 15;
+      const spacingAfterNote = 2;
+      const sectionFiller = ' ';
+      const sectionSymbol = '|';
+      const tabBlock = new TabBlock({
+        filler,
+        numberOfRows,
+        sectionFiller,
+        sectionSymbol,
+        spacing: spacingBeforeNote,
+      });
+      const string = 1;
+      const fret = '0h2p0';
+      const blockLength = 20;
+
+      const expectedFormattedBlock = [
+        [
+          '                    ',
+          '--------------------',
+          '--------------------',
+          '                    ',
+        ],
+        [
+          '                    ',
+          '-0h2p0--------------',
+          '--------------------',
+          '                    ',
+        ],
+      ];
+
+      tabBlock.writeNote(new Note(string, fret));
+      tabBlock.spacing = spacingAfterNote;
+      const formattedTabBlock = tabBlock.format(blockLength);
+
+      expect(formattedTabBlock).toEqual(expectedFormattedBlock);
+    });
+
+    it('should split the block in the middle of a header when unable to split it without breaking the header', () => {
+      const filler = '-';
+      const numberOfRows = 2;
+      const sectionFiller = ' ';
+      const sectionSymbol = '|';
+      const spacing = 1;
+      const tabBlock = new TabBlock({
+        filler,
+        numberOfRows,
+        sectionFiller,
+        sectionSymbol,
+        spacing,
+      });
+      const header = 'a long enough header';
+      const blockLength = 20;
+
+      const expectedFormattedBlock = [
+        [
+          ' | a long enough he ',
+          '-|------------------',
+          '-|------------------',
+          ' |                  ',
+        ],
+        [
+          'ader                ',
+          '--------------------',
+          '--------------------',
+          '                    ',
+        ],
+      ];
+
+      tabBlock.writeHeader(header);
+      const formattedTabBlock = tabBlock.format(blockLength);
+
+      expect(formattedTabBlock).toEqual(expectedFormattedBlock);
+    });
+
+    it('should split the block in the middle of a footer when unable to split it without breaking the footer', () => {
+      const filler = '-';
+      const numberOfRows = 2;
+      const sectionFiller = ' ';
+      const sectionSymbol = '|';
+      const spacing = 1;
+      const tabBlock = new TabBlock({
+        filler,
+        numberOfRows,
+        sectionFiller,
+        sectionSymbol,
+        spacing,
+      });
+      const footer = 'a long enough footer';
+      const blockLength = 20;
+
+      const expectedFormattedBlock = [
+        [
+          '                    ',
+          '--------------------',
+          '--------------------',
+          ' a long enough foot ',
+        ],
+        [
+          '   |                ',
+          '---|----------------',
+          '---|----------------',
+          'er |                ',
+        ],
+      ];
+
+      tabBlock.writeFooter(footer);
+      const formattedTabBlock = tabBlock.format(blockLength);
+
+      expect(formattedTabBlock).toEqual(expectedFormattedBlock);
+    });
+
+    it('should split the block in the middle of a row fret instruction when unable to split it without breaking the instruction', () => {
+      const filler = '-';
+      const numberOfRows = 2;
+      const sectionFiller = ' ';
+      const sectionSymbol = '|';
+      const spacing = 1;
+      const tabBlock = new TabBlock({
+        filler,
+        numberOfRows,
+        sectionFiller,
+        sectionSymbol,
+        spacing,
+      });
+      const string = 1;
+      const fret = 'a_long_enough_instruction';
+      const blockLength = 20;
+
+      const expectedFormattedBlock = [
+        [
+          '                    ',
+          '-a_long_enough_inst-',
+          '--------------------',
+          '                    ',
+        ],
+        [
+          '                    ',
+          'ruction-------------',
+          '--------------------',
+          '                    ',
+        ],
+      ];
+
+      tabBlock.writeNote(new Note(string, fret));
+      const formattedTabBlock = tabBlock.format(blockLength);
+
+      expect(formattedTabBlock).toEqual(expectedFormattedBlock);
     });
   });
 
