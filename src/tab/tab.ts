@@ -37,7 +37,11 @@ export class Tab extends TabElement {
   }
 
   format(blockLength: number): string[][] {
-    return this.blocks.flatMap((tabBlock) => tabBlock.format(blockLength));
+    const formattedBlocks = this.blocks.reduce((formattedBlocks, block) => {
+      return formattedBlocks.concat(block.format(blockLength));
+    }, [] as string[][]);
+
+    return formattedBlocks;
   }
 
   removeSpacing(spacing?: number | undefined): Tab {

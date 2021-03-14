@@ -155,7 +155,9 @@ export class InstructionFactory extends InstructionFactoryBase {
 
     const concurrentInstructions = Object.keys(noteString2InstructionsMap)
       .filter((noteString) => noteString2InstructionsMap[noteString].length > 1)
-      .flatMap((noteString) => noteString2InstructionsMap[noteString]);
+      .reduce((concurrentInstructions, noteString) => {
+        return concurrentInstructions.concat(noteString2InstructionsMap[noteString]);
+      }, [] as MergeableInstructionBase[]);
 
     return concurrentInstructions;
   }

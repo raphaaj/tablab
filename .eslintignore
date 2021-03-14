@@ -5,7 +5,7 @@ node_modules
 coverage
 
 # production
-dist
+lib
 
 # misc
 .vscode
