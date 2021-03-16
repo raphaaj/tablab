@@ -165,7 +165,7 @@ export class Parser {
     if (!EnclosuresHelper.isOpeningEnclosure(nextInstrStartChar))
       return instructionEndIndexCandidate;
 
-    const closingBracketIndex = StringHelper.getIndexOfMatchingClosingEnclosure(
+    const closingBracketIndex = EnclosuresHelper.getIndexOfMatchingClosingEnclosure(
       instructions,
       nextInstrStartIndex
     );
@@ -193,7 +193,7 @@ export class Parser {
     if (firstOpeningBracketIndex > instructionEndIndexCandidate)
       return instructionEndIndexCandidate;
 
-    const closingBracketIndex = StringHelper.getIndexOfMatchingClosingEnclosure(
+    const closingBracketIndex = EnclosuresHelper.getIndexOfMatchingClosingEnclosure(
       instructions,
       firstOpeningBracketIndex
     );

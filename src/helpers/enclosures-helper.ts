@@ -1,5 +1,3 @@
-import { StringHelper } from './string-helper';
-
 const openingClosingEnclosureMap: Record<string, string> = {
   '(': ')',
   '[': ']',
@@ -24,8 +22,22 @@ export class EnclosuresHelper {
     return openingClosingEnclosureMap[openingEnclosure];
   }
 
+  static getIndexOfMatchingClosingEnclosure(str: string, openingEnclosureIndex: number): number {
+    if (openingEnclosureIndex > str.length - 1) return -1;
+
+    const openingEnclosure = str[openingEnclosureIndex];
+    if (!EnclosuresHelper.isOpeningEnclosure(openingEnclosure))
+      throw new Error(
+        'The parameter openingEnclosureIndex must reference a string character ' +
+          `whose value must be one of "${EnclosuresHelper.openingEnclosures.join(`", "`)}".` +
+          `Found "${openingEnclosure}" at index ${openingEnclosureIndex}.`
+      );
+
+    return EnclosuresHelper._getIndexOfMatchingClosingEnclosure(str, openingEnclosureIndex);
+  }
+
   static getValueInsideEnclosure(str: string, openingEnclosureIndex: number): string {
-    const closingEnclosureIndex = StringHelper.getIndexOfMatchingClosingEnclosure(
+    const closingEnclosureIndex = EnclosuresHelper.getIndexOfMatchingClosingEnclosure(
       str,
       openingEnclosureIndex
     );
@@ -38,11 +50,11 @@ export class EnclosuresHelper {
   }
 
   static hasClosingEnclosure(str: string): boolean {
-    return EnclosuresHelper.hasEnclosures(str, EnclosuresHelper.closingEnclosures);
+    return EnclosuresHelper._hasEnclosures(str, EnclosuresHelper.closingEnclosures);
   }
 
   static hasOpeningEnclosure(str: string): boolean {
-    return EnclosuresHelper.hasEnclosures(str, EnclosuresHelper.openingEnclosures);
+    return EnclosuresHelper._hasEnclosures(str, EnclosuresHelper.openingEnclosures);
   }
 
   static isClosingEnclosure(char: string): boolean {
@@ -53,7 +65,36 @@ export class EnclosuresHelper {
     return EnclosuresHelper.openingEnclosures.indexOf(char) > -1;
   }
 
-  private static hasEnclosures(str: string, enclosures: string[]): boolean {
+  private static _getIndexOfMatchingClosingEnclosure(
+    str: string,
+    openingEnclosureIndex: number
+  ): number {
+    const openingEnclosure = str[openingEnclosureIndex];
+    const closingEnclosure = EnclosuresHelper.getClosingEnclosureFromOpeningEnclosure(
+      openingEnclosure
+    );
+
+    let closingEnclosureIndex = -1;
+    let pendingOpeningEnclosures = 0;
+    for (let i = openingEnclosureIndex; i < str.length; i++) {
+      const currentCharacter = str[i];
+
+      if (currentCharacter === openingEnclosure) {
+        pendingOpeningEnclosures++;
+      } else if (currentCharacter === closingEnclosure) {
+        pendingOpeningEnclosures--;
+      }
+
+      if (pendingOpeningEnclosures === 0) {
+        closingEnclosureIndex = i;
+        break;
+      }
+    }
+
+    return closingEnclosureIndex;
+  }
+
+  private static _hasEnclosures(str: string, enclosures: string[]): boolean {
     return (
       enclosures
         .map((enclosure) => str.indexOf(enclosure))

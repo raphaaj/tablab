@@ -1,6 +1,6 @@
 import { StringHelper } from '../../src/helpers/string-helper';
 
-describe(`[${StringHelper.name} extensions]`, () => {
+describe(`[${StringHelper.name}]`, () => {
   describe('[format]', () => {
     it('should return the original string if no replacers are given', () => {
       const replacers: string[] = [];
@@ -45,7 +45,7 @@ describe(`[${StringHelper.name} extensions]`, () => {
     });
   });
 
-  describe(`[indexOfDifferent]`, () => {
+  describe('[getIndexOfDifferent]', () => {
     it('should throw if iteration is 0', () => {
       const str = 'test';
 
@@ -92,38 +92,6 @@ describe(`[${StringHelper.name} extensions]`, () => {
       const indexOfDifferent = StringHelper.getIndexOfDifferent(str, 't', -1, -1);
 
       expect(indexOfDifferent).toBe(2);
-    });
-  });
-
-  describe('[indexOfMatchingClosingEnclosure]', () => {
-    it('should return -1 if opening enclosure index is greater than the string length', () => {
-      const str = 'test';
-
-      const idx = StringHelper.getIndexOfMatchingClosingEnclosure(str, str.length);
-
-      expect(idx).toBe(-1);
-    });
-
-    it('should throw if opening enclosure index does not contain a valid opening enclosure', () => {
-      const str = 'test';
-
-      expect(() => StringHelper.getIndexOfMatchingClosingEnclosure(str, 0)).toThrow();
-    });
-
-    it('should return -1 if no matching closing enclosure is found', () => {
-      const str = '(test()';
-
-      const idx = StringHelper.getIndexOfMatchingClosingEnclosure(str, 0);
-
-      expect(idx).toBe(-1);
-    });
-
-    it('should return the index of the matching closing enclosure if found', () => {
-      const str = '(test())()';
-
-      const idx = StringHelper.getIndexOfMatchingClosingEnclosure(str, 0);
-
-      expect(idx).toBe(7);
     });
   });
 

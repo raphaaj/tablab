@@ -1,5 +1,3 @@
-import { EnclosuresHelper } from './enclosures-helper';
-
 type IterationEndVerification = (idx: number) => boolean;
 
 export class StringHelper {
@@ -35,41 +33,6 @@ export class StringHelper {
 
     for (let i = startIdx; hasEnded(i); i = i + searchIteration) {
       if (thisString[i] !== searchString) {
-        return i;
-      }
-    }
-
-    return -1;
-  }
-
-  static getIndexOfMatchingClosingEnclosure(
-    thisString: string,
-    openingEnclosureIndex: number
-  ): number {
-    if (openingEnclosureIndex > thisString.length - 1) return -1;
-
-    const openingEnclosure = thisString[openingEnclosureIndex];
-    if (!EnclosuresHelper.isOpeningEnclosure(openingEnclosure))
-      throw new Error(
-        'The parameter openingEnclosureIndex must reference a string character ' +
-          `whose value must be one of "${EnclosuresHelper.openingEnclosures.join(`", "`)}".` +
-          `Found "${openingEnclosure}" at index ${openingEnclosureIndex}.`
-      );
-
-    const matchingClosingEnclosure = EnclosuresHelper.getClosingEnclosureFromOpeningEnclosure(
-      openingEnclosure
-    );
-
-    const enclosuresStack: string[] = [];
-    for (let i = openingEnclosureIndex; i < thisString.length; i++) {
-      const currentCharacter = thisString[i];
-      if (currentCharacter === openingEnclosure) {
-        enclosuresStack.push(currentCharacter);
-      } else if (currentCharacter === matchingClosingEnclosure) {
-        enclosuresStack.pop();
-      }
-
-      if (enclosuresStack.length === 0) {
         return i;
       }
     }

@@ -137,6 +137,38 @@ describe(`[${EnclosuresHelper.name}]`, () => {
     });
   });
 
+  describe('[getIndexOfMatchingClosingEnclosure]', () => {
+    it('should return -1 if opening enclosure index is greater than the string length', () => {
+      const str = 'test';
+
+      const idx = EnclosuresHelper.getIndexOfMatchingClosingEnclosure(str, str.length);
+
+      expect(idx).toBe(-1);
+    });
+
+    it('should throw if opening enclosure index does not contain a valid opening enclosure', () => {
+      const str = 'test';
+
+      expect(() => EnclosuresHelper.getIndexOfMatchingClosingEnclosure(str, 0)).toThrow();
+    });
+
+    it('should return -1 if no matching closing enclosure is found', () => {
+      const str = '(test()';
+
+      const idx = EnclosuresHelper.getIndexOfMatchingClosingEnclosure(str, 0);
+
+      expect(idx).toBe(-1);
+    });
+
+    it('should return the index of the matching closing enclosure if found', () => {
+      const str = '(test())()';
+
+      const idx = EnclosuresHelper.getIndexOfMatchingClosingEnclosure(str, 0);
+
+      expect(idx).toBe(7);
+    });
+  });
+
   describe('[getValueInsideEnclosure]', () => {
     it('should throw if there is not a opening enclosure at the given index', () => {
       const str = 'test';
