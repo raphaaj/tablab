@@ -30,7 +30,7 @@ export class Tab extends TabElement {
     return this;
   }
 
-  addSpacing(spacing?: number): Tab {
+  addSpacing(spacing?: number): this {
     this._currentBlock.addSpacing(spacing);
 
     return this;
@@ -44,31 +44,31 @@ export class Tab extends TabElement {
     return formattedBlocks;
   }
 
-  removeSpacing(spacing?: number | undefined): Tab {
+  removeSpacing(spacing?: number | undefined): this {
     this._currentBlock.removeSpacing(spacing);
 
     return this;
   }
 
-  writeFooter(footer: string): Tab {
+  writeFooter(footer: string): this {
     this._currentBlock.writeFooter(footer);
 
     return this;
   }
 
-  writeHeader(header: string): Tab {
+  writeHeader(header: string): this {
     this._currentBlock.writeHeader(header);
 
     return this;
   }
 
-  writeNote(note: Note): Tab {
+  writeNote(note: Note): this {
     this._currentBlock.writeNote(note);
 
     return this;
   }
 
-  writeParallelNotes(notes: Note[]): Tab {
+  writeParallelNotes(notes: Note[]): this {
     this._currentBlock.writeParallelNotes(notes);
 
     return this;

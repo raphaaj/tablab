@@ -65,7 +65,7 @@ export class TabBlock extends TabElement {
     this.addSpacing();
   }
 
-  addSpacing(spacing?: number): TabBlock {
+  addSpacing(spacing?: number): this {
     const spacingToAdd = spacing ?? this.spacing;
 
     if (spacingToAdd < 1)
@@ -125,7 +125,7 @@ export class TabBlock extends TabElement {
     }, -1);
   }
 
-  removeSpacing(spacing?: number | undefined): TabBlock {
+  removeSpacing(spacing?: number | undefined): this {
     const maxRemovableSpacing = this.getMaximumRemovableSpacing();
     const spacingToRemove = spacing ?? maxRemovableSpacing;
 
@@ -148,7 +148,7 @@ export class TabBlock extends TabElement {
     return this;
   }
 
-  writeFooter(footer: string): TabBlock {
+  writeFooter(footer: string): this {
     if (footer.trim().length === 0) throw new Error('A footer must not be blank');
 
     this._setupForNewSection();
@@ -172,7 +172,7 @@ export class TabBlock extends TabElement {
     return this;
   }
 
-  writeHeader(header: string): TabBlock {
+  writeHeader(header: string): this {
     if (header.trim().length === 0) throw new Error('A header must not be blank');
 
     this._setupForNewSection();
@@ -190,11 +190,11 @@ export class TabBlock extends TabElement {
     return this;
   }
 
-  writeNote(note: Note): TabBlock {
+  writeNote(note: Note): this {
     return this.writeParallelNotes([note]);
   }
 
-  writeParallelNotes(notes: Note[]): TabBlock {
+  writeParallelNotes(notes: Note[]): this {
     const stringsOutOfRange = this._getStringsOutOfRangeOnNotes(notes);
     if (stringsOutOfRange.length > 0)
       throw new Error(

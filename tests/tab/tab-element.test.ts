@@ -2,7 +2,7 @@ import { TabElement } from '../../src/tab/tab-element';
 import { Note } from '../../src/tab/note';
 
 class TestTabElement extends TabElement {
-  addSpacing(): TabElement {
+  addSpacing(): this {
     throw new Error('Method not implemented.');
   }
 
@@ -11,10 +11,10 @@ class TestTabElement extends TabElement {
   }
 
   onSpacingChange(): void {
-    throw new Error('Method not implemented.');
+    return;
   }
 
-  removeSpacing(): TabElement {
+  removeSpacing(): this {
     throw new Error('Method not implemented.');
   }
 
@@ -26,19 +26,19 @@ class TestTabElement extends TabElement {
     return this.getSectionFiller(fillerLength);
   }
 
-  writeFooter(): TabElement {
+  writeFooter(): this {
     throw new Error('Method not implemented.');
   }
 
-  writeHeader(): TabElement {
+  writeHeader(): this {
     throw new Error('Method not implemented.');
   }
 
-  writeNote(): TabElement {
+  writeNote(): this {
     throw new Error('Method not implemented.');
   }
 
-  writeParallelNotes(): TabElement {
+  writeParallelNotes(): this {
     throw new Error('Method not implemented.');
   }
 }
@@ -141,6 +141,18 @@ describe(`[${TabElement.name}]`, () => {
         expect(tabElement.onSpacingChange).toHaveBeenCalledWith(oldSpacingValue, spacing);
         expect(tabElement.spacing).toBe(spacing);
       });
+    });
+  });
+
+  describe('[setSpacing]', () => {
+    it('should set the tab element spacing', () => {
+      const oldSpacingValue = 2;
+      const spacing = 1;
+      const tabElement = new TestTabElement({ spacing: oldSpacingValue });
+
+      tabElement.setSpacing(spacing);
+
+      expect(tabElement.spacing).toBe(spacing);
     });
   });
 

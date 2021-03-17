@@ -80,19 +80,25 @@ export abstract class TabElement {
     return note.string > 0 && note.string <= this.numberOfRows;
   }
 
-  abstract addSpacing(spacing?: number): TabElement;
+  setSpacing(spacing: number): this {
+    this.spacing = spacing;
+
+    return this;
+  }
+
+  abstract addSpacing(spacing?: number): this;
 
   abstract format(targetLength: number): string[][];
 
-  abstract removeSpacing(spacing?: number): TabElement;
+  abstract removeSpacing(spacing?: number): this;
 
-  abstract writeFooter(footer: string): TabElement;
+  abstract writeFooter(footer: string): this;
 
-  abstract writeHeader(header: string): TabElement;
+  abstract writeHeader(header: string): this;
 
-  abstract writeNote(note: Note): TabElement;
+  abstract writeNote(note: Note): this;
 
-  abstract writeParallelNotes(notes: Note[]): TabElement;
+  abstract writeParallelNotes(notes: Note[]): this;
 
   protected getRowsFiller(fillerLength: number): string {
     return Array(fillerLength + 1).join(this.filler);
