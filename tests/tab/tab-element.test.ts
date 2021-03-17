@@ -45,7 +45,7 @@ class TestTabElement extends TabElement {
 
 describe(`[${TabElement.name}]`, () => {
   describe('[constructor]', () => {
-    it('should create a tab element with the default parameters if no configuration is given', () => {
+    it('should create a tab element with the default options if no custom options are given', () => {
       const tabElement = new TestTabElement();
 
       expect(tabElement.filler).toBe(TestTabElement.DEFAULT_FILLER);
@@ -145,7 +145,7 @@ describe(`[${TabElement.name}]`, () => {
   });
 
   describe('[isNoteInStringsRange]', () => {
-    it('should return true if the note string is in tab element rows range', () => {
+    it('should return true if the note string is in the tab element rows range', () => {
       const numberOfRows = 1;
       const tabElement = new TestTabElement({ numberOfRows });
       const note = new Note(1, '0');

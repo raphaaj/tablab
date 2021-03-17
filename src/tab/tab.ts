@@ -1,6 +1,6 @@
-import { TabElement, TabElementConfig } from './tab-element';
-import { Note } from './note';
+import { TabElement, TabElementOptions } from './tab-element';
 import { TabBlock } from './tab-block';
+import { Note } from './note';
 
 export class Tab extends TabElement {
   readonly blocks: TabElement[];
@@ -9,8 +9,8 @@ export class Tab extends TabElement {
     return this.blocks[this.blocks.length - 1];
   }
 
-  constructor(tabConfig: TabElementConfig = {}) {
-    super(tabConfig);
+  constructor(options?: TabElementOptions) {
+    super(options);
     this.blocks = [];
 
     this.addBlock();

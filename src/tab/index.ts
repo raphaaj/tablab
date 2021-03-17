@@ -1,4 +1,4 @@
-export * from './tab-element';
-export * from './tab-block';
-export * from './tab';
-export * from './note';
+export { TabElementOptions, TabElement } from './tab-element';
+export { Tab } from './tab';
+export { TabBlock } from './tab-block';
+export { Note } from './note';

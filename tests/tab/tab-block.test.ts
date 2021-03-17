@@ -3,7 +3,7 @@ import { Note } from '../../src/tab/note';
 
 describe(`[${TabBlock.name}]`, () => {
   describe('[constructor]', () => {
-    it('should create a tab block with the default parameters if no configuration is given', () => {
+    it('should create a tab block with the default options if no custom options are given', () => {
       const tabBlock = new TabBlock();
 
       expect(tabBlock.filler).toBe(TabBlock.DEFAULT_FILLER);
@@ -11,6 +11,28 @@ describe(`[${TabBlock.name}]`, () => {
       expect(tabBlock.sectionFiller).toBe(TabBlock.DEFAULT_SECTION_FILLER);
       expect(tabBlock.sectionSymbol).toBe(TabBlock.DEFAULT_SECTION_SYMBOL);
       expect(tabBlock.spacing).toBe(TabBlock.DEFAULT_SPACING);
+    });
+
+    it('should create a tab block with the given options', () => {
+      const filler = '@';
+      const numberOfRows = 2;
+      const sectionFiller = '$';
+      const sectionSymbol = '#';
+      const spacing = 1;
+
+      const tabBlock = new TabBlock({
+        filler,
+        numberOfRows,
+        sectionFiller,
+        sectionSymbol,
+        spacing,
+      });
+
+      expect(tabBlock.filler).toBe(filler);
+      expect(tabBlock.numberOfRows).toBe(numberOfRows);
+      expect(tabBlock.sectionFiller).toBe(sectionFiller);
+      expect(tabBlock.sectionSymbol).toBe(sectionSymbol);
+      expect(tabBlock.spacing).toBe(spacing);
     });
 
     it('should initialize the block header section', () => {

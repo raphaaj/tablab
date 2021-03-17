@@ -1,10 +1,10 @@
 import { EnclosuresHelper } from '../helpers/enclosures-helper';
 import { StringHelper } from '../helpers/string-helper';
-import { InstructionMethodIdentifier } from '../instruction/enums/instruction-method-identifier';
-import { MethodResult } from './method-result';
-import { ParserResult } from './parser-result';
+import { MethodInstructionIdentifier } from '../instruction/enums/method-instruction-identifier';
+import { ParsedInstruction, ParsedInstructionData } from './parsed-instruction';
+import { ParsedMethodInstruction } from './parsed-method-instruction';
 
-export interface ParserConfig {
+export interface ParserOptions {
   instructionsSeparator?: string;
   methodInstructionAlias2IdentifierMap?: Record<string, string>;
   methodInstructionArgsOpeningEnclosure?: string;
@@ -15,12 +15,12 @@ export interface ParserConfig {
 export class Parser {
   static readonly DEFAULT_INSTRUCTIONS_SEPARATOR = ' ';
   static readonly DEFAULT_METHOD_INSTRUCTION_ALIAS_2_IDENTIFIER_MAP: Record<string, string> = {
-    break: InstructionMethodIdentifier.Break,
-    footer: InstructionMethodIdentifier.WriteFooter,
-    header: InstructionMethodIdentifier.WriteHeader,
-    merge: InstructionMethodIdentifier.Merge,
-    repeat: InstructionMethodIdentifier.Repeat,
-    spacing: InstructionMethodIdentifier.SetSpacing,
+    break: MethodInstructionIdentifier.Break,
+    footer: MethodInstructionIdentifier.WriteFooter,
+    header: MethodInstructionIdentifier.WriteHeader,
+    merge: MethodInstructionIdentifier.Merge,
+    repeat: MethodInstructionIdentifier.Repeat,
+    spacing: MethodInstructionIdentifier.SetSpacing,
   };
   static readonly DEFAULT_METHOD_INSTRUCTION_ARGS_OPENING_ENCLOSURE = '(';
   static readonly DEFAULT_METHOD_INSTRUCTION_ARGS_SEPARATOR = ',';
@@ -91,7 +91,7 @@ export class Parser {
     methodInstructionArgsSeparator,
     methodInstructionArgsOpeningEnclosure,
     methodInstructionTargetsOpeningEnclosure,
-  }: ParserConfig = {}) {
+  }: ParserOptions = {}) {
     if (instructionsSeparator !== undefined) this.instructionsSeparator = instructionsSeparator;
 
     if (methodInstructionAlias2IdentifierMap !== undefined)
@@ -107,41 +107,47 @@ export class Parser {
       this.methodInstructionTargetsOpeningEnclosure = methodInstructionTargetsOpeningEnclosure;
   }
 
-  parseAll(instructions: string, startIndexReference = 0): ParserResult[] {
-    const results: ParserResult[] = [];
+  parseAll(instructions: string, startIndexReference = 0): ParsedInstructionData[] {
+    const parsedInstructions: ParsedInstruction[] = [];
 
     let startIndex = 0;
-    let result = null;
+    let parsedInstruction: ParsedInstructionData | null = null;
     do {
-      result = this._parseNextInstruction(instructions, startIndex, startIndexReference);
+      parsedInstruction = this._parseNextInstruction(instructions, startIndex, startIndexReference);
 
-      if (result !== null) {
-        results.push(result);
-        startIndex = result.readToIndex + 1 - startIndexReference;
+      if (parsedInstruction !== null) {
+        parsedInstructions.push(parsedInstruction);
+        startIndex = parsedInstruction.readToIndex + 1 - startIndexReference;
       }
-    } while (result !== null);
+    } while (parsedInstruction !== null);
 
-    return results;
+    return parsedInstructions;
   }
 
-  async parseAllAsync(instrucions: string): Promise<ParserResult[]> {
+  async parseAllAsync(
+    instrucions: string,
+    startIndexReference?: number
+  ): Promise<ParsedInstructionData[]> {
     return new Promise((resolve, reject) => {
       try {
-        resolve(this.parseAll(instrucions));
+        resolve(this.parseAll(instrucions, startIndexReference));
       } catch (ex) {
         reject(ex);
       }
     });
   }
 
-  parseOne(instruction: string, startIndexReference = 0): ParserResult | null {
+  parseOne(instruction: string, startIndexReference = 0): ParsedInstructionData | null {
     return this._parseNextInstruction(instruction, 0, startIndexReference);
   }
 
-  async parseOneAsync(instruction: string): Promise<ParserResult | null> {
+  async parseOneAsync(
+    instruction: string,
+    startIndexReference?: number
+  ): Promise<ParsedInstructionData | null> {
     return new Promise((resolve, reject) => {
       try {
-        resolve(this.parseOne(instruction));
+        resolve(this.parseOne(instruction, startIndexReference));
       } catch (ex) {
         reject(ex);
       }
@@ -225,34 +231,34 @@ export class Parser {
     return endOfInstructionIndex;
   }
 
-  private _getMethodResult(
-    parsedInstruction: string,
-    parsedInstructionStartIndex: number
-  ): MethodResult | null {
+  private _getMethodInstruction(
+    instruction: string,
+    instructionStartIndex: number
+  ): ParsedMethodInstruction | null {
     let result = null;
 
-    const methodAlias = MethodResult.extractMethodAlias(parsedInstruction);
+    const methodAlias = ParsedMethodInstruction.extractMethodAlias(instruction);
     if (methodAlias) {
-      const methodArguments = MethodResult.extractMethodArguments(
-        parsedInstruction,
+      const methodArguments = ParsedMethodInstruction.extractMethodArguments(
+        instruction,
         this.methodInstructionArgsOpeningEnclosure,
         this.methodInstructionArgsSeparator
       );
 
-      const methodTargetExtractionResult = MethodResult.extractMethodTarget(
-        parsedInstruction,
+      const methodTargetData = ParsedMethodInstruction.extractMethodTarget(
+        instruction,
         this.methodInstructionTargetsOpeningEnclosure
       );
 
-      let methodTargets: ParserResult[] = [];
-      if (methodTargetExtractionResult) {
+      let methodTargets: ParsedInstruction[] = [];
+      if (methodTargetData) {
         methodTargets = this.parseAll(
-          methodTargetExtractionResult.target,
-          parsedInstructionStartIndex + methodTargetExtractionResult.indexAtInstruction
+          methodTargetData.target,
+          instructionStartIndex + methodTargetData.readFromIndex
         );
       }
 
-      result = new MethodResult({
+      result = new ParsedMethodInstruction({
         alias: methodAlias,
         args: methodArguments,
         identifier: this.methodInstructionAlias2IdentifierMap[methodAlias],
@@ -267,7 +273,7 @@ export class Parser {
     instructions: string,
     fromIndex: number,
     fromIndexReference: number
-  ): ParserResult | null {
+  ): ParsedInstruction | null {
     if (fromIndex > instructions.length - 1) return null;
 
     const instructionStartIndex = StringHelper.getIndexOfDifferent(
@@ -279,20 +285,18 @@ export class Parser {
 
     const instructionEndIndex = this._getIndexOfInstructionEnd(instructions, instructionStartIndex);
 
-    const parsedInstruction = instructions
-      .slice(instructionStartIndex, instructionEndIndex + 1)
-      .trim();
+    const instruction = instructions.slice(instructionStartIndex, instructionEndIndex + 1).trim();
 
     const instructionGlobalStartIndex = instructionStartIndex + fromIndexReference;
     const instructionGlobalEndIndex = instructionEndIndex + fromIndexReference;
 
-    const methodResult = this._getMethodResult(parsedInstruction, instructionGlobalStartIndex);
+    const method = this._getMethodInstruction(instruction, instructionGlobalStartIndex);
 
-    return new ParserResult({
-      value: parsedInstruction,
+    return new ParsedInstruction({
+      value: instruction,
       readFromIndex: instructionGlobalStartIndex,
       readToIndex: instructionGlobalEndIndex,
-      methodResult,
+      method,
     });
   }
 }

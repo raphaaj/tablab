@@ -1,10 +1,17 @@
 import { Parser } from '../../src/parser/parser';
+import { ParsedInstructionData } from '../../src/parser/parsed-instruction';
+import { ParsedMethodInstructionData } from '../../src/parser/parsed-method-instruction';
+
+const globalIndexReference = 5;
+
+let parser: Parser;
+beforeEach(() => {
+  parser = new Parser();
+});
 
 describe(`[${Parser.name}]`, () => {
   describe('[constructor]', () => {
     it('should create a parser with the default parameters if no configuration is given', () => {
-      const parser = new Parser();
-
       expect(parser.instructionsSeparator).toBe(Parser.DEFAULT_INSTRUCTIONS_SEPARATOR);
       expect(parser.methodInstructionAlias2IdentifierMap).toBe(
         Parser.DEFAULT_METHOD_INSTRUCTION_ALIAS_2_IDENTIFIER_MAP
@@ -20,28 +27,28 @@ describe(`[${Parser.name}]`, () => {
       );
     });
 
-    it('should set instructionsSeparator if one is set at instantiation', () => {
+    it('should set the instructionsSeparator if one is set at instantiation', () => {
       const instructionsSeparator = '@';
       const parser = new Parser({ instructionsSeparator });
 
       expect(parser.instructionsSeparator).toBe(instructionsSeparator);
     });
 
-    it('should set methodInstructionAlias2IdentifierMap if one is set at instantiation', () => {
+    it('should set the methodInstructionAlias2IdentifierMap if one is set at instantiation', () => {
       const alias2IdentifierMap: Record<string, string> = {};
       const parser = new Parser({ methodInstructionAlias2IdentifierMap: alias2IdentifierMap });
 
       expect(parser.methodInstructionAlias2IdentifierMap).toBe(alias2IdentifierMap);
     });
 
-    it('should set methodInstructionArgsSeparator if one is set at instantiation', () => {
+    it('should set the methodInstructionArgsSeparator if one is set at instantiation', () => {
       const methodInstructionArgsSeparator = '|';
       const parser = new Parser({ methodInstructionArgsSeparator });
 
       expect(parser.methodInstructionArgsSeparator).toBe(methodInstructionArgsSeparator);
     });
 
-    it('should set methodInstructionArgsOpeningEnclosure if one is set at instantiation', () => {
+    it('should set the methodInstructionArgsOpeningEnclosure if one is set at instantiation', () => {
       const methodInstructionArgsOpeningEnclosure = '<';
       const parser = new Parser({ methodInstructionArgsOpeningEnclosure });
 
@@ -50,7 +57,7 @@ describe(`[${Parser.name}]`, () => {
       );
     });
 
-    it('should set methodInstructionTargetsOpeningEnclosure if one is set at instantiation', () => {
+    it('should set the methodInstructionTargetsOpeningEnclosure if one is set at instantiation', () => {
       const methodInstructionTargetsOpeningEnclosure = '[';
       const parser = new Parser({ methodInstructionTargetsOpeningEnclosure });
 
@@ -61,306 +68,429 @@ describe(`[${Parser.name}]`, () => {
   });
 
   describe('[properties]', () => {
-    it('should set instructionsSeparator', () => {
-      const instructionsSeparator = '@';
-      const parser = new Parser();
+    describe('[instructionsSeparator]', () => {
+      it('should set the instructionsSeparator property', () => {
+        const instructionsSeparator = '@';
 
-      parser.instructionsSeparator = instructionsSeparator;
+        parser.instructionsSeparator = instructionsSeparator;
 
-      expect(parser.instructionsSeparator).toBe(instructionsSeparator);
+        expect(parser.instructionsSeparator).toBe(instructionsSeparator);
+      });
+
+      it('should throw if the instructionsSeparator is set to a non single character string', () => {
+        const instructionsSeparator = '@@';
+
+        expect(() => (parser.instructionsSeparator = instructionsSeparator)).toThrow();
+      });
     });
 
-    it('should set methodInstructionArgsSeparator', () => {
-      const methodInstructionArgsSeparator = '|';
-      const parser = new Parser();
+    describe('[methodInstructionArgsSeparator]', () => {
+      it('should set the methodInstructionArgsSeparator property', () => {
+        const methodInstructionArgsSeparator = '|';
 
-      parser.methodInstructionArgsSeparator = methodInstructionArgsSeparator;
+        parser.methodInstructionArgsSeparator = methodInstructionArgsSeparator;
 
-      expect(parser.methodInstructionArgsSeparator).toBe(methodInstructionArgsSeparator);
+        expect(parser.methodInstructionArgsSeparator).toBe(methodInstructionArgsSeparator);
+      });
+
+      it('should throw if the methodInstructionArgsSeparator is set to a non single character string', () => {
+        const methodInstructionArgsSeparator = '||';
+
+        expect(
+          () => (parser.methodInstructionArgsSeparator = methodInstructionArgsSeparator)
+        ).toThrow();
+      });
     });
 
-    it('should set methodInstructionArgsOpeningEnclosure', () => {
-      const methodInstructionArgsOpeningEnclosure = '<';
-      const parser = new Parser();
+    describe('[methodInstructionArgsOpeningEnclosure]', () => {
+      it('should set the methodInstructionArgsOpeningEnclosure property', () => {
+        const methodInstructionArgsOpeningEnclosure = '<';
 
-      parser.methodInstructionArgsOpeningEnclosure = methodInstructionArgsOpeningEnclosure;
+        parser.methodInstructionArgsOpeningEnclosure = methodInstructionArgsOpeningEnclosure;
 
-      expect(parser.methodInstructionArgsOpeningEnclosure).toBe(
-        methodInstructionArgsOpeningEnclosure
-      );
+        expect(parser.methodInstructionArgsOpeningEnclosure).toBe(
+          methodInstructionArgsOpeningEnclosure
+        );
+      });
+
+      it('should throw if methodInstructionArgsOpeningEnclosure is set to an invalid opening enclosure', () => {
+        const methodInstructionArgsOpeningEnclosure = '%';
+
+        expect(
+          () =>
+            (parser.methodInstructionArgsOpeningEnclosure = methodInstructionArgsOpeningEnclosure)
+        ).toThrow();
+      });
     });
 
-    it('should set methodInstructionTargetsOpeningEnclosure', () => {
-      const methodInstructionTargetsOpeningEnclosure = '[';
-      const parser = new Parser();
+    describe('[methodInstructionTargetsOpeningEnclosure]', () => {
+      it('should set the methodInstructionTargetsOpeningEnclosure property', () => {
+        const methodInstructionTargetsOpeningEnclosure = '[';
 
-      parser.methodInstructionTargetsOpeningEnclosure = methodInstructionTargetsOpeningEnclosure;
+        parser.methodInstructionTargetsOpeningEnclosure = methodInstructionTargetsOpeningEnclosure;
 
-      expect(parser.methodInstructionTargetsOpeningEnclosure).toBe(
-        methodInstructionTargetsOpeningEnclosure
-      );
-    });
+        expect(parser.methodInstructionTargetsOpeningEnclosure).toBe(
+          methodInstructionTargetsOpeningEnclosure
+        );
+      });
 
-    it('should throw if instructionsSeparator is set to a non single character string', () => {
-      const instructionsSeparator = '@@';
-      const parser = new Parser();
+      it('should throw if methodInstructionTargetsOpeningEnclosure is set to an invalid opening enclosure', () => {
+        const methodInstructionTargetsOpeningEnclosure = '%';
 
-      expect(() => (parser.instructionsSeparator = instructionsSeparator)).toThrow();
-    });
-
-    it('should throw if methodInstructionArgsSeparator is set to a non single character string', () => {
-      const methodInstructionArgsSeparator = '||';
-      const parser = new Parser();
-
-      expect(
-        () => (parser.methodInstructionArgsSeparator = methodInstructionArgsSeparator)
-      ).toThrow();
-    });
-
-    it('should throw if methodInstructionArgsOpeningEnclosure is set to an invalid opening enclosure', () => {
-      const methodInstructionArgsOpeningEnclosure = '%';
-      const parser = new Parser();
-
-      expect(
-        () => (parser.methodInstructionArgsOpeningEnclosure = methodInstructionArgsOpeningEnclosure)
-      ).toThrow();
-    });
-
-    it('should throw if methodInstructionTargetsOpeningEnclosure is set to an invalid opening enclosure', () => {
-      const methodInstructionTargetsOpeningEnclosure = '%';
-      const parser = new Parser();
-
-      expect(
-        () =>
-          (parser.methodInstructionTargetsOpeningEnclosure = methodInstructionTargetsOpeningEnclosure)
-      ).toThrow();
+        expect(
+          () =>
+            (parser.methodInstructionTargetsOpeningEnclosure = methodInstructionTargetsOpeningEnclosure)
+        ).toThrow();
+      });
     });
   });
 
-  describe('[parseOne]', () => {
-    it('should return a null result if the given instruction string is empty', () => {
-      const instruction = '     ';
-      const parser = new Parser();
+  describe('[parse single instruction]', () => {
+    const nonMethodInstruction = '1-0';
 
-      const parserResult = parser.parseOne(instruction);
+    const getExpectedParsedNonMethodInstruction = (): ParsedInstructionData => {
+      return {
+        method: null,
+        value: nonMethodInstruction,
+        readFromIndex: 0,
+        readToIndex: nonMethodInstruction.length - 1,
+      };
+    };
 
-      expect(parserResult).toBeNull();
-    });
+    describe('[parseOne]', () => {
+      it('should parse no instructions if the given instruction string is empty, returning null', () => {
+        const instruction = '     ';
 
-    it('should parse a instruction with enclosures as a single instruction', () => {
-      const instruction = 'instr(arg1, arg2)[arg1, arg2]{arg1, arg2}<arg1, arg3>';
-      const parser = new Parser();
+        const parsedInstruction = parser.parseOne(instruction);
 
-      const parserResult = parser.parseOne(instruction);
-
-      expect(parserResult?.value).toBe(instruction);
-    });
-
-    it('should parse a instruction with enclosures as a single instruction, even with spaces between', () => {
-      const instruction =
-        '  instr1  (  arg1  ,  arg2  )  [  arg1  ,  arg2  ]  {  arg1  ,  arg2  }  <  arg1  ,  arg2  >  ';
-      const parser = new Parser();
-
-      const parserResult = parser.parseOne(instruction);
-
-      expect(parserResult?.value).toBe(instruction.trim());
-    });
-
-    it('should parse a instruction with no matching closing enclosure to the end of the instruction string', () => {
-      const instruction = 'instr2(arg1, arg2[arg1, arg2]{arg1, arg2}<arg1, arg2>';
-      const parser = new Parser();
-
-      const parserResult = parser.parseOne(instruction);
-
-      expect(parserResult?.value).toBe(instruction);
-    });
-
-    it('should parse a instruction with no matching closing enclosure to the end of the instruction string, even with spaces between', () => {
-      const instruction = '  instr1  (  arg1  ,  arg2  )  [  arg1  ,  arg2  ]  {  arg1  ,  arg2  ';
-      const parser = new Parser();
-
-      const parserResult = parser.parseOne(instruction);
-
-      expect(parserResult?.value).toBe(instruction.trim());
-    });
-
-    it('should read the instruction arguments', () => {
-      const methodInstructionArgsSeparator = '|';
-      const methodInstructionArgsOpeningEnclosure = '<';
-
-      const args = ['1', '1.11', 'some text input'];
-      const instruction = `instr<${args.join(methodInstructionArgsSeparator)}>`;
-      const parser = new Parser({
-        methodInstructionArgsSeparator,
-        methodInstructionArgsOpeningEnclosure,
+        expect(parsedInstruction).toBeNull();
       });
 
-      const parserResult = parser.parseOne(instruction);
+      it('should parse one instruction with the default index reference if none is provided', () => {
+        const expectedParsedInstruction = getExpectedParsedNonMethodInstruction();
 
-      expect(parserResult?.method?.args).toEqual(args);
-    });
+        const parsedInstruction = parser.parseOne(nonMethodInstruction);
 
-    it('should read the instruction arguments, even with spaces', () => {
-      const methodInstructionArgsSeparator = '|';
-      const methodInstructionArgsOpeningEnclosure = '<';
-
-      const args = ['1', '1.11', 'some text input'];
-      const instruction = `  instr  <  ${args.join(`  ${methodInstructionArgsSeparator}  `)}  >  `;
-      const parser = new Parser({
-        methodInstructionArgsSeparator,
-        methodInstructionArgsOpeningEnclosure,
+        expect(parsedInstruction).toEqual(expectedParsedInstruction);
       });
 
-      const parserResult = parser.parseOne(instruction);
+      it('should parse one instruction with the given index reference when provided', () => {
+        const expectedParsedInstruction = getExpectedParsedNonMethodInstruction();
 
-      expect(parserResult?.method?.args).toEqual(args);
-    });
+        expectedParsedInstruction.readFromIndex += globalIndexReference;
+        expectedParsedInstruction.readToIndex += globalIndexReference;
 
-    it('should read the instruction targets', () => {
-      const methodInstructionTargetsOpeningEnclosure = '[';
+        const parsedInstruction = parser.parseOne(nonMethodInstruction, globalIndexReference);
 
-      const targets = ['1-2', '2-3'];
-      const instruction = `instr[${targets.join(' ')}]`;
-      const parser = new Parser({
-        methodInstructionTargetsOpeningEnclosure,
+        expect(parsedInstruction).toEqual(expectedParsedInstruction);
       });
 
-      const parserResult = parser.parseOne(instruction);
-      const resultTargetValues = parserResult?.method?.targets?.map((target) => target.value);
+      it('should parse a method instruction with enclosures as a single instruction', () => {
+        const instruction = 'instr(arg1, arg2)[arg1, arg2]{arg1, arg2}<arg1, arg3>';
 
-      expect(resultTargetValues).toEqual(targets);
-    });
+        const parsedInstruction = parser.parseOne(instruction);
 
-    it('should read the instruction targets, even with spaces', () => {
-      const methodInstructionTargetsOpeningEnclosure = '[';
-
-      const targets = ['1-2', '2-3'];
-      const instruction = `  instr  [  ${targets.join('  ')}  ]  `;
-      const parser = new Parser({
-        methodInstructionTargetsOpeningEnclosure,
+        expect(parsedInstruction?.value).toBe(instruction);
       });
 
-      const parserResult = parser.parseOne(instruction);
-      const resultTargetValues = parserResult?.method?.targets?.map((target) => target.value);
+      it('should parse a method instruction with enclosures as a single instruction, even with spaces between', () => {
+        const instruction =
+          '  instr  (  arg1  ,  arg2  )  [  arg1  ,  arg2  ]  {  arg1  ,  arg2  }  <  arg1  ,  arg2  >  ';
 
-      expect(resultTargetValues).toEqual(targets);
-    });
+        const parsedInstruction = parser.parseOne(instruction);
 
-    it('should keep inner targets positions at the global reference', () => {
-      const innerTargets = ['6-1', '6-2'];
-      const target = `instr{${innerTargets.join(' ')}}`;
-      const instruction = `instr{${target}}`;
-      const parser = new Parser();
+        expect(parsedInstruction?.value).toBe(instruction.trim());
+      });
 
-      const parserResult = parser.parseOne(instruction);
-      const resultTargets = parserResult?.method?.targets;
-      const resultInnerTargets = resultTargets ? resultTargets[0]?.method?.targets : null;
+      it('should parse a method instruction with no matching closing enclosure to the end of the instruction string', () => {
+        const instruction = 'instr(arg1, arg2[arg1, arg2]{arg1, arg2}<arg1, arg2>';
 
-      expect(resultInnerTargets).not.toBeNull();
-      expect(resultInnerTargets).toBeDefined();
-      if (resultInnerTargets) {
-        innerTargets.forEach((target, idx) => {
-          expect(resultInnerTargets[idx].value).toBe(target);
-          expect(resultInnerTargets[idx].readFromIndex).toBe(instruction.indexOf(target));
-          expect(resultInnerTargets[idx].readToIndex).toBe(
-            instruction.indexOf(target) + target.length - 1
-          );
+        const parsedInstruction = parser.parseOne(instruction);
+
+        expect(parsedInstruction?.value).toBe(instruction);
+      });
+
+      it('should parse a method instruction with no matching closing enclosure to the end of the instruction string, even with spaces between', () => {
+        const instruction = '  instr  (  arg1  ,  arg2  )  [  arg1  ,  arg2  ]  {  arg1  ,  arg2  ';
+
+        const parsedInstruction = parser.parseOne(instruction);
+
+        expect(parsedInstruction?.value).toBe(instruction.trim());
+      });
+
+      it('should parse the alias of a method instruction and set the method identifier when found', () => {
+        const alias = 'doSomethingElse';
+        const instruction = ` ${alias} `;
+        const aliasIdentifier = 'doThis';
+
+        const parser = new Parser({
+          methodInstructionAlias2IdentifierMap: { [alias]: aliasIdentifier },
         });
-      }
-    });
 
-    it('should keep inner targets positions at the global reference, even with spaces', () => {
-      const innerTargets = ['6-1', '6-2'];
-      const target = `  instr  {  ${innerTargets.join('  ')}  }  `;
-      const instruction = `  instr  {  ${target}  }  `;
-      const parser = new Parser();
+        const parsedInstruction = parser.parseOne(instruction);
 
-      const parserResult = parser.parseOne(instruction);
-      const resultTargets = parserResult?.method?.targets;
-      const resultInnerTargets = resultTargets ? resultTargets[0]?.method?.targets : null;
+        expect(parsedInstruction?.method?.alias).toBe(alias);
+        expect(parsedInstruction?.method?.identifier).toBe(aliasIdentifier);
+      });
 
-      expect(resultInnerTargets).not.toBeNull();
-      expect(resultInnerTargets).toBeDefined();
-      if (resultInnerTargets) {
-        innerTargets.forEach((target, idx) => {
-          expect(resultInnerTargets[idx].value).toBe(target);
-          expect(resultInnerTargets[idx].readFromIndex).toBe(instruction.indexOf(target));
-          expect(resultInnerTargets[idx].readToIndex).toBe(
-            instruction.indexOf(target) + target.length - 1
-          );
+      it('should parse the alias of a method instruction and set the method identifier to null if not found', () => {
+        const alias = 'doSomethingElse';
+        const instruction = ` ${alias} `;
+
+        const parser = new Parser({
+          methodInstructionAlias2IdentifierMap: {},
         });
-      }
-    });
-  });
 
-  describe('[parseOneAsync]', () => {
-    it('should resolve with parseOne result on success', async () => {
-      const instructions = ' someInstruction ';
-      const expectedResult = 'someResult';
-      const parser = new Parser();
-      parser.parseOne = jest.fn().mockResolvedValue(expectedResult);
+        const parsedInstruction = parser.parseOne(instruction);
 
-      const result = await parser.parseOneAsync(instructions);
-
-      expect(parser.parseOne).toHaveBeenCalledWith(instructions);
-      expect(result).toBe(expectedResult);
-    });
-
-    it('should reject if an error occurs', async () => {
-      expect.assertions(2);
-
-      const instructions = ' someInstruction ';
-      const expectedError = new Error('test');
-      const parser = new Parser();
-      parser.parseOne = jest.fn(() => {
-        throw expectedError;
+        expect(parsedInstruction?.method?.alias).toBe(alias);
+        expect(parsedInstruction?.method?.identifier).toBe(null);
       });
 
-      await expect(parser.parseOneAsync(instructions)).rejects.toBe(expectedError);
-      expect(parser.parseOne).toHaveBeenCalledWith(instructions);
-    });
-  });
+      it('should parse the arguments of a method instruction when available', () => {
+        const methodInstructionArgsSeparator = '|';
+        const methodInstructionArgsOpeningEnclosure = '<';
+        const args = ['1', '1.11', 'some text argument'];
+        const instruction = `instr<${args.join(methodInstructionArgsSeparator)}>`;
 
-  describe(`[parseAll]`, () => {
-    it('should parse all instructions from the instructions string', () => {
-      const instruction1 = ' instr1 ( 1 , 2 ) { 1-1 1-2 1-3 } ';
-      const instruction2 = ' instr2 ( someArg1, someArg2 ) { someOtherInstr } ';
-      const instructions = ` ${instruction1} ${instruction2} `;
-      const parser = new Parser();
+        const parser = new Parser({
+          methodInstructionArgsSeparator,
+          methodInstructionArgsOpeningEnclosure,
+        });
 
-      const parserResult = parser.parseAll(instructions);
+        const parsedInstruction = parser.parseOne(instruction);
 
-      expect(parserResult.length).toBe(2);
-      expect(parserResult[0].value).toBe(instruction1.trim());
-      expect(parserResult[1].value).toBe(instruction2.trim());
-    });
-  });
-
-  describe('[parseAllAsync]', () => {
-    it('should resolve with parseAll result on success', async () => {
-      const instructions = ' someInstruction ';
-      const expectedResult = 'someResult';
-      const parser = new Parser();
-      parser.parseAll = jest.fn().mockResolvedValue(expectedResult);
-
-      const result = await parser.parseAllAsync(instructions);
-
-      expect(parser.parseAll).toHaveBeenCalledWith(instructions);
-      expect(result).toBe(expectedResult);
-    });
-
-    it('should reject if an error occurs', async () => {
-      expect.assertions(2);
-
-      const instructions = ' someInstruction ';
-      const expectedError = new Error('test');
-      const parser = new Parser();
-      parser.parseAll = jest.fn(() => {
-        throw expectedError;
+        expect(parsedInstruction?.method?.args).toEqual(args);
       });
 
-      await expect(parser.parseAllAsync(instructions)).rejects.toBe(expectedError);
-      expect(parser.parseAll).toHaveBeenCalledWith(instructions);
+      it('should parse the arguments of a method instruction when available, even with spaces', () => {
+        const methodInstructionArgsSeparator = '|';
+        const methodInstructionArgsOpeningEnclosure = '<';
+        const args = ['1', '1.11', 'some text input'];
+        const instruction = `  instr  <  ${args.join(
+          `  ${methodInstructionArgsSeparator}  `
+        )}  >  `;
+
+        const parser = new Parser({
+          methodInstructionArgsSeparator,
+          methodInstructionArgsOpeningEnclosure,
+        });
+
+        const parsedInstruction = parser.parseOne(instruction);
+
+        expect(parsedInstruction?.method?.args).toEqual(args);
+      });
+
+      it('should parse the arguments of a method instruction as an empty array when not available', () => {
+        const args: string[] = [];
+        const instruction = 'instr';
+
+        const parsedInstruction = parser.parseOne(instruction);
+
+        expect(parsedInstruction?.method?.args).toEqual(args);
+      });
+
+      it('should parse the targets of a method instruction when available', () => {
+        const methodInstructionTargetsOpeningEnclosure = '[';
+
+        const targets = ['1-2', '2-3'];
+        const instruction = `instr[${targets.join(' ')}]`;
+        const parser = new Parser({
+          methodInstructionTargetsOpeningEnclosure,
+        });
+
+        const parsedInstruction = parser.parseOne(instruction);
+        const parsedTargets = parsedInstruction?.method?.targets?.map((target) => target.value);
+
+        expect(parsedTargets).toEqual(targets);
+      });
+
+      it('should parse the targets of a method instruction when available, even with spaces', () => {
+        const methodInstructionTargetsOpeningEnclosure = '[';
+
+        const targets = ['1-2', '2-3'];
+        const instruction = `  instr  [  ${targets.join('  ')}  ]  `;
+        const parser = new Parser({
+          methodInstructionTargetsOpeningEnclosure,
+        });
+
+        const parsedInstruction = parser.parseOne(instruction);
+        const parsedTargets = parsedInstruction?.method?.targets?.map((target) => target.value);
+
+        expect(parsedTargets).toEqual(targets);
+      });
+
+      it('should parse the targets of a method instruction as an empty array when not available', () => {
+        const targets: ParsedInstructionData[] = [];
+        const instruction = 'instr';
+
+        const parsedInstruction = parser.parseOne(instruction);
+
+        expect(parsedInstruction?.method?.targets).toEqual(targets);
+      });
+
+      it('should keep the method instruction targets positions at the global reference', () => {
+        const innerTargets = ['6-1', '6-2'];
+        const target = `instr{${innerTargets.join(' ')}}`;
+        const instruction = `instr{${target}}`;
+
+        const parsedInstruction = parser.parseOne(instruction);
+        const parsedTargets = parsedInstruction?.method?.targets;
+        const parsedInnerTargets = parsedTargets ? parsedTargets[0]?.method?.targets : null;
+
+        expect(parsedInnerTargets).not.toBeNull();
+        expect(parsedInnerTargets).toBeDefined();
+        if (parsedInnerTargets) {
+          innerTargets.forEach((target, idx) => {
+            expect(parsedInnerTargets[idx].value).toBe(target);
+            expect(parsedInnerTargets[idx].readFromIndex).toBe(instruction.indexOf(target));
+            expect(parsedInnerTargets[idx].readToIndex).toBe(
+              instruction.indexOf(target) + target.length - 1
+            );
+          });
+        }
+      });
+
+      it('should keep the method instruction targets positions at the global reference, even with spaces', () => {
+        const innerTargets = ['6-1', '6-2'];
+        const target = `  instr  {  ${innerTargets.join('  ')}  }  `;
+        const instruction = `  instr  {  ${target}  }  `;
+
+        const parsedInstruction = parser.parseOne(instruction);
+        const parsedTargets = parsedInstruction?.method?.targets;
+        const parsedInnerTargets = parsedTargets ? parsedTargets[0]?.method?.targets : null;
+
+        expect(parsedInnerTargets).not.toBeNull();
+        expect(parsedInnerTargets).toBeDefined();
+        if (parsedInnerTargets) {
+          innerTargets.forEach((target, idx) => {
+            expect(parsedInnerTargets[idx].value).toBe(target);
+            expect(parsedInnerTargets[idx].readFromIndex).toBe(instruction.indexOf(target));
+            expect(parsedInnerTargets[idx].readToIndex).toBe(
+              instruction.indexOf(target) + target.length - 1
+            );
+          });
+        }
+      });
+    });
+
+    describe('[parseOneAsync]', () => {
+      it('should parse one instrunction asynchronously with the default index reference if none is provided', async () => {
+        const instructions = '   ';
+
+        parser.parseOne = jest.fn();
+        await parser.parseOneAsync(instructions);
+
+        expect(parser.parseOne).toHaveBeenCalledWith(instructions, undefined);
+      });
+
+      it('should parse one instrunction asynchronously with the given index reference when provided', async () => {
+        const instructions = '   ';
+
+        parser.parseOne = jest.fn();
+        await parser.parseOneAsync(instructions, globalIndexReference);
+
+        expect(parser.parseOne).toHaveBeenCalledWith(instructions, globalIndexReference);
+      });
+
+      it('should reject if an error occurs while parsing the instruction', async () => {
+        const parseError = new Error();
+
+        parser.parseOne = jest.fn(() => {
+          throw parseError;
+        });
+
+        await expect(parser.parseOneAsync('')).rejects.toBe(parseError);
+      });
+    });
+  });
+
+  describe('[parse multiple instructions]', () => {
+    const instruction1 = '1-0';
+    const instruction2 = 'methodInstruction(arg1, arg2)';
+    const instructions = ` ${instruction1} ${instruction2} `;
+
+    const getExpectedParsedInstruction1 = (): ParsedInstructionData => {
+      const instruction1StartIndexAtInstructions = instructions.indexOf(instruction1);
+
+      return {
+        method: null,
+        value: instruction1,
+        readFromIndex: instruction1StartIndexAtInstructions,
+        readToIndex: instruction1StartIndexAtInstructions + instruction1.length - 1,
+      };
+    };
+
+    const getExpectedParsedInstruction2 = (): ParsedInstructionData => {
+      const instruction2StartIndexAtInstructions = instructions.indexOf(instruction2);
+
+      return {
+        method: {
+          alias: 'methodInstruction',
+          args: ['arg1', 'arg2'],
+          identifier: null,
+          targets: [],
+        } as ParsedMethodInstructionData,
+        value: instruction2,
+        readFromIndex: instruction2StartIndexAtInstructions,
+        readToIndex: instruction2StartIndexAtInstructions + instruction2.length - 1,
+      };
+    };
+
+    describe(`[parseAll]`, () => {
+      it('should parse all instructions from the given instructions string with the default index reference if none is provided', () => {
+        const expectedParsedInstruction1 = getExpectedParsedInstruction1();
+        const expectedParsedInstruction2 = getExpectedParsedInstruction2();
+
+        const parsedInstructions = parser.parseAll(instructions);
+
+        expect(parsedInstructions.length).toBe(2);
+        expect(parsedInstructions[0]).toEqual(expectedParsedInstruction1);
+        expect(parsedInstructions[1]).toEqual(expectedParsedInstruction2);
+      });
+
+      it('should parse all instructions from the given instructions string with the given index reference when provided', () => {
+        const expectedParsedInstruction1 = getExpectedParsedInstruction1();
+        const expectedParsedInstruction2 = getExpectedParsedInstruction2();
+
+        expectedParsedInstruction1.readFromIndex += globalIndexReference;
+        expectedParsedInstruction1.readToIndex += globalIndexReference;
+        expectedParsedInstruction2.readFromIndex += globalIndexReference;
+        expectedParsedInstruction2.readToIndex += globalIndexReference;
+
+        const parsedInstructions = parser.parseAll(instructions, globalIndexReference);
+
+        expect(parsedInstructions.length).toBe(2);
+
+        expect(parsedInstructions[0]).toEqual(expectedParsedInstruction1);
+        expect(parsedInstructions[1]).toEqual(expectedParsedInstruction2);
+      });
+    });
+
+    describe('[parseAllAsync]', () => {
+      it('should parse all instructions asynchronously with the default index reference if none is provided', async () => {
+        parser.parseAll = jest.fn();
+        await parser.parseAllAsync(instructions);
+
+        expect(parser.parseAll).toHaveBeenCalledWith(instructions, undefined);
+      });
+
+      it('should parse all instructions asynchronously with the given index reference when provided', async () => {
+        parser.parseAll = jest.fn();
+        await parser.parseAllAsync(instructions, globalIndexReference);
+
+        expect(parser.parseAll).toHaveBeenCalledWith(instructions, globalIndexReference);
+      });
+
+      it('should reject if an error occurs while parsing the instructions', async () => {
+        const parseError = new Error();
+
+        parser.parseAll = jest.fn(() => {
+          throw parseError;
+        });
+
+        await expect(parser.parseAllAsync('')).rejects.toBe(parseError);
+      });
     });
   });
 });

@@ -1,5 +1,5 @@
 import { InstructionFactory } from '../../../src/instruction/factories/instruction-factory';
-import { InstructionMethodIdentifier } from '../../../src/instruction/enums/instruction-method-identifier';
+import { MethodInstructionIdentifier } from '../../../src/instruction/enums/method-instruction-identifier';
 import { InvalidInstruction } from '../../../src/instruction/core/invalid-instruction';
 import { InvalidInstructionReason } from '../../../src/instruction/enums/invalid-instruction-reason';
 import { BreakInstruction } from '../../../src/instruction/instructions/break-instruction';
@@ -11,32 +11,33 @@ import { WriteHeaderInstruction } from '../../../src/instruction/instructions/wr
 
 describe(`[${InstructionFactory.name}]`, () => {
   describe('[constructor]', () => {
-    it('should use the default instruction methods if not specified', () => {
+    it('should enable the default method instructions if not specified', () => {
       const factory = new InstructionFactory();
 
-      expect(factory.instructionMethodIdentifiersEnabled).toEqual(
+      expect(factory.methodInstructionIdentifiersEnabled).toEqual(
         InstructionFactory.DEFAULT_METHODS_TO_USE
       );
     });
 
-    it('should use the given instruction methods when specified', () => {
-      const instructionMethodsToUse = [
-        InstructionMethodIdentifier.WriteHeader,
-        InstructionMethodIdentifier.WriteFooter,
+    it('should enable only the given method instructions when specified', () => {
+      const methodInstructionsToUse = [
+        MethodInstructionIdentifier.WriteHeader,
+        MethodInstructionIdentifier.WriteFooter,
       ];
-      const factory = new InstructionFactory({ useMethods: instructionMethodsToUse });
 
-      expect(factory.instructionMethodIdentifiersEnabled).toEqual(instructionMethodsToUse);
+      const factory = new InstructionFactory({ useMethods: methodInstructionsToUse });
+
+      expect(factory.methodInstructionIdentifiersEnabled).toEqual(methodInstructionsToUse);
     });
   });
 
-  describe(`[instruction method: ${InstructionMethodIdentifier.Break}]`, () => {
+  describe(`[instruction method: ${MethodInstructionIdentifier.Break}]`, () => {
     it('should return a break instruction', () => {
       const factory = new InstructionFactory();
 
       const instructionData = {
-        value: InstructionMethodIdentifier.Break.toLowerCase(),
-        method: { args: [], targets: [], identifier: InstructionMethodIdentifier.Break },
+        value: MethodInstructionIdentifier.Break.toLowerCase(),
+        method: { args: [], targets: [], identifier: MethodInstructionIdentifier.Break },
       };
 
       const instruction = factory.getInstruction(instructionData);
@@ -45,13 +46,13 @@ describe(`[${InstructionFactory.name}]`, () => {
     });
   });
 
-  describe(`[instruction method: ${InstructionMethodIdentifier.Merge}]`, () => {
+  describe(`[instruction method: ${MethodInstructionIdentifier.Merge}]`, () => {
     it('should return an invalid instruction when no targets are given', () => {
       const factory = new InstructionFactory();
 
       const instructionData = {
-        value: InstructionMethodIdentifier.Merge.toLowerCase(),
-        method: { args: [], targets: [], identifier: InstructionMethodIdentifier.Merge },
+        value: MethodInstructionIdentifier.Merge.toLowerCase(),
+        method: { args: [], targets: [], identifier: MethodInstructionIdentifier.Merge },
       };
 
       const instruction = factory.getInstruction(instructionData);
@@ -66,20 +67,20 @@ describe(`[${InstructionFactory.name}]`, () => {
       const factory = new InstructionFactory();
 
       const targetData = {
-        value: InstructionMethodIdentifier.Break.toLowerCase(),
+        value: MethodInstructionIdentifier.Break.toLowerCase(),
         method: {
           args: [],
           targets: [],
-          identifier: InstructionMethodIdentifier.Break,
+          identifier: MethodInstructionIdentifier.Break,
         },
       };
 
       const instructionData = {
-        value: `${InstructionMethodIdentifier.Merge.toLowerCase()} { ${targetData.value} }`,
+        value: `${MethodInstructionIdentifier.Merge.toLowerCase()} { ${targetData.value} }`,
         method: {
           args: [],
           targets: [targetData],
-          identifier: InstructionMethodIdentifier.Merge,
+          identifier: MethodInstructionIdentifier.Merge,
         },
       };
 
@@ -97,11 +98,11 @@ describe(`[${InstructionFactory.name}]`, () => {
       const targetData = { value: 'unknown', method: null };
 
       const instructionData = {
-        value: `${InstructionMethodIdentifier.Merge.toLowerCase()} { ${targetData.value} }`,
+        value: `${MethodInstructionIdentifier.Merge.toLowerCase()} { ${targetData.value} }`,
         method: {
           args: [],
           targets: [targetData],
-          identifier: InstructionMethodIdentifier.Merge,
+          identifier: MethodInstructionIdentifier.Merge,
         },
       };
 
@@ -122,13 +123,13 @@ describe(`[${InstructionFactory.name}]`, () => {
       const targetsData = [targetData, targetData];
 
       const instructionData = {
-        value: `${InstructionMethodIdentifier.Merge.toLowerCase()} { ${targetsData
+        value: `${MethodInstructionIdentifier.Merge.toLowerCase()} { ${targetsData
           .map((targetData) => targetData.value)
           .join(' ')} }`,
         method: {
           args: [],
           targets: targetsData,
-          identifier: InstructionMethodIdentifier.Merge,
+          identifier: MethodInstructionIdentifier.Merge,
         },
       };
 
@@ -146,11 +147,11 @@ describe(`[${InstructionFactory.name}]`, () => {
       const targetData = { value: '1-0', method: null };
 
       const instructionData = {
-        value: `${InstructionMethodIdentifier.Merge.toLowerCase()} { ${targetData.value} }`,
+        value: `${MethodInstructionIdentifier.Merge.toLowerCase()} { ${targetData.value} }`,
         method: {
           args: [],
           targets: [targetData],
-          identifier: InstructionMethodIdentifier.Merge,
+          identifier: MethodInstructionIdentifier.Merge,
         },
       };
 
@@ -162,13 +163,13 @@ describe(`[${InstructionFactory.name}]`, () => {
     });
   });
 
-  describe(`[instruction method: ${InstructionMethodIdentifier.Repeat}]`, () => {
+  describe(`[instruction method: ${MethodInstructionIdentifier.Repeat}]`, () => {
     it('should return an invalid instruction when no arguments are given', () => {
       const factory = new InstructionFactory();
 
       const instructionData = {
-        value: InstructionMethodIdentifier.Repeat.toLowerCase(),
-        method: { args: [], targets: [], identifier: InstructionMethodIdentifier.Repeat },
+        value: MethodInstructionIdentifier.Repeat.toLowerCase(),
+        method: { args: [], targets: [], identifier: MethodInstructionIdentifier.Repeat },
       };
 
       const instruction = factory.getInstruction(instructionData);
@@ -184,11 +185,11 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const args = ['arg1', 'arg2'];
       const instructionData = {
-        value: `${InstructionMethodIdentifier.Repeat.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.Repeat.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: InstructionMethodIdentifier.Repeat,
+          identifier: MethodInstructionIdentifier.Repeat,
         },
       };
 
@@ -205,11 +206,11 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const args = ['arg1'];
       const instructionData = {
-        value: `${InstructionMethodIdentifier.Repeat.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.Repeat.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: InstructionMethodIdentifier.Repeat,
+          identifier: MethodInstructionIdentifier.Repeat,
         },
       };
 
@@ -226,11 +227,11 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const args = ['0'];
       const instructionData = {
-        value: `${InstructionMethodIdentifier.Repeat.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.Repeat.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: InstructionMethodIdentifier.Repeat,
+          identifier: MethodInstructionIdentifier.Repeat,
         },
       };
 
@@ -247,8 +248,8 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const args = ['1'];
       const instructionData = {
-        value: `${InstructionMethodIdentifier.Repeat.toLowerCase()} (${args.join(', ')})`,
-        method: { args: args, targets: [], identifier: InstructionMethodIdentifier.Repeat },
+        value: `${MethodInstructionIdentifier.Repeat.toLowerCase()} (${args.join(', ')})`,
+        method: { args: args, targets: [], identifier: MethodInstructionIdentifier.Repeat },
       };
 
       const instruction = factory.getInstruction(instructionData);
@@ -269,13 +270,13 @@ describe(`[${InstructionFactory.name}]`, () => {
         method: null,
       };
       const instructionData = {
-        value: `${InstructionMethodIdentifier.Repeat.toLowerCase()} (${args.join(', ')}) {${
+        value: `${MethodInstructionIdentifier.Repeat.toLowerCase()} (${args.join(', ')}) {${
           targetData.value
         }}`,
         method: {
           args: args,
           targets: [targetData],
-          identifier: InstructionMethodIdentifier.Repeat,
+          identifier: MethodInstructionIdentifier.Repeat,
         },
       };
 
@@ -288,13 +289,13 @@ describe(`[${InstructionFactory.name}]`, () => {
     });
   });
 
-  describe(`[instruction method: ${InstructionMethodIdentifier.SetSpacing}]`, () => {
+  describe(`[instruction method: ${MethodInstructionIdentifier.SetSpacing}]`, () => {
     it('should return an invalid instruction when no arguments are given', () => {
       const factory = new InstructionFactory();
 
       const instructionData = {
-        value: InstructionMethodIdentifier.SetSpacing.toLowerCase(),
-        method: { args: [], targets: [], identifier: InstructionMethodIdentifier.SetSpacing },
+        value: MethodInstructionIdentifier.SetSpacing.toLowerCase(),
+        method: { args: [], targets: [], identifier: MethodInstructionIdentifier.SetSpacing },
       };
 
       const instruction = factory.getInstruction(instructionData);
@@ -310,11 +311,11 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const args = ['arg1', 'arg2'];
       const instructionData = {
-        value: `${InstructionMethodIdentifier.SetSpacing.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.SetSpacing.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: InstructionMethodIdentifier.SetSpacing,
+          identifier: MethodInstructionIdentifier.SetSpacing,
         },
       };
 
@@ -331,11 +332,11 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const args = ['arg1'];
       const instructionData = {
-        value: `${InstructionMethodIdentifier.SetSpacing.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.SetSpacing.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: InstructionMethodIdentifier.SetSpacing,
+          identifier: MethodInstructionIdentifier.SetSpacing,
         },
       };
 
@@ -352,11 +353,11 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const args = ['0'];
       const instructionData = {
-        value: `${InstructionMethodIdentifier.SetSpacing.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.SetSpacing.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: InstructionMethodIdentifier.SetSpacing,
+          identifier: MethodInstructionIdentifier.SetSpacing,
         },
       };
 
@@ -374,11 +375,11 @@ describe(`[${InstructionFactory.name}]`, () => {
       const spacing = 2;
       const args = [spacing.toString()];
       const instructionData = {
-        value: `${InstructionMethodIdentifier.SetSpacing.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.SetSpacing.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: InstructionMethodIdentifier.SetSpacing,
+          identifier: MethodInstructionIdentifier.SetSpacing,
         },
       };
 
@@ -389,13 +390,13 @@ describe(`[${InstructionFactory.name}]`, () => {
     });
   });
 
-  describe(`[instruction method: ${InstructionMethodIdentifier.WriteFooter}]`, () => {
+  describe(`[instruction method: ${MethodInstructionIdentifier.WriteFooter}]`, () => {
     it('should return an invalid instruction when no arguments are given', () => {
       const factory = new InstructionFactory();
 
       const instructionData = {
-        value: InstructionMethodIdentifier.WriteFooter.toLowerCase(),
-        method: { args: [], targets: [], identifier: InstructionMethodIdentifier.WriteFooter },
+        value: MethodInstructionIdentifier.WriteFooter.toLowerCase(),
+        method: { args: [], targets: [], identifier: MethodInstructionIdentifier.WriteFooter },
       };
 
       const instruction = factory.getInstruction(instructionData);
@@ -411,11 +412,11 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const args = ['arg1', 'arg2'];
       const instructionData = {
-        value: `${InstructionMethodIdentifier.WriteFooter.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.WriteFooter.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: InstructionMethodIdentifier.WriteFooter,
+          identifier: MethodInstructionIdentifier.WriteFooter,
         },
       };
 
@@ -432,11 +433,11 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const args = ['   '];
       const instructionData = {
-        value: `${InstructionMethodIdentifier.WriteFooter.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.WriteFooter.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: InstructionMethodIdentifier.WriteFooter,
+          identifier: MethodInstructionIdentifier.WriteFooter,
         },
       };
 
@@ -454,11 +455,11 @@ describe(`[${InstructionFactory.name}]`, () => {
       const footer = 'test footer';
       const args = [footer];
       const instructionData = {
-        value: `${InstructionMethodIdentifier.WriteFooter.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.WriteFooter.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: InstructionMethodIdentifier.WriteFooter,
+          identifier: MethodInstructionIdentifier.WriteFooter,
         },
       };
 
@@ -469,13 +470,13 @@ describe(`[${InstructionFactory.name}]`, () => {
     });
   });
 
-  describe(`[instruction method: ${InstructionMethodIdentifier.WriteHeader}]`, () => {
+  describe(`[instruction method: ${MethodInstructionIdentifier.WriteHeader}]`, () => {
     it('should return an invalid instruction when no arguments are given', () => {
       const factory = new InstructionFactory();
 
       const instructionData = {
-        value: InstructionMethodIdentifier.WriteHeader.toLowerCase(),
-        method: { args: [], targets: [], identifier: InstructionMethodIdentifier.WriteHeader },
+        value: MethodInstructionIdentifier.WriteHeader.toLowerCase(),
+        method: { args: [], targets: [], identifier: MethodInstructionIdentifier.WriteHeader },
       };
 
       const instruction = factory.getInstruction(instructionData);
@@ -491,11 +492,11 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const args = ['arg1', 'arg2'];
       const instructionData = {
-        value: `${InstructionMethodIdentifier.WriteHeader.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.WriteHeader.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: InstructionMethodIdentifier.WriteHeader,
+          identifier: MethodInstructionIdentifier.WriteHeader,
         },
       };
 
@@ -512,11 +513,11 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const args = ['   '];
       const instructionData = {
-        value: `${InstructionMethodIdentifier.WriteHeader.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.WriteHeader.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: InstructionMethodIdentifier.WriteHeader,
+          identifier: MethodInstructionIdentifier.WriteHeader,
         },
       };
 
@@ -534,11 +535,11 @@ describe(`[${InstructionFactory.name}]`, () => {
       const header = 'test header';
       const args = [header];
       const instructionData = {
-        value: `${InstructionMethodIdentifier.WriteHeader.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.WriteHeader.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: InstructionMethodIdentifier.WriteHeader,
+          identifier: MethodInstructionIdentifier.WriteHeader,
         },
       };
 

@@ -3,7 +3,7 @@ import { Note } from '../../src/tab/note';
 
 describe(`[${Tab.name}]`, () => {
   describe('[constructor]', () => {
-    it('should create a tab with the default parameters if no configuration is given', () => {
+    it('should create a tab with the default parameters if no custom options are given', () => {
       const tab = new Tab();
 
       expect(tab.filler).toBe(Tab.DEFAULT_FILLER);
@@ -13,7 +13,7 @@ describe(`[${Tab.name}]`, () => {
       expect(tab.spacing).toBe(Tab.DEFAULT_SPACING);
     });
 
-    it('should create a tab with the given parameters when available', () => {
+    it('should create a tab with the given options', () => {
       const filler = '@';
       const numberOfRows = 2;
       const sectionFiller = '$';
@@ -35,7 +35,7 @@ describe(`[${Tab.name}]`, () => {
       expect(tab.spacing).toBe(spacing);
     });
 
-    it('should create a tab block with the default parameters if no configuration is given', () => {
+    it('should create an initial tab block with the default options if no custom options are given', () => {
       const tab = new Tab();
 
       expect(tab.blocks.length).toBe(1);
@@ -46,7 +46,7 @@ describe(`[${Tab.name}]`, () => {
       expect(tab.blocks[0].spacing).toBe(Tab.DEFAULT_SPACING);
     });
 
-    it('should create a tab block with the given parameters when available', () => {
+    it('should create an initial tab block with the given options', () => {
       const filler = '@';
       const numberOfRows = 2;
       const sectionFiller = '$';
@@ -108,7 +108,7 @@ describe(`[${Tab.name}]`, () => {
   });
 
   describe('[format]', () => {
-    it('should return the blocks formatted', () => {
+    it('should return all tab blocks formatted', () => {
       const blockLength = 50;
       const tab = new Tab();
 

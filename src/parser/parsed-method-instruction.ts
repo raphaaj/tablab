@@ -1,20 +1,20 @@
 import { EnclosuresHelper } from '../helpers/enclosures-helper';
-import { ParserResult } from './parser-result';
-import { InstructionMethodData } from '../instruction/core/instruction-factory-base';
+import { ParsedInstructionData } from './parsed-instruction';
+import { MethodInstructionData } from '../instruction/core/instruction-factory-base';
 
-export type TargetExtractionResult = {
-  indexAtInstruction: number;
+export type MethodTargetExtractionResult = {
+  readFromIndex: number;
   target: string;
 };
 
-export type MethodResultData = {
+export interface ParsedMethodInstructionData {
   alias: string;
   args: string[];
-  identifier: string | null;
-  targets: ParserResult[];
-};
+  identifier?: string | null;
+  targets: ParsedInstructionData[];
+}
 
-export class MethodResult {
+export class ParsedMethodInstruction implements ParsedMethodInstructionData, MethodInstructionData {
   static extractMethodAlias(instruction: string): string | null {
     const extractionRegexp = /^([a-z]+)(?!-)/i;
     const extractionResult = extractionRegexp.exec(instruction);
@@ -48,7 +48,7 @@ export class MethodResult {
   static extractMethodTarget(
     instruction: string,
     targetsOpeningEnclosure: string
-  ): TargetExtractionResult | null {
+  ): MethodTargetExtractionResult | null {
     const indexOfTargetsOpeningEnclosure = instruction.indexOf(targetsOpeningEnclosure);
     if (indexOfTargetsOpeningEnclosure < 0) return null;
 
@@ -57,26 +57,18 @@ export class MethodResult {
       indexOfTargetsOpeningEnclosure
     );
 
-    return { target: methodTarget, indexAtInstruction: instruction.indexOf(methodTarget) };
+    return { target: methodTarget, readFromIndex: instruction.indexOf(methodTarget) };
   }
 
   alias: string;
   args: string[];
   identifier: string | null;
-  targets: ParserResult[];
+  targets: ParsedInstructionData[];
 
-  constructor({ alias, args, identifier, targets }: MethodResultData) {
+  constructor({ alias, args, identifier, targets }: ParsedMethodInstructionData) {
     this.alias = alias;
     this.args = args;
     this.identifier = identifier || null;
     this.targets = targets;
-  }
-
-  asInstructionMethodData(): InstructionMethodData {
-    return {
-      args: this.args,
-      identifier: this.identifier,
-      targets: this.targets.map((target) => target.asInstructionData()),
-    };
   }
 }

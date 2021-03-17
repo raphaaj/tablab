@@ -3,7 +3,7 @@ import { InstructionBase } from '../../../src/instruction/core/instruction-base'
 import {
   ArgumentNumberValidation,
   ArgumentsValidation,
-  InstructionBuilder,
+  MethodInstructionBuilder,
   InstructionFactoryBase,
   TargetsValidation,
 } from '../../../src/instruction/core/instruction-factory-base';
@@ -20,12 +20,15 @@ class TestInstruction extends InstructionBase {
 }
 
 class TestInstructionFactoryBase extends InstructionFactoryBase {
-  protected instructionMethodIdentifier2InstructionBuilderMap: Record<string, InstructionBuilder>;
+  protected methodInstructionIdentifier2InstructionBuilderMap: Record<
+    string,
+    MethodInstructionBuilder
+  >;
 
   constructor() {
     super();
 
-    this.instructionMethodIdentifier2InstructionBuilderMap = {
+    this.methodInstructionIdentifier2InstructionBuilderMap = {
       [TEST_METHOD_IDENTIFIER]: this.buildTestInstruction.bind(this),
     };
   }
@@ -53,18 +56,18 @@ class TestInstructionFactoryBase extends InstructionFactoryBase {
 
 describe(`[${InstructionFactoryBase.name}]`, () => {
   describe('[properties]', () => {
-    describe('[instructionMethodIdentifiersEnabled]', () => {
-      it('should return an array with all the instruction method idenfiers with a instruction builder set at the factory', () => {
+    describe('[methodInstructionIdentifiersEnabled]', () => {
+      it('should return an array with all the method instructions identifiers with a instruction builder set at the factory', () => {
         const factory = new TestInstructionFactoryBase();
 
-        expect(factory.instructionMethodIdentifiersEnabled).toEqual([TEST_METHOD_IDENTIFIER]);
+        expect(factory.methodInstructionIdentifiersEnabled).toEqual([TEST_METHOD_IDENTIFIER]);
       });
     });
   });
 
   describe('[getInstruction]', () => {
     describe('[method instruction]', () => {
-      it('should return an invalid instruction if no method identifier is set', () => {
+      it('should return an invalid instruction if the method instruction identifier is not set', () => {
         const factory = new TestInstructionFactoryBase();
 
         const instruction = factory.getInstruction({
@@ -78,7 +81,7 @@ describe(`[${InstructionFactoryBase.name}]`, () => {
         );
       });
 
-      it('should return an invalid instruction if no instruction builder is found for the given method identifier', () => {
+      it('should return an invalid instruction if unable to get a method instruction builder from the method identifier', () => {
         const factory = new TestInstructionFactoryBase();
 
         const instruction = factory.getInstruction({
@@ -92,7 +95,7 @@ describe(`[${InstructionFactoryBase.name}]`, () => {
         );
       });
 
-      it('should return the instruction created with the instruction builder mapped for the given method identifier', () => {
+      it('should return the instruction created with the method instruction builder mapped from the method identifier in the factory', () => {
         const factory = new TestInstructionFactoryBase();
 
         const instruction = factory.getInstruction({

@@ -1,4 +1,4 @@
-export enum InstructionMethodIdentifier {
+export enum MethodInstructionIdentifier {
   Break = 'BREAK',
   Merge = 'MERGE',
   Repeat = 'REPEAT',

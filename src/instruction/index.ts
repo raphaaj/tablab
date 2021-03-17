@@ -1,19 +1,41 @@
-export * from './core/instruction-base';
-export * from './core/mergeable-instruction-base';
-export * from './core/instruction-factory-base';
-export * from './core/instruction-write-result';
-export * from './core/invalid-instruction';
-export * from './core/write-note-instruction';
-export * from './core/enums/invalid-instruction-base-reason';
+export {
+  InstructionData,
+  MethodInstructionData,
+  MethodInstructionBuilder,
+  InstructionFactoryBase,
+  ArgumentsMinNumberValidation,
+  ArgumentsMaxNumberValidation,
+  ArgumentsValidation,
+  ArgumentNumberMinValueValidation,
+  ArgumentNumberMaxValueValidation,
+  ArgumentNumberValidation,
+  TargetsMinNumberValidation,
+  TargetsMaxNumberValidation,
+  TargetsValidation,
+} from './core/instruction-factory-base';
 
-export * from './enums/invalid-instruction-reason';
-export * from './enums/instruction-method-identifier';
+export { InstructionFactoryOptions, InstructionFactory } from './factories/instruction-factory';
 
-export * from './factories/instruction-factory';
+export {
+  InstructionWriteResultData,
+  InstructionWriteResult,
+  SuccessInstructionWriteResult,
+  FailedInstructionWriteResult,
+} from './core/instruction-write-result';
 
-export * from './instructions/break-instruction';
-export * from './instructions/merge-instruction';
-export * from './instructions/repeat-instruction';
-export * from './instructions/set-spacing-instruction';
-export * from './instructions/write-footer-instruction';
-export * from './instructions/write-header-instruction';
+export { InvalidInstructionBaseReason } from './core/enums/invalid-instruction-base-reason';
+export { InvalidInstructionReason } from './enums/invalid-instruction-reason';
+
+export { MethodInstructionIdentifier } from './enums/method-instruction-identifier';
+
+export { InstructionBase } from './core/instruction-base';
+export { MergeableInstructionBase } from './core/mergeable-instruction-base';
+
+export { InvalidInstruction } from './core/invalid-instruction';
+export { WriteNoteInstruction } from './core/write-note-instruction';
+export { BreakInstruction } from './instructions/break-instruction';
+export { MergeInstruction } from './instructions/merge-instruction';
+export { RepeatInstruction } from './instructions/repeat-instruction';
+export { SetSpacingInstruction } from './instructions/set-spacing-instruction';
+export { WriteFooterInstruction } from './instructions/write-footer-instruction';
+export { WriteHeaderInstruction } from './instructions/write-header-instruction';

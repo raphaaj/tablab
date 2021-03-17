@@ -1,8 +1,8 @@
-import { InstructionMethodIdentifier } from '../enums/instruction-method-identifier';
+import { MethodInstructionIdentifier } from '../enums/method-instruction-identifier';
 import {
   InstructionFactoryBase,
-  InstructionBuilder,
-  InstructionMethodData,
+  MethodInstructionBuilder,
+  MethodInstructionData,
   InstructionData,
 } from '../core/instruction-factory-base';
 import {
@@ -19,56 +19,59 @@ import { SetSpacingInstruction } from '../instructions/set-spacing-instruction';
 import { WriteFooterInstruction } from '../instructions/write-footer-instruction';
 import { WriteHeaderInstruction } from '../instructions/write-header-instruction';
 
-export type InstructionFactoryData = {
-  useMethods?: InstructionMethodIdentifier[];
+export type InstructionFactoryOptions = {
+  useMethods?: MethodInstructionIdentifier[];
 };
 
 export class InstructionFactory extends InstructionFactoryBase {
   static readonly DEFAULT_METHODS_TO_USE = [
-    InstructionMethodIdentifier.Break,
-    InstructionMethodIdentifier.Merge,
-    InstructionMethodIdentifier.Repeat,
-    InstructionMethodIdentifier.SetSpacing,
-    InstructionMethodIdentifier.WriteHeader,
-    InstructionMethodIdentifier.WriteFooter,
+    MethodInstructionIdentifier.Break,
+    MethodInstructionIdentifier.Merge,
+    MethodInstructionIdentifier.Repeat,
+    MethodInstructionIdentifier.SetSpacing,
+    MethodInstructionIdentifier.WriteHeader,
+    MethodInstructionIdentifier.WriteFooter,
   ];
 
-  private static _getDefaultInstructionBuilderMap(
+  private static _getDefaultMethodInstructionBuilderMap(
     context: InstructionFactory
-  ): Record<InstructionMethodIdentifier, InstructionBuilder> {
+  ): Record<MethodInstructionIdentifier, MethodInstructionBuilder> {
     return {
-      [InstructionMethodIdentifier.Break]: context.buildBreakInstruction.bind(context),
-      [InstructionMethodIdentifier.Merge]: context.buildMergeInstruction.bind(context),
-      [InstructionMethodIdentifier.Repeat]: context.buildRepeatInstruction.bind(context),
-      [InstructionMethodIdentifier.SetSpacing]: context.buildSetSpacingInstruction.bind(context),
-      [InstructionMethodIdentifier.WriteHeader]: context.buildWriteHeaderInstruction.bind(context),
-      [InstructionMethodIdentifier.WriteFooter]: context.buildWriteFooterInstruction.bind(context),
+      [MethodInstructionIdentifier.Break]: context.buildBreakInstruction.bind(context),
+      [MethodInstructionIdentifier.Merge]: context.buildMergeInstruction.bind(context),
+      [MethodInstructionIdentifier.Repeat]: context.buildRepeatInstruction.bind(context),
+      [MethodInstructionIdentifier.SetSpacing]: context.buildSetSpacingInstruction.bind(context),
+      [MethodInstructionIdentifier.WriteHeader]: context.buildWriteHeaderInstruction.bind(context),
+      [MethodInstructionIdentifier.WriteFooter]: context.buildWriteFooterInstruction.bind(context),
     };
   }
 
-  private static _getInstructionBuilderMap(
+  private static _getMethodInstructionBuilderMap(
     context: InstructionFactory,
-    methodsToUse: InstructionMethodIdentifier[]
-  ): Record<string, InstructionBuilder> {
-    const defaultBuilderMap = InstructionFactory._getDefaultInstructionBuilderMap(context);
+    methodsToUse: MethodInstructionIdentifier[]
+  ): Record<string, MethodInstructionBuilder> {
+    const defaultBuilderMap = InstructionFactory._getDefaultMethodInstructionBuilderMap(context);
 
     const builderMap = methodsToUse.reduce((builderMap, methodIdentifier) => {
       builderMap[methodIdentifier] = defaultBuilderMap[methodIdentifier];
 
       return builderMap;
-    }, {} as Record<string, InstructionBuilder>);
+    }, {} as Record<string, MethodInstructionBuilder>);
 
     return builderMap;
   }
 
-  protected instructionMethodIdentifier2InstructionBuilderMap: Record<string, InstructionBuilder>;
+  protected methodInstructionIdentifier2InstructionBuilderMap: Record<
+    string,
+    MethodInstructionBuilder
+  >;
 
-  constructor({ useMethods }: InstructionFactoryData = {}) {
+  constructor({ useMethods }: InstructionFactoryOptions = {}) {
     super();
 
     const methodsToUse = useMethods || InstructionFactory.DEFAULT_METHODS_TO_USE;
 
-    this.instructionMethodIdentifier2InstructionBuilderMap = InstructionFactory._getInstructionBuilderMap(
+    this.methodInstructionIdentifier2InstructionBuilderMap = InstructionFactory._getMethodInstructionBuilderMap(
       this,
       methodsToUse
     );
@@ -78,7 +81,7 @@ export class InstructionFactory extends InstructionFactoryBase {
     return new BreakInstruction();
   }
 
-  protected buildMergeInstruction(methodData: InstructionMethodData): InstructionBase {
+  protected buildMergeInstruction(methodData: MethodInstructionData): InstructionBase {
     const invalidTargets = this._validateMergeInstructionTargets(methodData.targets);
     if (invalidTargets) return invalidTargets;
 
@@ -92,7 +95,7 @@ export class InstructionFactory extends InstructionFactoryBase {
     return new MergeInstruction(instructionsToMerge as MergeableInstructionBase[]);
   }
 
-  protected buildRepeatInstruction(methodData: InstructionMethodData): InstructionBase {
+  protected buildRepeatInstruction(methodData: MethodInstructionData): InstructionBase {
     const invalidArguments = this._validateRepeatInstructionArguments(methodData.args);
     if (invalidArguments) return invalidArguments;
 
@@ -107,7 +110,7 @@ export class InstructionFactory extends InstructionFactoryBase {
     return new RepeatInstruction(instructionsToRepeat, repetitions);
   }
 
-  protected buildSetSpacingInstruction(methodData: InstructionMethodData): InstructionBase {
+  protected buildSetSpacingInstruction(methodData: MethodInstructionData): InstructionBase {
     const invalidArguments = this._validateSetSpacingInstructionArguments(methodData.args);
     if (invalidArguments) return invalidArguments;
 
@@ -115,7 +118,7 @@ export class InstructionFactory extends InstructionFactoryBase {
     return new SetSpacingInstruction(spacing);
   }
 
-  protected buildWriteFooterInstruction(methodData: InstructionMethodData): InstructionBase {
+  protected buildWriteFooterInstruction(methodData: MethodInstructionData): InstructionBase {
     const invalidArguments = this._validateWriteFooterInstructionArguments(methodData.args);
     if (invalidArguments) return invalidArguments;
 
@@ -123,7 +126,7 @@ export class InstructionFactory extends InstructionFactoryBase {
     return new WriteFooterInstruction(footer);
   }
 
-  protected buildWriteHeaderInstruction(methodData: InstructionMethodData): InstructionBase {
+  protected buildWriteHeaderInstruction(methodData: MethodInstructionData): InstructionBase {
     const invalidArguments = this._validateWriteHeaderInstructionArguments(methodData.args);
     if (invalidArguments) return invalidArguments;
 

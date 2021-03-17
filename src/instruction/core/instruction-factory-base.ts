@@ -8,14 +8,14 @@ import {
 import { Note } from '../../tab/note';
 import { WriteNoteInstruction } from './write-note-instruction';
 
-export type InstructionMethodData = {
+export type MethodInstructionData = {
   args: string[];
-  identifier: string | null;
+  identifier?: string | null;
   targets: InstructionData[];
 };
 
 export type InstructionData = {
-  method: InstructionMethodData | null;
+  method: MethodInstructionData | null;
   value: string;
 };
 
@@ -68,7 +68,9 @@ export type TargetsValidation = {
   targets: InstructionData[];
 };
 
-export type InstructionBuilder = (methodData: InstructionMethodData) => InstructionBase;
+export type MethodInstructionBuilder = (
+  methodInstructionData: MethodInstructionData
+) => InstructionBase;
 
 export abstract class InstructionFactoryBase {
   private static _extractNoteFromInstruction(instruction: string): Note | null {
@@ -77,19 +79,19 @@ export abstract class InstructionFactoryBase {
 
     if (!extractionResult) return null;
 
-    const noteString = Number(extractionResult[1]);
-    const noteFret = extractionResult[2];
+    const string = Number(extractionResult[1]);
+    const fret = extractionResult[2];
 
-    return new Note(noteString, noteFret);
+    return new Note(string, fret);
   }
 
-  get instructionMethodIdentifiersEnabled(): string[] {
-    return Object.keys(this.instructionMethodIdentifier2InstructionBuilderMap);
+  get methodInstructionIdentifiersEnabled(): string[] {
+    return Object.keys(this.methodInstructionIdentifier2InstructionBuilderMap);
   }
 
-  protected abstract instructionMethodIdentifier2InstructionBuilderMap: Record<
+  protected abstract methodInstructionIdentifier2InstructionBuilderMap: Record<
     string,
-    InstructionBuilder
+    MethodInstructionBuilder
   >;
 
   getInstruction(instructionData: InstructionData): InstructionBase {
@@ -184,22 +186,22 @@ export abstract class InstructionFactoryBase {
     return new WriteNoteInstruction(note);
   }
 
-  private _getInstructionFromMethodData(methodData: InstructionMethodData): InstructionBase {
+  private _getInstructionFromMethodData(methodData: MethodInstructionData): InstructionBase {
     if (!methodData.identifier)
       return this._buildInvalidInstructionBase(
         InvalidInstructionBaseReason.MethodInstructionWithoutIdentifier
       );
 
-    const buildInstruction = this.instructionMethodIdentifier2InstructionBuilderMap[
+    const buildMethodInstruction = this.methodInstructionIdentifier2InstructionBuilderMap[
       methodData.identifier
     ];
 
-    if (!buildInstruction)
+    if (!buildMethodInstruction)
       return this._buildInvalidInstructionBase(
         InvalidInstructionBaseReason.MethodInstructionWithUnmappedIdentifier
       );
 
-    return buildInstruction(methodData);
+    return buildMethodInstruction(methodData);
   }
 
   private _getInstructionFromValue(instructionValue: string): InstructionBase {

@@ -1,4 +1,4 @@
-import { TabElement, TabElementConfig } from './tab-element';
+import { TabElement, TabElementOptions } from './tab-element';
 import { StringHelper } from '../helpers/string-helper';
 import { Note } from './note';
 
@@ -47,8 +47,8 @@ export class TabBlock extends TabElement {
     return this._rows[0].length;
   }
 
-  constructor(tabBlockConfig: TabElementConfig = {}) {
-    super(tabBlockConfig);
+  constructor(options?: TabElementOptions) {
+    super(options);
 
     this._blockFooterIdx = this.numberOfRows + 1;
     this._blockHeaderIdx = 0;

@@ -1,6 +1,6 @@
 import { Note } from './note';
 
-export interface TabElementConfig {
+export interface TabElementOptions {
   filler?: string;
   numberOfRows?: number;
   sectionFiller?: string;
@@ -39,7 +39,7 @@ export abstract class TabElement {
     spacing,
     sectionSymbol,
     sectionFiller,
-  }: TabElementConfig = {}) {
+  }: TabElementOptions = {}) {
     if (numberOfRows === undefined) this.numberOfRows = TabElement.DEFAULT_NUMBER_OF_ROWS;
     else if (numberOfRows < 1)
       throw new Error(
