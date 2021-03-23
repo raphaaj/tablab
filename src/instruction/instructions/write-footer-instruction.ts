@@ -8,12 +8,21 @@ import {
 export class WriteFooterInstruction extends InstructionBase {
   readonly footer: string;
 
+  /**
+   * Creates a write footer instruction instance.
+   * @param footer - The footer to be written.
+   */
   constructor(footer: string) {
     super();
 
     this.footer = footer;
   }
 
+  /**
+   * Writes the `footer` to the tablature.
+   * @param tab - The tablature to write the footer.
+   * @returns The result of the writing operation.
+   */
   writeOnTab(tab: Tab): InstructionWriteResult {
     let result: InstructionWriteResult;
 

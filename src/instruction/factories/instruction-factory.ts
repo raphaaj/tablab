@@ -19,9 +19,19 @@ import { SetSpacingInstruction } from '../instructions/set-spacing-instruction';
 import { WriteFooterInstruction } from '../instructions/write-footer-instruction';
 import { WriteHeaderInstruction } from '../instructions/write-header-instruction';
 
-export type InstructionFactoryOptions = {
+/**
+ * The options to create an instruction factory.
+ */
+export interface InstructionFactoryOptions {
+  /**
+   * The instruction method identifiers that should be handled
+   * by the factory. Method instructions with identifiers not
+   * handled by the factory will result in the creation of invalid
+   * instructions.
+   * @defaultValue {@link InstructionFactory.DEFAULT_METHODS_TO_USE}
+   */
   useMethods?: MethodInstructionIdentifier[];
-};
+}
 
 export class InstructionFactory extends InstructionFactoryBase {
   static readonly DEFAULT_METHODS_TO_USE = [
@@ -66,8 +76,14 @@ export class InstructionFactory extends InstructionFactoryBase {
     MethodInstructionBuilder
   >;
 
-  constructor({ useMethods }: InstructionFactoryOptions = {}) {
+  /**
+   * Creates an instruction factory.
+   * @param options - The options used to create the instruction factory.
+   */
+  constructor(options: InstructionFactoryOptions = {}) {
     super();
+
+    const { useMethods } = options;
 
     const methodsToUse = useMethods || InstructionFactory.DEFAULT_METHODS_TO_USE;
 
@@ -77,10 +93,27 @@ export class InstructionFactory extends InstructionFactoryBase {
     );
   }
 
+  /**
+   * Creates a break instruction instance.
+   * @returns The created instruction instance.
+   *
+   * @see {@link BreakInstruction}
+   */
   protected buildBreakInstruction(): InstructionBase {
     return new BreakInstruction();
   }
 
+  /**
+   * Creates a merge instruction instance. It must have at least one target
+   * instruction, and all targets must result in mergeable instruction instances.
+   * There must be no set of target instruction instances sharing the same
+   * string value. If any of these conditions are not verified, an invalid
+   * instruction instance will be created instead.
+   * @param methodData - The method instruction data.
+   * @returns The created instruction instance.
+   *
+   * @see {@link MergeInstruction}
+   */
   protected buildMergeInstruction(methodData: MethodInstructionData): InstructionBase {
     const invalidTargets = this._validateMergeInstructionTargets(methodData.targets);
     if (invalidTargets) return invalidTargets;
@@ -95,6 +128,16 @@ export class InstructionFactory extends InstructionFactoryBase {
     return new MergeInstruction(instructionsToMerge as MergeableInstructionBase[]);
   }
 
+  /**
+   * Creates a repeat instruction instance. It must have one argument, the
+   * number of repetitions, which must be an integer number greater than 0.
+   * It must have at least one target instruction. If any of these conditions
+   * are not verified, an invalid instruction instance will be created instead.
+   * @param methodData - The method instruction data.
+   * @returns The created instruction instance.
+   *
+   * @see {@link RepeatInstruction}
+   */
   protected buildRepeatInstruction(methodData: MethodInstructionData): InstructionBase {
     const invalidArguments = this._validateRepeatInstructionArguments(methodData.args);
     if (invalidArguments) return invalidArguments;
@@ -110,6 +153,16 @@ export class InstructionFactory extends InstructionFactoryBase {
     return new RepeatInstruction(instructionsToRepeat, repetitions);
   }
 
+  /**
+   * Creates a set spacing instruction instance. It must have one argument,
+   * the new spacing value of the tablature element, which must be greater
+   * than 0. If any of these conditions are not verified, an invalid
+   * instruction instance will be created instead.
+   * @param methodData - The method instruction data.
+   * @returns The created instruction instance.
+   *
+   * @see {@link SetSpacingInstruction}
+   */
   protected buildSetSpacingInstruction(methodData: MethodInstructionData): InstructionBase {
     const invalidArguments = this._validateSetSpacingInstructionArguments(methodData.args);
     if (invalidArguments) return invalidArguments;
@@ -118,6 +171,16 @@ export class InstructionFactory extends InstructionFactoryBase {
     return new SetSpacingInstruction(spacing);
   }
 
+  /**
+   * Creates a write footer instruction instance. It must have one argument,
+   * the footer to write to the tablature element, which must be a non-empty
+   * string. If any of these conditions are not verified, an invalid instruction
+   * instance will be created instead.
+   * @param methodData - The method instruction data.
+   * @returns The created instruction instance.
+   *
+   * @see {@link WriteFooter}
+   */
   protected buildWriteFooterInstruction(methodData: MethodInstructionData): InstructionBase {
     const invalidArguments = this._validateWriteFooterInstructionArguments(methodData.args);
     if (invalidArguments) return invalidArguments;
@@ -126,6 +189,16 @@ export class InstructionFactory extends InstructionFactoryBase {
     return new WriteFooterInstruction(footer);
   }
 
+  /**
+   * Creates a write header instruction instance. It must have one argument,
+   * the header to write to the tablature element, which must be a non-empty
+   * string. If any of these conditions are not verified, an invalid instruction
+   * instance will be created instead.
+   * @param methodData - The method instruction data.
+   * @returns The created instruction instance.
+   *
+   * @see {@link WriteHeader}
+   */
   protected buildWriteHeaderInstruction(methodData: MethodInstructionData): InstructionBase {
     const invalidArguments = this._validateWriteHeaderInstructionArguments(methodData.args);
     if (invalidArguments) return invalidArguments;

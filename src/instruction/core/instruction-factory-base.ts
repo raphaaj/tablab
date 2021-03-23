@@ -8,63 +8,209 @@ import {
 import { Note } from '../../tab/note';
 import { WriteNoteInstruction } from './write-note-instruction';
 
-export type MethodInstructionData = {
+/**
+ * The method data of a method instruction.
+ */
+export interface MethodInstructionData {
+  /**
+   * The method instruction arguments.
+   */
   args: string[];
+
+  /**
+   * The method identifier.
+   */
   identifier?: string | null;
+
+  /**
+   * The method instruction targets.
+   */
   targets: InstructionData[];
-};
+}
 
-export type InstructionData = {
+/**
+ * The data of an instruction.
+ */
+export interface InstructionData {
+  /**
+   * The method data of the instruction.
+   */
   method: MethodInstructionData | null;
-  value: string;
-};
 
+  /**
+   * The instruction value.
+   */
+  value: string;
+}
+
+/**
+ * The options to perform a validation for a minimum number of arguments
+ * of a method instruction.
+ */
 export type ArgumentsMinNumberValidation = {
+  /**
+   * The invalid instruction to be returned if the number of
+   * arguments verified is smaller than the minimum number specified.
+   */
   invalidInstructionIfLess: InvalidInstruction;
+
+  /**
+   * The minimum number of arguments allowed.
+   */
   minNumber: number;
 };
 
+/**
+ * The options to perform a validation for a maximum number of arguments
+ * of a method instruction.
+ */
 export type ArgumentsMaxNumberValidation = {
+  /**
+   * The invalid instruction to be returned if the number of
+   * arguments verified is greater than the maximum number specified.
+   */
   invalidInstructionIfMore: InvalidInstruction;
+
+  /**
+   * The maximum number of arguments allowed.
+   */
   maxNumber: number;
 };
 
+/**
+ * The options to perform a validation of the number of arguments
+ * of a method instruction.
+ */
 export type ArgumentsValidation = {
+  /**
+   * The arguments to validate.
+   */
   args: string[];
+
+  /**
+   * The options to validate for a maximum number of arguments.
+   */
   maxNumberValidation?: ArgumentsMaxNumberValidation;
+
+  /**
+   * The options to validate for a minimum number of arguments.
+   */
   minNumberValidation?: ArgumentsMinNumberValidation;
 };
 
+/**
+ * The options to perform a validation of a method instruction single
+ * argument for a minimum number value.
+ */
 export type ArgumentNumberMinValueValidation = {
+  /**
+   * The invalid instruction to be returned if the given argument
+   * is a number smaller than the minimum allowed value.
+   */
   invalidInstructionIfSmaller: InvalidInstruction;
+
+  /**
+   * The minimum allowed value.
+   */
   minValue: number;
 };
 
+/**
+ * The options to perform a validation of a method instruction single
+ * argument for a maximum number value.
+ */
 export type ArgumentNumberMaxValueValidation = {
+  /**
+   * The invalid instruction to be returned if the given argument
+   * is a number greater than the maximum allowed value.
+   */
   invalidInstructionIfGreater: InvalidInstruction;
+
+  /**
+   * The maximum allowed value.
+   */
   maxValue: number;
 };
 
+/**
+ * The options to perform a validation of a method instruction single
+ * argument for a number value.
+ */
 export type ArgumentNumberValidation = {
+  /**
+   * The argument value to validate for a number.
+   */
   arg: string;
+
+  /**
+   * The invalid instruction to be returned if the given argument
+   * is not a valid number.
+   */
   invalidInstructionIfNaN: InvalidInstruction;
+
+  /**
+   * The options to validate for a maximum value.
+   */
   maxValueValidation?: ArgumentNumberMaxValueValidation;
+
+  /**
+   * The options to validate for a minimum value.
+   */
   minValueValidation?: ArgumentNumberMinValueValidation;
 };
 
+/**
+ * The options to perform a validation for a minimum number of targets
+ * of a method instruction.
+ */
 export type TargetsMinNumberValidation = {
+  /**
+   * The invalid instruction to be returned if the number of
+   * targets verified is smaller than the minimum number specified.
+   */
   invalidInstructionIfLess: InvalidInstruction;
+
+  /**
+   * The minimum number of targets allowed.
+   */
   minNumber: number;
 };
 
+/**
+ * The options to perform a validation for a maximum number of targets
+ * of a method instruction.
+ */
 export type TargetsMaxNumberValidation = {
+  /**
+   * The invalid instruction to be returned if the number of
+   * targets verified is greater than the maximum number specified.
+   */
   invalidInstructionIfMore: InvalidInstruction;
+
+  /**
+   * The maximum number of targets allowed.
+   */
   maxNumber: number;
 };
 
+/**
+ * The options to perform a validation of the number of targets
+ * of a method instruction.
+ */
 export type TargetsValidation = {
+  /**
+   * The options to validate for a maximum number of targets.
+   */
   maxNumberValidation?: TargetsMaxNumberValidation;
+
+  /**
+   * The options to validate for a minimum number of targets.
+   */
   minNumberValidation?: TargetsMinNumberValidation;
+
+  /**
+   * The targets to validate.
+   */
   targets: InstructionData[];
 };
 
@@ -85,15 +231,28 @@ export abstract class InstructionFactoryBase {
     return new Note(string, fret);
   }
 
+  /**
+   * The method instruction identifiers handled by the instruction factory.
+   */
   get methodInstructionIdentifiersEnabled(): string[] {
     return Object.keys(this.methodInstructionIdentifier2InstructionBuilderMap);
   }
 
+  /**
+   * The map, from a method identifier to a method instruction builder, used to
+   * build instructions.
+   */
   protected abstract methodInstructionIdentifier2InstructionBuilderMap: Record<
     string,
     MethodInstructionBuilder
   >;
 
+  /**
+   * Creates an instruction instance from the instruction data. The created
+   * instruction can be used to write the data to a tablature element.
+   * @param instructionData - The instruction data.
+   * @returns The instruction instance.
+   */
   getInstruction(instructionData: InstructionData): InstructionBase {
     if (instructionData.method) {
       return this._getInstructionFromMethodData(instructionData.method);
@@ -102,6 +261,13 @@ export abstract class InstructionFactoryBase {
     }
   }
 
+  /**
+   * Validates a method instruction single argument for a number value. It is
+   * possible to validate for a minimum and a maximum value.
+   * @param argumentValidation - The options to perform the validation.
+   * @returns `null` if all validation conditions are verified, the given invalid
+   * instruction instance, that corresponds to the failure reason, otherwise.
+   */
   protected validateMethodArgumentForNumberValue(
     argumentValidation: ArgumentNumberValidation
   ): InvalidInstruction | null {
@@ -127,6 +293,13 @@ export abstract class InstructionFactoryBase {
     return null;
   }
 
+  /**
+   * Validates the number of arguments of a method instruction. It is
+   * possible to validate for a minimum and a maximum number of arguments.
+   * @param argumentsValidation - The options to perform the validation.
+   * @returns `null` if all validation conditions are verified, the given invalid
+   * instruction instance, that corresponds to the failure reason, otherwise.
+   */
   protected validateNumberOfMethodArguments(
     argumentsValidation: ArgumentsValidation
   ): InvalidInstruction | null {
@@ -147,6 +320,13 @@ export abstract class InstructionFactoryBase {
     return null;
   }
 
+  /**
+   * Validates the number of targets of a method instruction. It is possible
+   * to validate for a minimum and a maximum number of targets.
+   * @param targetsValidation - The options to perform the validation.
+   * @returns `null` if all validation conditions are verified, the given invalid
+   * instruction instance, that corresponds to the failure reason, otherwise.
+   */
   protected validateNumberOfTargets(
     targetsValidation: TargetsValidation
   ): InvalidInstruction | null {

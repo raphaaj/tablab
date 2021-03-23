@@ -7,10 +7,31 @@ export type MethodTargetExtractionResult = {
   target: string;
 };
 
+/**
+ * The method data of an extracted method instruction.
+ */
 export interface ParsedMethodInstructionData {
+  /**
+   * The alias used to reference the method.
+   */
   alias: string;
+
+  /**
+   * The arguments of the method instruction. If the method instruction has no
+   * arguments, it will be an empty array.
+   */
   args: string[];
+
+  /**
+   * The method identifier.
+   */
   identifier?: string | null;
+
+  /**
+   * The data of the instructions over which the method instruction should be
+   * applied. If the method instruction has no targets, it will be an empty
+   * array.
+   */
   targets: ParsedInstructionData[];
 }
 

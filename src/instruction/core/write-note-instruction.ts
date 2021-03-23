@@ -13,10 +13,19 @@ import {
 } from './enums/invalid-instruction-base-reason';
 
 export class WriteNoteInstruction extends MergeableInstructionBase {
+  /**
+   * Creates a write note instruction instance.
+   * @param note - The note to be written to the tablature.
+   */
   constructor(note: Note) {
     super(note);
   }
 
+  /**
+   * Writes the `note` to the given tablature.
+   * @param tab - The tablature to write the note.
+   * @returns The result of the writing operation.
+   */
   writeOnTab(tab: Tab): InstructionWriteResult {
     let result: InstructionWriteResult;
 

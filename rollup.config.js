@@ -4,7 +4,7 @@ import dts from 'rollup-plugin-dts';
 
 const terserPlugin = terser({
   format: {
-    comments: 'all',
+    comments: false,
   },
 });
 

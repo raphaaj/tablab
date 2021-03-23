@@ -17,19 +17,31 @@ export class TabBlock extends TabElement {
   static readonly MINIMUM_BLOCK_END_FILLER_LENGTH = 1;
   static readonly MINIMUM_BLOCK_LENGTH = 15;
 
+  /**
+   * The non-formatted tablature block representation.
+   */
   get block(): string[] {
     if (!this._isBlockSet) this._setupInternalBlock();
     return this._block;
   }
 
+  /**
+   * The non-formatted header section of the tablature block representation.
+   */
   get header(): string {
     return this._getBlockHeader(this.block);
   }
 
+  /**
+   * The non-formatted footer section of the tablature block representation.
+   */
   get footer(): string {
     return this._getBlockFooter(this.block);
   }
 
+  /**
+   * The non-formatted strings section of the tablature block representation.
+   */
   get rows(): string[] {
     return this._getBlockRows(this.block);
   }
@@ -47,6 +59,10 @@ export class TabBlock extends TabElement {
     return this._rows[0].length;
   }
 
+  /**
+   * Creates a tablature block.
+   * @param options - The options used to create a tablature block.
+   */
   constructor(options?: TabElementOptions) {
     super(options);
 
@@ -65,6 +81,14 @@ export class TabBlock extends TabElement {
     this.addSpacing();
   }
 
+  /**
+   * Adds spacing characters in the tablature block. It uses the `filler` character
+   * as a spacing character for the strings section and the `sectionFiller` character
+   * as a spacing character for the header and footer sections.
+   * @param spacing - The number of spacing characters to add. If omitted, the
+   * current `spacing` value of the tablature block will be used.
+   * @returns The tablature block.
+   */
   addSpacing(spacing?: number): this {
     const spacingToAdd = spacing ?? this.spacing;
 
@@ -81,6 +105,13 @@ export class TabBlock extends TabElement {
     return this;
   }
 
+  /**
+   * Formats the tablature block representation with the given block length. The
+   * block representation will be divided into multiple blocks so that every block
+   * has the specified block length. The minimum block length is 15.
+   * @param blockLength - The length expected for each formatted tablature block.
+   * @returns The formatted tablature block.
+   */
   format(blockLength: number): string[][] {
     if (blockLength < TabBlock.MINIMUM_BLOCK_LENGTH)
       throw new Error(
@@ -107,6 +138,11 @@ export class TabBlock extends TabElement {
     return formattedBlock;
   }
 
+  /**
+   * Returns the maximum spacing characters that can be removed from the
+   * tablature block.
+   * @returns The maximum removable spacing characters.
+   */
   getMaximumRemovableSpacing(): number {
     return this._rows.reduce((maxRemovableSpacing, row) => {
       const nonFillerLastIdx = StringHelper.getIndexOfDifferent(
@@ -125,6 +161,17 @@ export class TabBlock extends TabElement {
     }, -1);
   }
 
+  /**
+   * Removes spacing characters from the tablature block. It considers the filler
+   * character as a spacing character for the strings section and the `sectionFiller`
+   * character as a spacing character for the header and footer sections.
+   * @param spacing - The number of spacing characters to remove. It must be an
+   * integer number greater than 0 and smaller than the maximum removable spacing.
+   * If omitted, the current `spacing` value of the tablature block will be used.
+   * @returns The tablature block.
+   *
+   * @see {@link TabBlock.getMaximumRemovableSpacing}
+   */
   removeSpacing(spacing?: number | undefined): this {
     const maxRemovableSpacing = this.getMaximumRemovableSpacing();
     const spacingToRemove = spacing ?? maxRemovableSpacing;
@@ -148,6 +195,11 @@ export class TabBlock extends TabElement {
     return this;
   }
 
+  /**
+   * Writes a footer in the footer section of the tablature block.
+   * @param footer - The footer to be written. It must be a non-empty string.
+   * @returns The tablature block.
+   */
   writeFooter(footer: string): this {
     if (footer.trim().length === 0) throw new Error('A footer must not be blank');
 
@@ -172,6 +224,11 @@ export class TabBlock extends TabElement {
     return this;
   }
 
+  /**
+   * Writes a header in the header section of the tablature block.
+   * @param header - The header to be written. It must be a non-empty string.
+   * @returns The tablature block.
+   */
   writeHeader(header: string): this {
     if (header.trim().length === 0) throw new Error('A header must not be blank');
 
@@ -190,10 +247,24 @@ export class TabBlock extends TabElement {
     return this;
   }
 
+  /**
+   * Writes a note in the current tablature block. The string of the note
+   * must be in the tablature block strings range.
+   * @param note - The note to be written.
+   * @returns The tablature block.
+   */
   writeNote(note: Note): this {
     return this.writeParallelNotes([note]);
   }
 
+  /**
+   * Writes multiple notes in the tablature block. The notes will be written
+   * in parallel, i.e., in the same tablature time. The string of all notes
+   * must be in the tablature strings range, and there must be no set of notes
+   * sharing the same string value.
+   * @param notes - The notes to be written in parallel.
+   * @returns The tablature block.
+   */
   writeParallelNotes(notes: Note[]): this {
     const stringsOutOfRange = this._getStringsOutOfRangeOnNotes(notes);
     if (stringsOutOfRange.length > 0)
@@ -215,6 +286,13 @@ export class TabBlock extends TabElement {
     return this;
   }
 
+  /**
+   * Compares the spacing `oldValue` with the new `value`. If the new value is greater than
+   * the old value, then the difference is added as spacing to the tablature block. If it
+   * is smaller, then spacing is removed from the tablature block by the difference value.
+   * @param oldValue - The old spacing value.
+   * @param value - The new spacing value.
+   */
   protected onSpacingChange(oldValue: number, value: number): void {
     const spacingDiff = value - oldValue;
 

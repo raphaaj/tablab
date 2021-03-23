@@ -8,6 +8,10 @@ import {
 export abstract class InstructionBase {
   abstract writeOnTab(tab: Tab): InstructionWriteResult;
 
+  /**
+   * Returns the default writing result for an unexpected failure reason.
+   * @returns A failed writing result for an unexpected reason.
+   */
   protected getUnmappepFailureResult(): FailedInstructionWriteResult {
     const failureReason = InvalidInstructionBaseReason.UnmappedReason;
     const failureMessage = InvalidInstructionBaseReasonDescription[failureReason];

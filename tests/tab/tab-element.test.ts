@@ -10,8 +10,8 @@ class TestTabElement extends TabElement {
     throw new Error('Method not implemented.');
   }
 
-  onSpacingChange(): void {
-    return;
+  onSpacingChange(oldValue: number, value: number): void {
+    super.onSpacingChange(oldValue, value);
   }
 
   removeSpacing(): this {
@@ -135,7 +135,7 @@ describe(`[${TabElement.name}]`, () => {
         const spacing = 1;
         const tabElement = new TestTabElement({ spacing: oldSpacingValue });
 
-        tabElement.onSpacingChange = jest.fn();
+        tabElement.onSpacingChange = jest.fn(tabElement.onSpacingChange);
         tabElement.spacing = spacing;
 
         expect(tabElement.onSpacingChange).toHaveBeenCalledWith(oldSpacingValue, spacing);
