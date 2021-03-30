@@ -14,9 +14,9 @@ export interface TabElementOptions {
   /**
    * The total number of strings used in the tablature element. It must be an integer number
    * greater than 0.
-   * @defaultValue {@link TabElement.DEFAULT_NUMBER_OF_ROWS}
+   * @defaultValue {@link TabElement.DEFAULT_NUMBER_OF_STRINGS}
    */
-  numberOfRows?: number;
+  numberOfStrings?: number;
 
   /**
    * The character used to represent spaces between elements in the header and footer sections
@@ -42,7 +42,7 @@ export interface TabElementOptions {
 
 export abstract class TabElement {
   static readonly DEFAULT_FILLER = '-';
-  static readonly DEFAULT_NUMBER_OF_ROWS = 6;
+  static readonly DEFAULT_NUMBER_OF_STRINGS = 6;
   static readonly DEFAULT_SECTION_FILLER = ' ';
   static readonly DEFAULT_SECTION_SYMBOL = '|';
   static readonly DEFAULT_SPACING = 3;
@@ -70,7 +70,7 @@ export abstract class TabElement {
   /**
    * The total number of strings used in the tablature element.
    */
-  readonly numberOfRows: number;
+  readonly numberOfStrings: number;
 
   /**
    * The character used to represent spaces between elements in the header and footer sections
@@ -90,14 +90,14 @@ export abstract class TabElement {
    * @param options - The options used to create a tablature element.
    */
   constructor(options: TabElementOptions = {}) {
-    const { numberOfRows, filler, spacing, sectionSymbol, sectionFiller } = options;
+    const { numberOfStrings, filler, spacing, sectionSymbol, sectionFiller } = options;
 
-    if (numberOfRows === undefined) this.numberOfRows = TabElement.DEFAULT_NUMBER_OF_ROWS;
-    else if (numberOfRows < 1)
+    if (numberOfStrings === undefined) this.numberOfStrings = TabElement.DEFAULT_NUMBER_OF_STRINGS;
+    else if (numberOfStrings < 1)
       throw new Error(
-        `The parameter numberOfRows must be a positive integer. Received value was ${numberOfRows}.`
+        `The parameter numberOfStrings must be a positive integer. Received value was ${numberOfStrings}.`
       );
-    else this.numberOfRows = numberOfRows;
+    else this.numberOfStrings = numberOfStrings;
 
     if (!filler) this.filler = TabElement.DEFAULT_FILLER;
     else if (filler.length !== 1)
@@ -130,13 +130,13 @@ export abstract class TabElement {
 
   /**
    * Verifies if the string of a given note is in the range of strings of the tablature element.
-   * If it is in the range `1` - `numberOfRows`, inclusive, then the note is considered inside
+   * If it is in the range `1` - `numberOfStrings`, inclusive, then the note is considered inside
    * the tablature element strings range.
    * @param note - The note to be verified.
    * @returns `true` if the note is in the tablature element strings range, `false` otherwise.
    */
   isNoteInStringsRange(note: Note): boolean {
-    return note.string > 0 && note.string <= this.numberOfRows;
+    return note.string > 0 && note.string <= this.numberOfStrings;
   }
 
   /**
@@ -169,22 +169,22 @@ export abstract class TabElement {
 
   /**
    * Creates a filler string with the given length. All characters are equal to the
-   * `filler` character of the tablature element.
-   * @param fillerLength - The desired length of the filler string.
-   * @returns The created filler string.
-   */
-  protected getRowsFiller(fillerLength: number): string {
-    return Array(fillerLength + 1).join(this.filler);
-  }
-
-  /**
-   * Creates a filler string with the given length. All characters are equal to the
    * `sectionFiller` character of the tablature element.
    * @param fillerLength - The desired length of the filler string.
    * @returns The created filler string.
    */
   protected getSectionFiller(fillerLength: number): string {
     return Array(fillerLength + 1).join(this.sectionFiller);
+  }
+
+  /**
+   * Creates a filler string with the given length. All characters are equal to the
+   * `filler` character of the tablature element.
+   * @param fillerLength - The desired length of the filler string.
+   * @returns The created filler string.
+   */
+  protected getStringsFiller(fillerLength: number): string {
+    return Array(fillerLength + 1).join(this.filler);
   }
 
   /**

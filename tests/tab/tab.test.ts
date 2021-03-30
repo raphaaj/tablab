@@ -7,7 +7,7 @@ describe(`[${Tab.name}]`, () => {
       const tab = new Tab();
 
       expect(tab.filler).toBe(Tab.DEFAULT_FILLER);
-      expect(tab.numberOfRows).toBe(Tab.DEFAULT_NUMBER_OF_ROWS);
+      expect(tab.numberOfStrings).toBe(Tab.DEFAULT_NUMBER_OF_STRINGS);
       expect(tab.sectionFiller).toBe(Tab.DEFAULT_SECTION_FILLER);
       expect(tab.sectionSymbol).toBe(Tab.DEFAULT_SECTION_SYMBOL);
       expect(tab.spacing).toBe(Tab.DEFAULT_SPACING);
@@ -15,21 +15,21 @@ describe(`[${Tab.name}]`, () => {
 
     it('should create a tab with the given options', () => {
       const filler = '@';
-      const numberOfRows = 2;
+      const numberOfStrings = 2;
       const sectionFiller = '$';
       const sectionSymbol = '#';
       const spacing = 1;
 
       const tab = new Tab({
         filler,
-        numberOfRows,
+        numberOfStrings,
         sectionFiller,
         sectionSymbol,
         spacing,
       });
 
       expect(tab.filler).toBe(filler);
-      expect(tab.numberOfRows).toBe(numberOfRows);
+      expect(tab.numberOfStrings).toBe(numberOfStrings);
       expect(tab.sectionFiller).toBe(sectionFiller);
       expect(tab.sectionSymbol).toBe(sectionSymbol);
       expect(tab.spacing).toBe(spacing);
@@ -40,7 +40,7 @@ describe(`[${Tab.name}]`, () => {
 
       expect(tab.blocks.length).toBe(1);
       expect(tab.blocks[0].filler).toBe(Tab.DEFAULT_FILLER);
-      expect(tab.blocks[0].numberOfRows).toBe(Tab.DEFAULT_NUMBER_OF_ROWS);
+      expect(tab.blocks[0].numberOfStrings).toBe(Tab.DEFAULT_NUMBER_OF_STRINGS);
       expect(tab.blocks[0].sectionFiller).toBe(Tab.DEFAULT_SECTION_FILLER);
       expect(tab.blocks[0].sectionSymbol).toBe(Tab.DEFAULT_SECTION_SYMBOL);
       expect(tab.blocks[0].spacing).toBe(Tab.DEFAULT_SPACING);
@@ -48,14 +48,14 @@ describe(`[${Tab.name}]`, () => {
 
     it('should create an initial tab block with the given options', () => {
       const filler = '@';
-      const numberOfRows = 2;
+      const numberOfStrings = 2;
       const sectionFiller = '$';
       const sectionSymbol = '#';
       const spacing = 1;
 
       const tab = new Tab({
         filler,
-        numberOfRows,
+        numberOfStrings,
         sectionFiller,
         sectionSymbol,
         spacing,
@@ -63,7 +63,7 @@ describe(`[${Tab.name}]`, () => {
 
       expect(tab.blocks.length).toBe(1);
       expect(tab.blocks[0].filler).toBe(filler);
-      expect(tab.blocks[0].numberOfRows).toBe(numberOfRows);
+      expect(tab.blocks[0].numberOfStrings).toBe(numberOfStrings);
       expect(tab.blocks[0].sectionFiller).toBe(sectionFiller);
       expect(tab.blocks[0].sectionSymbol).toBe(sectionSymbol);
       expect(tab.blocks[0].spacing).toBe(spacing);

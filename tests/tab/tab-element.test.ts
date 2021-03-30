@@ -18,12 +18,12 @@ class TestTabElement extends TabElement {
     throw new Error('Method not implemented.');
   }
 
-  testGetRowsFiller(fillerLength: number): string {
-    return this.getRowsFiller(fillerLength);
-  }
-
   testGetSectionFiller(fillerLength: number): string {
     return this.getSectionFiller(fillerLength);
+  }
+
+  testGetStringsFiller(fillerLength: number): string {
+    return this.getStringsFiller(fillerLength);
   }
 
   writeFooter(): this {
@@ -49,7 +49,7 @@ describe(`[${TabElement.name}]`, () => {
       const tabElement = new TestTabElement();
 
       expect(tabElement.filler).toBe(TestTabElement.DEFAULT_FILLER);
-      expect(tabElement.numberOfRows).toBe(TestTabElement.DEFAULT_NUMBER_OF_ROWS);
+      expect(tabElement.numberOfStrings).toBe(TestTabElement.DEFAULT_NUMBER_OF_STRINGS);
       expect(tabElement.sectionFiller).toBe(TestTabElement.DEFAULT_SECTION_FILLER);
       expect(tabElement.sectionSymbol).toBe(TestTabElement.DEFAULT_SECTION_SYMBOL);
       expect(tabElement.spacing).toBe(TestTabElement.DEFAULT_SPACING);
@@ -68,17 +68,17 @@ describe(`[${TabElement.name}]`, () => {
       expect(() => new TestTabElement({ filler })).toThrow();
     });
 
-    it('should set the number of rows based on the given value', () => {
-      const numberOfRows = 1;
-      const tabElement = new TestTabElement({ numberOfRows });
+    it('should set the number of strings based on the given value', () => {
+      const numberOfStrings = 1;
+      const tabElement = new TestTabElement({ numberOfStrings });
 
-      expect(tabElement.numberOfRows).toBe(numberOfRows);
+      expect(tabElement.numberOfStrings).toBe(numberOfStrings);
     });
 
-    it('should throw if the given value for number of rows is invalid', () => {
-      const numberOfRows = 0;
+    it('should throw if the given value for number of strings is invalid', () => {
+      const numberOfStrings = 0;
 
-      expect(() => new TestTabElement({ numberOfRows })).toThrow();
+      expect(() => new TestTabElement({ numberOfStrings })).toThrow();
     });
 
     it('should set the sectionFiller based on the given value', () => {
@@ -157,39 +157,39 @@ describe(`[${TabElement.name}]`, () => {
   });
 
   describe('[isNoteInStringsRange]', () => {
-    it('should return true if the note string is in the tab element rows range', () => {
-      const numberOfRows = 1;
-      const tabElement = new TestTabElement({ numberOfRows });
+    it('should return true if the note string is in the tab element strings range', () => {
+      const numberOfStrings = 1;
+      const tabElement = new TestTabElement({ numberOfStrings });
       const note = new Note(1, '0');
 
       expect(tabElement.isNoteInStringsRange(note)).toBe(true);
     });
 
     it('should return false if the note string is smaller than the minimum tab element string value', () => {
-      const numberOfRows = 1;
-      const tabElement = new TestTabElement({ numberOfRows });
+      const numberOfStrings = 1;
+      const tabElement = new TestTabElement({ numberOfStrings });
       const note = new Note(0, '0');
 
       expect(tabElement.isNoteInStringsRange(note)).toBe(false);
     });
 
     it('should return false if the note string is greater than the maximum tab element string value', () => {
-      const numberOfRows = 1;
-      const tabElement = new TestTabElement({ numberOfRows });
-      const note = new Note(numberOfRows + 1, '0');
+      const numberOfStrings = 1;
+      const tabElement = new TestTabElement({ numberOfStrings });
+      const note = new Note(numberOfStrings + 1, '0');
 
       expect(tabElement.isNoteInStringsRange(note)).toBe(false);
     });
   });
 
-  describe('[getRowsFiller]', () => {
+  describe('[getStringsFiller]', () => {
     it('should return a string composed with the tab element filler character with the specified length', () => {
       const filler = '+';
       const fillerLength = 5;
-      const expectedRowsFiller = Array(fillerLength + 1).join(filler);
+      const expectedStringsFiller = Array(fillerLength + 1).join(filler);
       const tabElement = new TestTabElement({ filler });
 
-      expect(tabElement.testGetRowsFiller(fillerLength)).toBe(expectedRowsFiller);
+      expect(tabElement.testGetStringsFiller(fillerLength)).toBe(expectedStringsFiller);
     });
   });
 

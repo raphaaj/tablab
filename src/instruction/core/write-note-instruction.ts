@@ -38,7 +38,7 @@ export class WriteNoteInstruction extends MergeableInstructionBase {
         result = this.getUnmappepFailureResult();
       }
     } else {
-      result = this._getStringOutOfTabRangeFailureResult(tab.numberOfRows);
+      result = this._getStringOutOfTabRangeFailureResult(tab.numberOfStrings);
     }
 
     return result;

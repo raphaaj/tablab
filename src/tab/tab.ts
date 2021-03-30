@@ -48,7 +48,7 @@ export class Tab extends TabElement {
   addBlock(): Tab {
     const tabBlock = new TabBlock({
       filler: this.filler,
-      numberOfRows: this.numberOfRows,
+      numberOfStrings: this.numberOfStrings,
       sectionFiller: this.sectionFiller,
       sectionSymbol: this.sectionSymbol,
       spacing: this.spacing,
