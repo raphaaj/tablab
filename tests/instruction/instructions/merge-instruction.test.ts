@@ -3,7 +3,6 @@ import { MergeableInstructionBase } from '../../../src/instruction/core/mergeabl
 import { WriteNoteInstruction } from '../../../src/instruction/core/write-note-instruction';
 import { Note } from '../../../src/tab/note';
 import { Tab } from '../../../src/tab/tab';
-import { InvalidInstructionBaseReason } from '../../../src/instruction/core/enums/invalid-instruction-base-reason';
 import { InvalidInstructionReason } from '../../../src/instruction/enums/invalid-instruction-reason';
 
 describe(`[${MergeInstruction.name}]`, () => {
@@ -39,7 +38,7 @@ describe(`[${MergeInstruction.name}]`, () => {
 
       expect(tab.writeParallelNotes).toHaveBeenCalled();
       expect(writeResult.success).toBe(false);
-      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionBaseReason.UnmappedReason);
+      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionReason.UnmappedReason);
     });
 
     it('should return a failed write result when the instructions to merge have strings out of tab range', () => {

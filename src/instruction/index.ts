@@ -23,7 +23,6 @@ export {
   FailedInstructionWriteResult,
 } from './core/instruction-write-result';
 
-export { InvalidInstructionBaseReason } from './core/enums/invalid-instruction-base-reason';
 export { InvalidInstructionReason } from './enums/invalid-instruction-reason';
 
 export { MethodInstructionIdentifier } from './enums/method-instruction-identifier';

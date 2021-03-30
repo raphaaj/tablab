@@ -1,5 +1,9 @@
 export enum InvalidInstructionReason {
   UnmappedReason = 'UNMAPPED_REASON',
+  MethodInstructionWithoutIdentifier = 'METHOD_INSTRUCTION_WITHOUT_IDENTIFIER',
+  MethodInstructionWithUnmappedIdentifier = 'METHOD_INSTRUCTION_WITH_UNMAPPED_IDENTIFIER',
+  WriteNoteInstructionInvalid = 'INVALID_WRITE_NOTE_INSTRUCTION',
+  WriteNoteInstructionWithNonWritableNote = 'WRITE_NOTE_INSTRUCTION_WITH_NON_WRITABLE_NOTE',
   WriteHeaderInstructionWithoutArguments = 'WRITE_HEADER_INSTRUCTION_WITHOUT_ARGUMENTS',
   WriteHeaderInstructionWithUnmappedArguments = 'WRITE_HEADER_INSTRUCTION_WITH_UNMAPPED_ARGUMENTS',
   WriteHeaderInstructionWithInvalidHeader = 'WRITE_HEADER_INSTRUCTION_WITH_INVALID_HEADER',
@@ -23,6 +27,11 @@ export enum InvalidInstructionReason {
 
 export const InvalidInstructionReasonDescription: Record<InvalidInstructionReason, string> = {
   [InvalidInstructionReason.UnmappedReason]: 'Unable to process instruction',
+  [InvalidInstructionReason.MethodInstructionWithoutIdentifier]: 'Unknown method',
+  [InvalidInstructionReason.MethodInstructionWithUnmappedIdentifier]: 'Unknown method',
+  [InvalidInstructionReason.WriteNoteInstructionInvalid]: 'Invalid instruction',
+  [InvalidInstructionReason.WriteNoteInstructionWithNonWritableNote]:
+    'String value must be between 1 and {0}',
   [InvalidInstructionReason.WriteHeaderInstructionWithInvalidHeader]:
     'The header value should be a string with at least one character other than a whitespace',
   [InvalidInstructionReason.WriteHeaderInstructionWithUnmappedArguments]:

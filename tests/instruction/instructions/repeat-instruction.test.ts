@@ -1,7 +1,7 @@
 import { RepeatInstruction } from '../../../src/instruction/instructions/repeat-instruction';
 import { MergeableInstructionBase } from '../../../src/instruction/core/mergeable-instruction-base';
 import { Tab } from '../../../src/tab/tab';
-import { InvalidInstructionBaseReason } from '../../../src/instruction/core/enums/invalid-instruction-base-reason';
+import { InvalidInstructionReason } from '../../../src/instruction/enums/invalid-instruction-reason';
 import { InstructionBase } from '../../../src/instruction/core/instruction-base';
 import {
   FailedInstructionWriteResult,
@@ -75,7 +75,7 @@ describe(`[${RepeatInstruction.name}]`, () => {
 
       expect(instructionToRepeat.writeOnTab).toHaveBeenCalled();
       expect(writeResult.success).toBe(false);
-      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionBaseReason.UnmappedReason);
+      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionReason.UnmappedReason);
     });
 
     it('should return a failed write result when the instruction to repeat fails to be written on tab', () => {

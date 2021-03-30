@@ -1,4 +1,3 @@
-import { InvalidInstructionBaseReason } from '../../../src/instruction/core/enums/invalid-instruction-base-reason';
 import { InstructionBase } from '../../../src/instruction/core/instruction-base';
 import {
   ArgumentNumberValidation,
@@ -10,6 +9,7 @@ import {
 import { InstructionWriteResult } from '../../../src/instruction/core/instruction-write-result';
 import { InvalidInstruction } from '../../../src/instruction/core/invalid-instruction';
 import { WriteNoteInstruction } from '../../../src/instruction/core/write-note-instruction';
+import { InvalidInstructionReason } from '../../../src/instruction/enums/invalid-instruction-reason';
 
 const TEST_METHOD_IDENTIFIER = 'testIdentifier';
 
@@ -77,7 +77,7 @@ describe(`[${InstructionFactoryBase.name}]`, () => {
 
         expect(instruction).toBeInstanceOf(InvalidInstruction);
         expect((instruction as InvalidInstruction).reasonIdentifier).toBe(
-          InvalidInstructionBaseReason.MethodInstructionWithoutIdentifier
+          InvalidInstructionReason.MethodInstructionWithoutIdentifier
         );
       });
 
@@ -91,7 +91,7 @@ describe(`[${InstructionFactoryBase.name}]`, () => {
 
         expect(instruction).toBeInstanceOf(InvalidInstruction);
         expect((instruction as InvalidInstruction).reasonIdentifier).toBe(
-          InvalidInstructionBaseReason.MethodInstructionWithUnmappedIdentifier
+          InvalidInstructionReason.MethodInstructionWithUnmappedIdentifier
         );
       });
 
@@ -118,7 +118,7 @@ describe(`[${InstructionFactoryBase.name}]`, () => {
 
         expect(instruction).toBeInstanceOf(InvalidInstruction);
         expect((instruction as InvalidInstruction).reasonIdentifier).toBe(
-          InvalidInstructionBaseReason.WriteNoteInstructionInvalid
+          InvalidInstructionReason.WriteNoteInstructionInvalid
         );
       });
 

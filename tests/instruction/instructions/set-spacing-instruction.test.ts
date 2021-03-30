@@ -1,7 +1,7 @@
 import { MergeableInstructionBase } from '../../../src/instruction/core/mergeable-instruction-base';
 import { SetSpacingInstruction } from '../../../src/instruction/instructions/set-spacing-instruction';
 import { Tab } from '../../../src/tab/tab';
-import { InvalidInstructionBaseReason } from '../../../src/instruction/core/enums/invalid-instruction-base-reason';
+import { InvalidInstructionReason } from '../../../src/instruction/enums/invalid-instruction-reason';
 
 describe(`[${SetSpacingInstruction.name}]`, () => {
   it('should not be a mergeable instruction', () => {
@@ -30,7 +30,7 @@ describe(`[${SetSpacingInstruction.name}]`, () => {
       const writeResult = instruction.writeOnTab(tab);
 
       expect(writeResult.success).toBe(false);
-      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionBaseReason.UnmappedReason);
+      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionReason.UnmappedReason);
     });
   });
 });

@@ -8,9 +8,9 @@ import {
 } from '../core/instruction-write-result';
 import { StringHelper } from '../../helpers/string-helper';
 import {
-  InvalidInstructionBaseReason,
-  InvalidInstructionBaseReasonDescription,
-} from './enums/invalid-instruction-base-reason';
+  InvalidInstructionReason,
+  InvalidInstructionReasonDescription,
+} from '../enums/invalid-instruction-reason';
 
 export class WriteNoteInstruction extends MergeableInstructionBase {
   /**
@@ -47,8 +47,8 @@ export class WriteNoteInstruction extends MergeableInstructionBase {
   private _getNonWritableNoteFailureResult(
     maxTabStringValue: number
   ): FailedInstructionWriteResult {
-    const failureReason = InvalidInstructionBaseReason.WriteNoteInstructionWithNonWritableNote;
-    const description = InvalidInstructionBaseReasonDescription[failureReason];
+    const failureReason = InvalidInstructionReason.WriteNoteInstructionWithNonWritableNote;
+    const description = InvalidInstructionReasonDescription[failureReason];
     const failureMessage = StringHelper.format(description, [maxTabStringValue.toString()]);
 
     return new FailedInstructionWriteResult({

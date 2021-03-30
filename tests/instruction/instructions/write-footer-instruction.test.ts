@@ -1,7 +1,7 @@
 import { WriteFooterInstruction } from '../../../src/instruction/instructions/write-footer-instruction';
 import { MergeableInstructionBase } from '../../../src/instruction/core/mergeable-instruction-base';
 import { Tab } from '../../../src/tab/tab';
-import { InvalidInstructionBaseReason } from '../../../src/instruction/core/enums/invalid-instruction-base-reason';
+import { InvalidInstructionReason } from '../../../src/instruction/enums/invalid-instruction-reason';
 
 describe(`[${WriteFooterInstruction.name}]`, () => {
   it('should not be a mergeable instruction', () => {
@@ -35,7 +35,7 @@ describe(`[${WriteFooterInstruction.name}]`, () => {
 
       expect(tab.writeFooter).toHaveBeenCalled();
       expect(writeResult.success).toBe(false);
-      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionBaseReason.UnmappedReason);
+      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionReason.UnmappedReason);
     });
   });
 });

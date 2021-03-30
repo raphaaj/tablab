@@ -2,7 +2,7 @@ import { WriteNoteInstruction } from '../../../src/instruction/core/write-note-i
 import { MergeableInstructionBase } from '../../../src/instruction/core/mergeable-instruction-base';
 import { Note } from '../../../src/tab/note';
 import { Tab } from '../../../src/tab/tab';
-import { InvalidInstructionBaseReason } from '../../../src/instruction/core/enums/invalid-instruction-base-reason';
+import { InvalidInstructionReason } from '../../../src/instruction/enums/invalid-instruction-reason';
 
 describe(`[${WriteNoteInstruction.name}]`, () => {
   it('should be a mergeable instruction', () => {
@@ -36,7 +36,7 @@ describe(`[${WriteNoteInstruction.name}]`, () => {
 
       expect(tab.writeNote).toHaveBeenCalled();
       expect(writeResult.success).toBe(false);
-      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionBaseReason.UnmappedReason);
+      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionReason.UnmappedReason);
     });
 
     it(`should return a failed write result when the note's string is out of tab range`, () => {
@@ -50,7 +50,7 @@ describe(`[${WriteNoteInstruction.name}]`, () => {
       expect(tab.writeNote).not.toHaveBeenCalled();
       expect(writeResult.success).toBe(false);
       expect(writeResult.failureReasonIdentifier).toBe(
-        InvalidInstructionBaseReason.WriteNoteInstructionWithNonWritableNote
+        InvalidInstructionReason.WriteNoteInstructionWithNonWritableNote
       );
     });
   });

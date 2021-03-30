@@ -2,9 +2,9 @@ import { StringHelper } from '../../helpers/string-helper';
 import { InstructionBase } from '../core/instruction-base';
 import { InvalidInstruction } from './invalid-instruction';
 import {
-  InvalidInstructionBaseReason,
-  InvalidInstructionBaseReasonDescription,
-} from './enums/invalid-instruction-base-reason';
+  InvalidInstructionReason,
+  InvalidInstructionReasonDescription,
+} from '../enums/invalid-instruction-reason';
 import { Note } from '../../tab/note';
 import { WriteNoteInstruction } from './write-note-instruction';
 
@@ -348,9 +348,9 @@ export abstract class InstructionFactoryBase {
   }
 
   private _buildInvalidInstructionBase(
-    reasonIdentifier: InvalidInstructionBaseReason
+    reasonIdentifier: InvalidInstructionReason
   ): InvalidInstruction {
-    const description = InvalidInstructionBaseReasonDescription[reasonIdentifier];
+    const description = InvalidInstructionReasonDescription[reasonIdentifier];
 
     return new InvalidInstruction(reasonIdentifier, description);
   }
@@ -360,7 +360,7 @@ export abstract class InstructionFactoryBase {
 
     if (!note)
       return this._buildInvalidInstructionBase(
-        InvalidInstructionBaseReason.WriteNoteInstructionInvalid
+        InvalidInstructionReason.WriteNoteInstructionInvalid
       );
 
     return new WriteNoteInstruction(note);
@@ -369,7 +369,7 @@ export abstract class InstructionFactoryBase {
   private _getInstructionFromMethodData(methodData: MethodInstructionData): InstructionBase {
     if (!methodData.identifier)
       return this._buildInvalidInstructionBase(
-        InvalidInstructionBaseReason.MethodInstructionWithoutIdentifier
+        InvalidInstructionReason.MethodInstructionWithoutIdentifier
       );
 
     const buildMethodInstruction = this.methodInstructionIdentifier2InstructionBuilderMap[
@@ -378,7 +378,7 @@ export abstract class InstructionFactoryBase {
 
     if (!buildMethodInstruction)
       return this._buildInvalidInstructionBase(
-        InvalidInstructionBaseReason.MethodInstructionWithUnmappedIdentifier
+        InvalidInstructionReason.MethodInstructionWithUnmappedIdentifier
       );
 
     return buildMethodInstruction(methodData);

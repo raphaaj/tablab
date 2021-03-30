@@ -1,7 +1,7 @@
 import { WriteHeaderInstruction } from '../../../src/instruction/instructions/write-header-instruction';
 import { MergeableInstructionBase } from '../../../src/instruction/core/mergeable-instruction-base';
 import { Tab } from '../../../src/tab/tab';
-import { InvalidInstructionBaseReason } from '../../../src/instruction/core/enums/invalid-instruction-base-reason';
+import { InvalidInstructionReason } from '../../../src/instruction/enums/invalid-instruction-reason';
 
 describe(`[${WriteHeaderInstruction.name}]`, () => {
   it('should not be a mergeable instruction', () => {
@@ -35,7 +35,7 @@ describe(`[${WriteHeaderInstruction.name}]`, () => {
 
       expect(tab.writeHeader).toHaveBeenCalled();
       expect(writeResult.success).toBe(false);
-      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionBaseReason.UnmappedReason);
+      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionReason.UnmappedReason);
     });
   });
 });
