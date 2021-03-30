@@ -156,13 +156,13 @@ describe(`[${TabElement.name}]`, () => {
     });
   });
 
-  describe('[isNoteInStringsRange]', () => {
+  describe('[isNoteWritable]', () => {
     it('should return true if the note string is in the tab element strings range', () => {
       const numberOfStrings = 1;
       const tabElement = new TestTabElement({ numberOfStrings });
       const note = new Note(1, '0');
 
-      expect(tabElement.isNoteInStringsRange(note)).toBe(true);
+      expect(tabElement.isNoteWritable(note)).toBe(true);
     });
 
     it('should return false if the note string is smaller than the minimum tab element string value', () => {
@@ -170,7 +170,7 @@ describe(`[${TabElement.name}]`, () => {
       const tabElement = new TestTabElement({ numberOfStrings });
       const note = new Note(0, '0');
 
-      expect(tabElement.isNoteInStringsRange(note)).toBe(false);
+      expect(tabElement.isNoteWritable(note)).toBe(false);
     });
 
     it('should return false if the note string is greater than the maximum tab element string value', () => {
@@ -178,7 +178,7 @@ describe(`[${TabElement.name}]`, () => {
       const tabElement = new TestTabElement({ numberOfStrings });
       const note = new Note(numberOfStrings + 1, '0');
 
-      expect(tabElement.isNoteInStringsRange(note)).toBe(false);
+      expect(tabElement.isNoteWritable(note)).toBe(false);
     });
   });
 

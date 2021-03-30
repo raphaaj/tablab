@@ -50,7 +50,7 @@ describe(`[${WriteNoteInstruction.name}]`, () => {
       expect(tab.writeNote).not.toHaveBeenCalled();
       expect(writeResult.success).toBe(false);
       expect(writeResult.failureReasonIdentifier).toBe(
-        InvalidInstructionBaseReason.WriteNoteInstructionWithStringOutOfTabRange
+        InvalidInstructionBaseReason.WriteNoteInstructionWithNonWritableNote
       );
     });
   });

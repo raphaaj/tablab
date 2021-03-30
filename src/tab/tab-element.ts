@@ -129,13 +129,13 @@ export abstract class TabElement {
   }
 
   /**
-   * Verifies if the string of a given note is in the range of strings of the tablature element.
-   * If it is in the range `1` - `numberOfStrings`, inclusive, then the note is considered inside
-   * the tablature element strings range.
+   * Verifies if a given note is writable to the tablature element. A note is considered to be
+   * writable to the tablature element if its string number is in the range `1` - `numberOfStrings`,
+   * inclusive.
    * @param note - The note to be verified.
-   * @returns `true` if the note is in the tablature element strings range, `false` otherwise.
+   * @returns `true` if the note is writable, `false` otherwise.
    */
-  isNoteInStringsRange(note: Note): boolean {
+  isNoteWritable(note: Note): boolean {
     return note.string > 0 && note.string <= this.numberOfStrings;
   }
 

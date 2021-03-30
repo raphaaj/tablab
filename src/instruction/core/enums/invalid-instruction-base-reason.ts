@@ -3,7 +3,7 @@ export enum InvalidInstructionBaseReason {
   MethodInstructionWithoutIdentifier = 'METHOD_INSTRUCTION_WITHOUT_IDENTIFIER',
   MethodInstructionWithUnmappedIdentifier = 'METHOD_INSTRUCTION_WITH_UNMAPPED_IDENTIFIER',
   WriteNoteInstructionInvalid = 'INVALID_WRITE_NOTE_INSTRUCTION',
-  WriteNoteInstructionWithStringOutOfTabRange = 'WRITE_NOTE_INSTRUCTION_WITH_STRING_OUT_OF_TAB_RANGE',
+  WriteNoteInstructionWithNonWritableNote = 'WRITE_NOTE_INSTRUCTION_WITH_NON_WRITABLE_NOTE',
 }
 
 export const InvalidInstructionBaseReasonDescription: Record<
@@ -14,6 +14,6 @@ export const InvalidInstructionBaseReasonDescription: Record<
   [InvalidInstructionBaseReason.MethodInstructionWithoutIdentifier]: 'Unknown method',
   [InvalidInstructionBaseReason.MethodInstructionWithUnmappedIdentifier]: 'Unknown method',
   [InvalidInstructionBaseReason.WriteNoteInstructionInvalid]: 'Invalid instruction',
-  [InvalidInstructionBaseReason.WriteNoteInstructionWithStringOutOfTabRange]:
+  [InvalidInstructionBaseReason.WriteNoteInstructionWithNonWritableNote]:
     'String value must be between 1 and {0}',
 };

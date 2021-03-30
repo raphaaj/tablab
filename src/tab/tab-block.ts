@@ -400,9 +400,7 @@ export class TabBlock extends TabElement {
   }
 
   private _getStringsOutOfRangeOnNotes(notes: Note[]): number[] {
-    return this._getUniqueStringsFromNotes(
-      notes.filter((note) => !this.isNoteInStringsRange(note))
-    );
+    return this._getUniqueStringsFromNotes(notes.filter((note) => !this.isNoteWritable(note)));
   }
 
   private _getStringsWithConcurrentNotes(notes: Note[]): number[] {

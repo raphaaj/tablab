@@ -35,9 +35,9 @@ export class MergeInstruction extends InstructionBase {
     let result: InstructionWriteResult;
 
     const notes = this.instructions.map((instruction) => instruction.note);
-    const notesOutOfTabStringsRange = notes.filter((note) => !tab.isNoteInStringsRange(note));
-    if (notesOutOfTabStringsRange.length > 0) {
-      result = this._getNotesStringOutOfTabRangeFailureResult(tab.numberOfStrings);
+    const nonWritableNotes = notes.filter((note) => !tab.isNoteWritable(note));
+    if (nonWritableNotes.length > 0) {
+      result = this._getNonWritableNotesFailureResult(tab.numberOfStrings);
     } else {
       try {
         tab.writeParallelNotes(notes);
@@ -51,10 +51,10 @@ export class MergeInstruction extends InstructionBase {
     return result;
   }
 
-  private _getNotesStringOutOfTabRangeFailureResult(
+  private _getNonWritableNotesFailureResult(
     maxTabStringValue: number
   ): FailedInstructionWriteResult {
-    const failureReason = InvalidInstructionReason.MergeInstructionTargetsWithStringOutOfTabRange;
+    const failureReason = InvalidInstructionReason.MergeInstructionTargetsWithNonWritableNotes;
     const description = InvalidInstructionReasonDescription[failureReason];
     const failureMessage = StringHelper.format(description, [maxTabStringValue.toString()]);
 

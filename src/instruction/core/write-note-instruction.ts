@@ -29,7 +29,7 @@ export class WriteNoteInstruction extends MergeableInstructionBase {
   writeOnTab(tab: Tab): InstructionWriteResult {
     let result: InstructionWriteResult;
 
-    if (tab.isNoteInStringsRange(this.note)) {
+    if (tab.isNoteWritable(this.note)) {
       try {
         tab.writeNote(this.note);
 
@@ -38,16 +38,16 @@ export class WriteNoteInstruction extends MergeableInstructionBase {
         result = this.getUnmappepFailureResult();
       }
     } else {
-      result = this._getStringOutOfTabRangeFailureResult(tab.numberOfStrings);
+      result = this._getNonWritableNoteFailureResult(tab.numberOfStrings);
     }
 
     return result;
   }
 
-  private _getStringOutOfTabRangeFailureResult(
+  private _getNonWritableNoteFailureResult(
     maxTabStringValue: number
   ): FailedInstructionWriteResult {
-    const failureReason = InvalidInstructionBaseReason.WriteNoteInstructionWithStringOutOfTabRange;
+    const failureReason = InvalidInstructionBaseReason.WriteNoteInstructionWithNonWritableNote;
     const description = InvalidInstructionBaseReasonDescription[failureReason];
     const failureMessage = StringHelper.format(description, [maxTabStringValue.toString()]);
 

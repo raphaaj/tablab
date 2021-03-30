@@ -17,7 +17,7 @@ export enum InvalidInstructionReason {
   RepeatInstructionWithoutTargets = 'REPEAT_INSTRUCTION_WITHOUT_TARGETS',
   MergeInstructionWithoutTargets = 'MERGE_INSTRUCTION_WITHOUT_TARGETS',
   MergeInstructionWithUnmergeableTargets = 'MERGE_INSTRUCTION_WITH_UNMERGEABLE_TARGETS',
-  MergeInstructionTargetsWithStringOutOfTabRange = 'MERGE_INSTRUCTION_TARGETS_WITH_STRINGS_OUT_OF_TAB_RANGE',
+  MergeInstructionTargetsWithNonWritableNotes = 'MERGE_INSTRUCTION_TARGETS_WITH_NON_WRITABLE_NOTES',
   MergeInstructionTargetsWithConcurrentNotes = 'MERGE_INSTRUCTION_TARGETS_WITH_CONCURRENT_NOTES',
 }
 
@@ -57,7 +57,7 @@ export const InvalidInstructionReasonDescription: Record<InvalidInstructionReaso
     'The merge method requires at least one target instruction',
   [InvalidInstructionReason.MergeInstructionWithUnmergeableTargets]:
     'The targets of the merge method must not be method instructions',
-  [InvalidInstructionReason.MergeInstructionTargetsWithStringOutOfTabRange]:
+  [InvalidInstructionReason.MergeInstructionTargetsWithNonWritableNotes]:
     'Identified target instructions with string out of tab range. String value must be between 1 and {0}',
   [InvalidInstructionReason.MergeInstructionTargetsWithConcurrentNotes]:
     'Identified multiple target instructions applied to the same string',

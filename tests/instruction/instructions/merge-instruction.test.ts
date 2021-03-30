@@ -54,7 +54,7 @@ describe(`[${MergeInstruction.name}]`, () => {
       expect(tab.writeParallelNotes).not.toHaveBeenCalled();
       expect(writeResult.success).toBe(false);
       expect(writeResult.failureReasonIdentifier).toBe(
-        InvalidInstructionReason.MergeInstructionTargetsWithStringOutOfTabRange
+        InvalidInstructionReason.MergeInstructionTargetsWithNonWritableNotes
       );
     });
   });
