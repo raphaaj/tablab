@@ -18,12 +18,12 @@ class TestTabElement extends TabElement {
     throw new Error('Method not implemented.');
   }
 
-  testGetSectionFiller(fillerLength: number): string {
-    return this.getSectionFiller(fillerLength);
+  testGetSectionSpacing(length: number): string {
+    return this.getSectionSpacing(length);
   }
 
-  testGetStringsFiller(fillerLength: number): string {
-    return this.getStringsFiller(fillerLength);
+  testGetStringsSpacing(length: number): string {
+    return this.getStringsSpacing(length);
   }
 
   writeFooter(): this {
@@ -48,24 +48,28 @@ describe(`[${TabElement.name}]`, () => {
     it('should create a tab element with the default options if no custom options are given', () => {
       const tabElement = new TestTabElement();
 
-      expect(tabElement.filler).toBe(TestTabElement.DEFAULT_FILLER);
       expect(tabElement.numberOfStrings).toBe(TestTabElement.DEFAULT_NUMBER_OF_STRINGS);
-      expect(tabElement.sectionFiller).toBe(TestTabElement.DEFAULT_SECTION_FILLER);
-      expect(tabElement.sectionSymbol).toBe(TestTabElement.DEFAULT_SECTION_SYMBOL);
+      expect(tabElement.sectionDivisionCharacter).toBe(
+        TestTabElement.DEFAULT_SECTION_DIVISION_CHARACTER
+      );
+      expect(tabElement.sectionSpacingCharacter).toBe(
+        TestTabElement.DEFAULT_SECTION_SPACING_CHARACTER
+      );
       expect(tabElement.spacing).toBe(TestTabElement.DEFAULT_SPACING);
+      expect(tabElement.spacingCharacter).toBe(TestTabElement.DEFAULT_SPACING_CHARACTER);
     });
 
-    it('should set the filler based on the given value', () => {
-      const filler = '@';
-      const tabElement = new TestTabElement({ filler });
+    it('should set the spacing character based on the given value', () => {
+      const spacingCharacter = '@';
+      const tabElement = new TestTabElement({ spacingCharacter });
 
-      expect(tabElement.filler).toBe(filler);
+      expect(tabElement.spacingCharacter).toBe(spacingCharacter);
     });
 
-    it('should throw if the given value for filler is invalid', () => {
-      const filler = 'Test';
+    it('should throw if the given spacing character is invalid', () => {
+      const spacingCharacter = 'Test';
 
-      expect(() => new TestTabElement({ filler })).toThrow();
+      expect(() => new TestTabElement({ spacingCharacter })).toThrow();
     });
 
     it('should set the number of strings based on the given value', () => {
@@ -75,36 +79,36 @@ describe(`[${TabElement.name}]`, () => {
       expect(tabElement.numberOfStrings).toBe(numberOfStrings);
     });
 
-    it('should throw if the given value for number of strings is invalid', () => {
+    it('should throw if the given number of strings is invalid', () => {
       const numberOfStrings = 0;
 
       expect(() => new TestTabElement({ numberOfStrings })).toThrow();
     });
 
-    it('should set the sectionFiller based on the given value', () => {
-      const sectionFiller = '@';
-      const tabElement = new TestTabElement({ sectionFiller });
+    it('should set the section spacing character based on the given value', () => {
+      const sectionSpacingCharacter = '@';
+      const tabElement = new TestTabElement({ sectionSpacingCharacter });
 
-      expect(tabElement.sectionFiller).toBe(sectionFiller);
+      expect(tabElement.sectionSpacingCharacter).toBe(sectionSpacingCharacter);
     });
 
-    it('should throw if the given value for sectionFiller is invalid', () => {
-      const sectionFiller = 'Test';
+    it('should throw if the given section spacing character is invalid', () => {
+      const sectionSpacingCharacter = 'Test';
 
-      expect(() => new TestTabElement({ sectionFiller })).toThrow();
+      expect(() => new TestTabElement({ sectionSpacingCharacter })).toThrow();
     });
 
-    it('should set the sectionSymbol based on the given value', () => {
-      const sectionSymbol = '@';
-      const tabElement = new TestTabElement({ sectionSymbol });
+    it('should set the section division character based on the given value', () => {
+      const sectionDivisionCharacter = '@';
+      const tabElement = new TestTabElement({ sectionDivisionCharacter });
 
-      expect(tabElement.sectionSymbol).toBe(sectionSymbol);
+      expect(tabElement.sectionDivisionCharacter).toBe(sectionDivisionCharacter);
     });
 
-    it('should throw if the given value for sectionSymbol is invalid', () => {
-      const sectionSymbol = 'Test';
+    it('should throw if the given section division character is invalid', () => {
+      const sectionDivisionCharacter = 'Test';
 
-      expect(() => new TestTabElement({ sectionSymbol })).toThrow();
+      expect(() => new TestTabElement({ sectionDivisionCharacter })).toThrow();
     });
 
     it('should set the spacing based on the given value', () => {
@@ -114,7 +118,7 @@ describe(`[${TabElement.name}]`, () => {
       expect(tabElement.spacing).toBe(spacing);
     });
 
-    it('should throw if the given value for spacing is invalid', () => {
+    it('should throw if the given spacing is invalid', () => {
       const spacing = 0;
 
       expect(() => new TestTabElement({ spacing })).toThrow();
@@ -182,25 +186,27 @@ describe(`[${TabElement.name}]`, () => {
     });
   });
 
-  describe('[getStringsFiller]', () => {
-    it('should return a string composed with the tab element filler character with the specified length', () => {
-      const filler = '+';
-      const fillerLength = 5;
-      const expectedStringsFiller = Array(fillerLength + 1).join(filler);
-      const tabElement = new TestTabElement({ filler });
+  describe('[getStringsSpacing]', () => {
+    it(`it should return a string with all characters equal to the tab element's spacing character and with the given length`, () => {
+      const spacingCharacter = '+';
+      const spacingLength = 5;
 
-      expect(tabElement.testGetStringsFiller(fillerLength)).toBe(expectedStringsFiller);
+      const expectedSpacingString = Array(spacingLength + 1).join(spacingCharacter);
+      const tabElement = new TestTabElement({ spacingCharacter });
+
+      expect(tabElement.testGetStringsSpacing(spacingLength)).toBe(expectedSpacingString);
     });
   });
 
-  describe('[getSectionFiller]', () => {
-    it('should return a string composed with the tab element section filler character with the specified length', () => {
-      const sectionFiller = '+';
-      const fillerLength = 5;
-      const expectedSectionFiller = Array(fillerLength + 1).join(sectionFiller);
-      const tabElement = new TestTabElement({ sectionFiller });
+  describe('[getSectionSpacing]', () => {
+    it(`should return a string with all characters equal to the tab element's section spacing character and with the given length`, () => {
+      const sectionSpacingCharacter = '+';
+      const spacingLength = 5;
 
-      expect(tabElement.testGetSectionFiller(fillerLength)).toBe(expectedSectionFiller);
+      const expectedSpacingString = Array(spacingLength + 1).join(sectionSpacingCharacter);
+      const tabElement = new TestTabElement({ sectionSpacingCharacter });
+
+      expect(tabElement.testGetSectionSpacing(spacingLength)).toBe(expectedSpacingString);
     });
   });
 });

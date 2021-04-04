@@ -6,63 +6,71 @@ describe(`[${TabBlock.name}]`, () => {
     it('should create a tab block with the default options if no custom options are given', () => {
       const tabBlock = new TabBlock();
 
-      expect(tabBlock.filler).toBe(TabBlock.DEFAULT_FILLER);
       expect(tabBlock.numberOfStrings).toBe(TabBlock.DEFAULT_NUMBER_OF_STRINGS);
-      expect(tabBlock.sectionFiller).toBe(TabBlock.DEFAULT_SECTION_FILLER);
-      expect(tabBlock.sectionSymbol).toBe(TabBlock.DEFAULT_SECTION_SYMBOL);
+      expect(tabBlock.sectionDivisionCharacter).toBe(TabBlock.DEFAULT_SECTION_DIVISION_CHARACTER);
+      expect(tabBlock.sectionSpacingCharacter).toBe(TabBlock.DEFAULT_SECTION_SPACING_CHARACTER);
       expect(tabBlock.spacing).toBe(TabBlock.DEFAULT_SPACING);
+      expect(tabBlock.spacingCharacter).toBe(TabBlock.DEFAULT_SPACING_CHARACTER);
     });
 
     it('should create a tab block with the given options', () => {
-      const filler = '@';
       const numberOfStrings = 2;
-      const sectionFiller = '$';
-      const sectionSymbol = '#';
+      const sectionDivisionCharacter = '#';
+      const sectionSpacingCharacter = '$';
       const spacing = 1;
+      const spacingCharacter = '@';
 
       const tabBlock = new TabBlock({
-        filler,
         numberOfStrings,
-        sectionFiller,
-        sectionSymbol,
+        sectionDivisionCharacter: sectionDivisionCharacter,
+        sectionSpacingCharacter,
         spacing,
+        spacingCharacter,
       });
 
-      expect(tabBlock.filler).toBe(filler);
       expect(tabBlock.numberOfStrings).toBe(numberOfStrings);
-      expect(tabBlock.sectionFiller).toBe(sectionFiller);
-      expect(tabBlock.sectionSymbol).toBe(sectionSymbol);
+      expect(tabBlock.sectionDivisionCharacter).toBe(sectionDivisionCharacter);
+      expect(tabBlock.sectionSpacingCharacter).toBe(sectionSpacingCharacter);
       expect(tabBlock.spacing).toBe(spacing);
+      expect(tabBlock.spacingCharacter).toBe(spacingCharacter);
     });
 
     it('should initialize the block header section', () => {
-      const sectionFiller = '@';
+      const sectionSpacingCharacter = '@';
       const spacing = 2;
-      const expectedHeader = Array(spacing + 1).join(sectionFiller);
+      const expectedHeader = Array(spacing + 1).join(sectionSpacingCharacter);
 
-      const tabBlock = new TabBlock({ sectionFiller, spacing });
+      const tabBlock = new TabBlock({ sectionSpacingCharacter, spacing });
 
       expect(tabBlock.block[0]).toBe(expectedHeader);
     });
 
     it('should initialize the block footer section', () => {
       const numberOfStrings = 4;
-      const sectionFiller = '@';
+      const sectionSpacingCharacter = '@';
       const spacing = 2;
-      const expectedFooter = Array(spacing + 1).join(sectionFiller);
+      const expectedFooter = Array(spacing + 1).join(sectionSpacingCharacter);
 
-      const tabBlock = new TabBlock({ numberOfStrings, sectionFiller, spacing });
+      const tabBlock = new TabBlock({
+        numberOfStrings,
+        sectionSpacingCharacter,
+        spacing,
+      });
 
       expect(tabBlock.block[numberOfStrings + 1]).toBe(expectedFooter);
     });
 
     it('should initialize the block strings section', () => {
       const numberOfStrings = 4;
-      const filler = '@';
       const spacing = 2;
-      const expectedStringsValue = Array(spacing + 1).join(filler);
+      const spacingCharacter = '@';
+      const expectedStringsValue = Array(spacing + 1).join(spacingCharacter);
 
-      const tabBlock = new TabBlock({ filler, spacing, numberOfStrings });
+      const tabBlock = new TabBlock({
+        numberOfStrings,
+        spacing,
+        spacingCharacter,
+      });
 
       tabBlock.block
         .slice(1, numberOfStrings + 1)
@@ -78,7 +86,7 @@ describe(`[${TabBlock.name}]`, () => {
         expect(tabBlock.header).toBe(tabBlock.block[0]);
       });
 
-      it('should return the block header section cropped if it has filler characters exceeding the strings section length', () => {
+      it('should return the block header section cropped if it has spacing characters exceeding the strings section length', () => {
         const spacing = 2;
         const tabBlock = new TabBlock({ spacing });
         const spacingToRemove = 1;
@@ -100,7 +108,7 @@ describe(`[${TabBlock.name}]`, () => {
         expect(tabBlock.footer).toBe(tabBlock.block[numberOfStrings + 1]);
       });
 
-      it('should return the block footer section cropped if it has filler characters exceeding the strings section length', () => {
+      it('should return the block footer section cropped if it has spacing characters exceeding the strings section length', () => {
         const spacing = 2;
         const tabBlock = new TabBlock({ spacing });
         const spacingToRemove = 1;
@@ -175,12 +183,12 @@ describe(`[${TabBlock.name}]`, () => {
       expect(() => tabBlock.addSpacing(spacingToAdd)).toThrow();
     });
 
-    it('should add fillers to all strings with the given spacing length when valid', () => {
-      const filler = '@';
-      const tabBlock = new TabBlock({ filler });
+    it('should add spacing characters to all strings with the given spacing length when valid', () => {
+      const spacingCharacter = '@';
+      const tabBlock = new TabBlock({ spacingCharacter });
       const spacingToAdd = 10;
       const expectedStringsValue = tabBlock.strings.map(
-        (string) => string + Array(spacingToAdd + 1).join(filler)
+        (string) => string + Array(spacingToAdd + 1).join(spacingCharacter)
       );
 
       tabBlock.addSpacing(spacingToAdd);
@@ -188,12 +196,12 @@ describe(`[${TabBlock.name}]`, () => {
       expect(tabBlock.strings).toEqual(expectedStringsValue);
     });
 
-    it('should add fillers to all strings with the block spacing length when no spacing value is given', () => {
+    it('should add spacing characters to all strings with the block spacing length when no spacing value is given', () => {
       const spacing = 2;
-      const filler = '@';
-      const tabBlock = new TabBlock({ filler, spacing });
+      const spacingCharacter = '@';
+      const tabBlock = new TabBlock({ spacingCharacter, spacing });
       const expectedStringsValue = tabBlock.strings.map(
-        (string) => string + Array(spacing + 1).join(filler)
+        (string) => string + Array(spacing + 1).join(spacingCharacter)
       );
 
       tabBlock.addSpacing();
@@ -211,15 +219,15 @@ describe(`[${TabBlock.name}]`, () => {
     });
 
     it('should return 1 block with the given block length if the block length is smaller than the given block length', () => {
-      const filler = '-';
       const numberOfStrings = 2;
+      const sectionSpacingCharacter = ' ';
       const spacing = 7;
-      const sectionFiller = ' ';
+      const spacingCharacter = '-';
       const tabBlock = new TabBlock({
-        filler,
         numberOfStrings,
-        sectionFiller,
+        sectionSpacingCharacter,
         spacing,
+        spacingCharacter,
       });
       const string = 1;
       const fret = '0';
@@ -241,15 +249,15 @@ describe(`[${TabBlock.name}]`, () => {
     });
 
     it('should split the block in multiple blocks with the given block length if the block length is greater than the given block length', () => {
-      const filler = '-';
       const numberOfStrings = 2;
+      const sectionSpacingCharacter = ' ';
       const spacing = 15;
-      const sectionFiller = ' ';
+      const spacingCharacter = '-';
       const tabBlock = new TabBlock({
-        filler,
         numberOfStrings,
-        sectionFiller,
+        sectionSpacingCharacter,
         spacing,
+        spacingCharacter,
       });
       const string = 1;
       const fret = '0';
@@ -277,18 +285,18 @@ describe(`[${TabBlock.name}]`, () => {
     });
 
     it('should not split the block in the middle of a header, when possible', () => {
-      const filler = '-';
       const numberOfStrings = 2;
+      const sectionDivisionCharacter = '|';
+      const sectionSpacingCharacter = ' ';
       const spacingBeforeHeader = 10;
       const spacingAfterHeader = 2;
-      const sectionFiller = ' ';
-      const sectionSymbol = '|';
+      const spacingCharacter = '-';
       const tabBlock = new TabBlock({
-        filler,
         numberOfStrings,
-        sectionFiller,
-        sectionSymbol,
+        sectionDivisionCharacter,
+        sectionSpacingCharacter,
         spacing: spacingBeforeHeader,
+        spacingCharacter,
       });
       const header = 'test header';
       const blockLength = 20;
@@ -316,18 +324,18 @@ describe(`[${TabBlock.name}]`, () => {
     });
 
     it('should not split the block in the middle of a footer, when possible', () => {
-      const filler = '-';
       const numberOfStrings = 2;
+      const sectionDivisionCharacter = '|';
+      const sectionSpacingCharacter = ' ';
       const spacingBeforeFooter = 10;
       const spacingAfterFooter = 2;
-      const sectionFiller = ' ';
-      const sectionSymbol = '|';
+      const spacingCharacter = '-';
       const tabBlock = new TabBlock({
-        filler,
         numberOfStrings,
-        sectionFiller,
-        sectionSymbol,
+        sectionDivisionCharacter,
+        sectionSpacingCharacter,
         spacing: spacingBeforeFooter,
+        spacingCharacter,
       });
       const footer = 'test footer';
       const blockLength = 20;
@@ -355,18 +363,18 @@ describe(`[${TabBlock.name}]`, () => {
     });
 
     it('should not split the block in the middle of a string fret instruction, when possible', () => {
-      const filler = '-';
+      const spacingCharacter = '-';
       const numberOfStrings = 2;
       const spacingBeforeNote = 15;
       const spacingAfterNote = 2;
-      const sectionFiller = ' ';
-      const sectionSymbol = '|';
+      const sectionSpacingCharacter = ' ';
+      const sectionDivisionCharacter = '|';
       const tabBlock = new TabBlock({
-        filler,
         numberOfStrings,
-        sectionFiller,
-        sectionSymbol,
+        sectionDivisionCharacter,
+        sectionSpacingCharacter,
         spacing: spacingBeforeNote,
+        spacingCharacter,
       });
       const string = 1;
       const fret = '0h2p0';
@@ -395,17 +403,17 @@ describe(`[${TabBlock.name}]`, () => {
     });
 
     it('should split the block in the middle of a header when unable to split it without breaking the header', () => {
-      const filler = '-';
       const numberOfStrings = 2;
-      const sectionFiller = ' ';
-      const sectionSymbol = '|';
+      const sectionDivisionCharacter = '|';
+      const sectionSpacingCharacter = ' ';
       const spacing = 1;
+      const spacingCharacter = '-';
       const tabBlock = new TabBlock({
-        filler,
         numberOfStrings,
-        sectionFiller,
-        sectionSymbol,
+        sectionDivisionCharacter,
+        sectionSpacingCharacter,
         spacing,
+        spacingCharacter,
       });
       const header = 'a long enough header';
       const blockLength = 20;
@@ -432,17 +440,17 @@ describe(`[${TabBlock.name}]`, () => {
     });
 
     it('should split the block in the middle of a footer when unable to split it without breaking the footer', () => {
-      const filler = '-';
       const numberOfStrings = 2;
-      const sectionFiller = ' ';
-      const sectionSymbol = '|';
+      const sectionDivisionCharacter = '|';
+      const sectionSpacingCharacter = ' ';
       const spacing = 1;
+      const spacingCharacter = '-';
       const tabBlock = new TabBlock({
-        filler,
         numberOfStrings,
-        sectionFiller,
-        sectionSymbol,
+        sectionDivisionCharacter,
+        sectionSpacingCharacter,
         spacing,
+        spacingCharacter,
       });
       const footer = 'a long enough footer';
       const blockLength = 20;
@@ -469,17 +477,17 @@ describe(`[${TabBlock.name}]`, () => {
     });
 
     it('should split the block in the middle of a string fret instruction when unable to split it without breaking the instruction', () => {
-      const filler = '-';
       const numberOfStrings = 2;
-      const sectionFiller = ' ';
-      const sectionSymbol = '|';
+      const sectionDivisionCharacter = '|';
+      const sectionSpacingCharacter = ' ';
       const spacing = 1;
+      const spacingCharacter = '-';
       const tabBlock = new TabBlock({
-        filler,
         numberOfStrings,
-        sectionFiller,
-        sectionSymbol,
+        sectionDivisionCharacter,
+        sectionSpacingCharacter,
         spacing,
+        spacingCharacter,
       });
       const string = 1;
       const fret = 'a_long_enough_instruction';
@@ -523,7 +531,7 @@ describe(`[${TabBlock.name}]`, () => {
       expect(() => tabBlock.removeSpacing(spacingToRemove)).toThrow();
     });
 
-    it('should remove fillers from all strings by the given spacing length when valid', () => {
+    it('should remove spacing characters from all strings by the given spacing length when valid', () => {
       const spacing = 2;
       const tabBlock = new TabBlock({ spacing });
       const spacingToRemove = 1;
@@ -536,7 +544,7 @@ describe(`[${TabBlock.name}]`, () => {
       expect(tabBlock.strings).toEqual(expectedStringsValue);
     });
 
-    it('should remove fillers from all strings by the block spacing length when no spacing value is given', () => {
+    it('should remove spacing characters from all strings by the maximum removable spacing length when no spacing value is given', () => {
       const spacing = 2;
       const tabBlock = new TabBlock({ spacing });
       const expectedStringsValue = tabBlock.strings.map((string) =>
@@ -565,7 +573,7 @@ describe(`[${TabBlock.name}]`, () => {
   });
 
   describe('[getMaximumRemovableSpacing]', () => {
-    it('should return the minimum number of sequential filler characters from all strings backwards', () => {
+    it('should return the minimum number of sequential spacing characters from all strings backwards', () => {
       const spacing = 2;
       const tabBlock = new TabBlock({ spacing });
       const noteToWrite = new Note(1, '1/2');
@@ -607,34 +615,34 @@ describe(`[${TabBlock.name}]`, () => {
     });
 
     it('should write, in parallel, the fret instructions on the specified string and add spacing based on block spacing', () => {
-      const filler = '@';
       const numberOfStrings = 4;
       const spacing = 2;
-      const tabBlock = new TabBlock({ filler, numberOfStrings, spacing });
+      const spacingCharacter = '@';
+      const tabBlock = new TabBlock({ numberOfStrings, spacing, spacingCharacter });
       const strings = Array.from({ length: numberOfStrings }, (_, index) => index + 1);
       const notesToWrite = strings.map((string) => new Note(string, string.toString()));
-      const expectedStringSpacingFiller = Array(spacing + 1).join(filler);
+      const expectedStringSpacing = Array(spacing + 1).join(spacingCharacter);
 
       tabBlock.writeParallelNotes(notesToWrite);
 
       tabBlock.strings.forEach((string, stringIdx) => {
         const expectedStringValue =
-          expectedStringSpacingFiller + notesToWrite[stringIdx].fret + expectedStringSpacingFiller;
+          expectedStringSpacing + notesToWrite[stringIdx].fret + expectedStringSpacing;
 
         expect(string).toBe(expectedStringValue);
       });
     });
 
-    it('should write filler characters on strings without fret instructions and add spacing based on block spacing', () => {
-      const filler = '@';
+    it('should write spacing characters on strings without fret instructions and add spacing based on block spacing', () => {
       const numberOfStrings = 4;
       const spacing = 2;
-      const tabBlock = new TabBlock({ filler, numberOfStrings, spacing });
+      const spacingCharacter = '@';
+      const tabBlock = new TabBlock({ spacingCharacter, numberOfStrings, spacing });
 
       const notesToWrite = [new Note(1, '0'), new Note(2, '0/1')];
       const strings = notesToWrite.map((note) => note.string);
 
-      const expectedStringSpacingFiller = Array(spacing + 1).join(filler);
+      const expectedStringSpacing = Array(spacing + 1).join(spacingCharacter);
       const maxNoteFretLength = notesToWrite.reduce(
         (maxNoteFretLength, note) => Math.max(note.fret.length, maxNoteFretLength),
         0
@@ -646,25 +654,22 @@ describe(`[${TabBlock.name}]`, () => {
         if (strings.indexOf(stringIdx + 1) > -1) {
           const stringFretValue = notesToWrite[stringIdx].fret;
 
-          let stringFretLengthCorrectionFiller = '';
+          let stringFretSpacing = '';
           if (stringFretValue.length < maxNoteFretLength) {
-            stringFretLengthCorrectionFiller = Array(
-              maxNoteFretLength - stringFretValue.length + 1
-            ).join(filler);
+            stringFretSpacing = Array(maxNoteFretLength - stringFretValue.length + 1).join(
+              spacingCharacter
+            );
           }
 
           const expectedStringValue =
-            expectedStringSpacingFiller +
-            stringFretValue +
-            stringFretLengthCorrectionFiller +
-            expectedStringSpacingFiller;
+            expectedStringSpacing + stringFretValue + stringFretSpacing + expectedStringSpacing;
 
           expect(string).toBe(expectedStringValue);
         } else {
-          const stringFretFiller = Array(maxNoteFretLength + 1).join(filler);
+          const stringFretSpacing = Array(maxNoteFretLength + 1).join(spacingCharacter);
 
           const expectedStringValue =
-            expectedStringSpacingFiller + stringFretFiller + expectedStringSpacingFiller;
+            expectedStringSpacing + stringFretSpacing + expectedStringSpacing;
 
           expect(string).toBe(expectedStringValue);
         }
@@ -680,38 +685,47 @@ describe(`[${TabBlock.name}]`, () => {
       expect(() => tabBlock.writeHeader(header)).toThrow();
     });
 
-    it('should write the given header to the header section, preceded by the block section symbol', () => {
-      const sectionFiller = ' ';
-      const sectionSymbol = '$';
+    it('should write the given header to the header section, preceded by the block section division character', () => {
+      const sectionDivisionCharacter = '$';
+      const sectionSpacingCharacter = ' ';
       const spacing = 2;
-      const tabBlock = new TabBlock({ sectionFiller, sectionSymbol, spacing });
+      const tabBlock = new TabBlock({
+        sectionDivisionCharacter,
+        sectionSpacingCharacter,
+        spacing,
+      });
       const header = 'some header';
 
       const expectedHeader =
         tabBlock.header +
-        sectionSymbol +
-        sectionFiller +
+        sectionDivisionCharacter +
+        sectionSpacingCharacter +
         header +
-        Array(spacing + 1).join(sectionFiller);
+        Array(spacing + 1).join(sectionSpacingCharacter);
 
       tabBlock.writeHeader(header);
 
       expect(tabBlock.header).toBe(expectedHeader);
     });
 
-    it(`should write the section symbol to the strings and fill them with filler characters to the header's end`, () => {
-      const filler = '@';
-      const sectionFiller = ' ';
-      const sectionSymbol = '$';
+    it(`should write the section division character to the strings and fill them with spacing characters to the header's end`, () => {
+      const sectionDivisionCharacter = '$';
+      const sectionSpacingCharacter = ' ';
       const spacing = 2;
-      const tabBlock = new TabBlock({ filler, sectionFiller, sectionSymbol, spacing });
+      const spacingCharacter = '@';
+      const tabBlock = new TabBlock({
+        sectionDivisionCharacter,
+        sectionSpacingCharacter,
+        spacing,
+        spacingCharacter,
+      });
       const header = 'some header';
 
       const expectedStringsValue = tabBlock.strings.map(
         (string) =>
           string +
-          sectionSymbol +
-          Array(sectionFiller.length + header.length + spacing + 1).join(filler)
+          sectionDivisionCharacter +
+          Array(sectionSpacingCharacter.length + header.length + spacing + 1).join(spacingCharacter)
       );
 
       tabBlock.writeHeader(header);
@@ -719,12 +733,17 @@ describe(`[${TabBlock.name}]`, () => {
       expect(tabBlock.strings).toEqual(expectedStringsValue);
     });
 
-    it('should keep writing notes on strings based on block spacing despite of the added filler after a header is written', () => {
-      const filler = '@';
-      const sectionFiller = ' ';
-      const sectionSymbol = '$';
+    it('should keep writing notes on strings based on block spacing despite of the added spacing after a header is written', () => {
+      const spacingCharacter = '@';
+      const sectionSpacingCharacter = ' ';
+      const sectionDivisionCharacter = '$';
       const spacing = 2;
-      const tabBlock = new TabBlock({ filler, sectionFiller, sectionSymbol, spacing });
+      const tabBlock = new TabBlock({
+        sectionDivisionCharacter,
+        sectionSpacingCharacter,
+        spacing,
+        spacingCharacter,
+      });
       const header = 'some header';
       const noteString = 1;
       const noteFret = '1/2';
@@ -735,15 +754,19 @@ describe(`[${TabBlock.name}]`, () => {
         if (stringIdx === noteString - 1) {
           expectedStringValue =
             string +
-            sectionSymbol +
-            Array(spacing + 1).join(filler) +
+            sectionDivisionCharacter +
+            Array(spacing + 1).join(spacingCharacter) +
             noteFret +
-            Array(sectionFiller.length + header.length - noteFret.length + 1).join(filler);
+            Array(sectionSpacingCharacter.length + header.length - noteFret.length + 1).join(
+              spacingCharacter
+            );
         } else {
           expectedStringValue =
             string +
-            sectionSymbol +
-            Array(sectionFiller.length + header.length + spacing + 1).join(filler);
+            sectionDivisionCharacter +
+            Array(sectionSpacingCharacter.length + header.length + spacing + 1).join(
+              spacingCharacter
+            );
         }
 
         return expectedStringValue;
@@ -754,17 +777,23 @@ describe(`[${TabBlock.name}]`, () => {
       expect(tabBlock.strings).toEqual(expectedStringsValue);
     });
 
-    it(`should write the section symbol to the footer and fill it with filler characters to the header's end`, () => {
-      const sectionFiller = ' ';
-      const sectionSymbol = '$';
+    it(`should write the section division character to the footer and fill it with spacing characters to the header's end`, () => {
+      const sectionDivisionCharacter = '$';
+      const sectionSpacingCharacter = ' ';
       const spacing = 2;
-      const tabBlock = new TabBlock({ sectionFiller, sectionSymbol, spacing });
+      const tabBlock = new TabBlock({
+        sectionDivisionCharacter,
+        sectionSpacingCharacter,
+        spacing,
+      });
       const header = 'some header';
 
       const expectedFooter =
         tabBlock.footer +
-        sectionSymbol +
-        Array(sectionFiller.length + header.length + spacing + 1).join(sectionFiller);
+        sectionDivisionCharacter +
+        Array(sectionSpacingCharacter.length + header.length + spacing + 1).join(
+          sectionSpacingCharacter
+        );
 
       tabBlock.writeHeader(header);
 
@@ -780,39 +809,48 @@ describe(`[${TabBlock.name}]`, () => {
       expect(() => tabBlock.writeFooter(footer)).toThrow();
     });
 
-    it('should write the given footer to the footer section, preceded by the block section symbol', () => {
-      const sectionFiller = ' ';
-      const sectionSymbol = '$';
+    it('should write the given footer to the footer section, preceded by the block section division character', () => {
+      const sectionSpacingCharacter = ' ';
+      const sectionDivisionCharacter = '$';
       const spacing = 2;
-      const tabBlock = new TabBlock({ sectionFiller, sectionSymbol, spacing });
+      const tabBlock = new TabBlock({
+        sectionDivisionCharacter,
+        sectionSpacingCharacter,
+        spacing,
+      });
       const footer = 'some footer';
 
       const expectedFooter =
         tabBlock.footer +
         footer +
-        sectionFiller +
-        sectionSymbol +
-        Array(spacing + 1).join(sectionFiller);
+        sectionSpacingCharacter +
+        sectionDivisionCharacter +
+        Array(spacing + 1).join(sectionSpacingCharacter);
 
       tabBlock.writeFooter(footer);
 
       expect(tabBlock.footer).toBe(expectedFooter);
     });
 
-    it(`should fill the strings with filler to the footer's end and write the tab's section symbol and spacing`, () => {
-      const filler = '@';
-      const sectionFiller = ' ';
-      const sectionSymbol = '$';
+    it(`should fill the strings with spacing characters to the footer's end and write the tab's section diviosn cgaracter and spacing`, () => {
+      const sectionDivisionCharacter = '$';
+      const sectionSpacingCharacter = ' ';
       const spacing = 2;
-      const tabBlock = new TabBlock({ filler, sectionFiller, sectionSymbol, spacing });
+      const spacingCharacter = '@';
+      const tabBlock = new TabBlock({
+        sectionDivisionCharacter,
+        sectionSpacingCharacter,
+        spacing,
+        spacingCharacter,
+      });
       const footer = 'some footer';
 
       const expectedStringsValue = tabBlock.strings.map(
         (string) =>
           string +
-          Array(footer.length + sectionFiller.length + 1).join(filler) +
-          sectionSymbol +
-          Array(spacing + 1).join(filler)
+          Array(footer.length + sectionSpacingCharacter.length + 1).join(spacingCharacter) +
+          sectionDivisionCharacter +
+          Array(spacing + 1).join(spacingCharacter)
       );
 
       tabBlock.writeFooter(footer);
@@ -820,17 +858,21 @@ describe(`[${TabBlock.name}]`, () => {
       expect(tabBlock.strings).toEqual(expectedStringsValue);
     });
 
-    it('should not add filler to the strings if there is already space to add the given footer', () => {
-      const filler = '@';
-      const sectionSymbol = '$';
+    it('should not add spacing characters to the strings if there is already space to add the given footer', () => {
+      const sectionDivisionCharacter = '$';
       const spacing = 2;
-      const tabBlock = new TabBlock({ filler, sectionSymbol, spacing });
+      const spacingCharacter = '@';
+      const tabBlock = new TabBlock({
+        sectionDivisionCharacter,
+        spacing,
+        spacingCharacter,
+      });
       const footer = 'some footer';
 
       tabBlock.addSpacing(footer.length + 1);
 
       const expectedStrings = tabBlock.strings.map(
-        (string) => string + sectionSymbol + Array(spacing + 1).join(filler)
+        (string) => string + sectionDivisionCharacter + Array(spacing + 1).join(spacingCharacter)
       );
 
       tabBlock.writeFooter(footer);
@@ -838,18 +880,22 @@ describe(`[${TabBlock.name}]`, () => {
       expect(tabBlock.strings).toEqual(expectedStrings);
     });
 
-    it(`should fill the header with filler to the footer end and add the tab's section symbol and spacing`, () => {
-      const sectionFiller = ' ';
-      const sectionSymbol = '$';
+    it(`should fill the header with spacing characters to the footer's end and add the tab's section division character and spacing`, () => {
+      const sectionSpacingCharacter = ' ';
+      const sectionDivisionCharacter = '$';
       const spacing = 2;
-      const tabBlock = new TabBlock({ sectionFiller, sectionSymbol, spacing });
+      const tabBlock = new TabBlock({
+        sectionDivisionCharacter,
+        sectionSpacingCharacter,
+        spacing,
+      });
       const footer = 'some footer';
 
       const expectedHeader =
         tabBlock.header +
-        Array(footer.length + sectionFiller.length + 1).join(sectionFiller) +
-        sectionSymbol +
-        Array(spacing + 1).join(sectionFiller);
+        Array(footer.length + sectionSpacingCharacter.length + 1).join(sectionSpacingCharacter) +
+        sectionDivisionCharacter +
+        Array(spacing + 1).join(sectionSpacingCharacter);
 
       tabBlock.writeFooter(footer);
 

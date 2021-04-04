@@ -5,13 +5,6 @@ import { Note } from './note';
  */
 export interface TabElementOptions {
   /**
-   * The character used to represent spaces between notes written in the tablature element.
-   * It must be a single character string.
-   * @defaultValue {@link TabElement.DEFAULT_FILLER}
-   */
-  filler?: string;
-
-  /**
    * The total number of strings used in the tablature element. It must be an integer number
    * greater than 0.
    * @defaultValue {@link TabElement.DEFAULT_NUMBER_OF_STRINGS}
@@ -19,37 +12,44 @@ export interface TabElementOptions {
   numberOfStrings?: number;
 
   /**
-   * The character used to represent spaces between elements in the header and footer sections
-   * of the tablature element. It must be a single character string.
-   * @defaultValue {@link TabElement.DEFAULT_SECTION_FILLER}
-   */
-  sectionFiller?: string;
-
-  /**
    * The character used to mark section divisions in the tablature element. It must be a single
    * character string.
-   * @defaultValue {@link TabElement.DEFAULT_SECTION_SYMBOL}
+   * @defaultValue {@link TabElement.DEFAULT_SECTION_DIVISION_CHARACTER}
    */
-  sectionSymbol?: string;
+  sectionDivisionCharacter?: string;
 
   /**
-   * The number of filler characters to write as spacing between notes written in the tablature
-   * element. It must be an integer number greater than 0.
+   * The character used to represent spaces between elements in the header and footer sections
+   * of the tablature element. It must be a single character string.
+   * @defaultValue {@link TabElement.DEFAULT_SECTION_SPACING_CHARACTER}
+   */
+  sectionSpacingCharacter?: string;
+
+  /**
+   * The number of spacing characters to write between notes in the tablature element. It must
+   * be an integer number greater than 0.
    * @defaultValue {@link TabElement.DEFAULT_SPACING}
    */
   spacing?: number;
+
+  /**
+   * The character used to represent spaces between notes written in the tablature element.
+   * It must be a single character string.
+   * @defaultValue {@link TabElement.DEFAULT_SPACING_CHARACTER}
+   */
+  spacingCharacter?: string;
 }
 
 export abstract class TabElement {
-  static readonly DEFAULT_FILLER = '-';
   static readonly DEFAULT_NUMBER_OF_STRINGS = 6;
-  static readonly DEFAULT_SECTION_FILLER = ' ';
-  static readonly DEFAULT_SECTION_SYMBOL = '|';
+  static readonly DEFAULT_SECTION_DIVISION_CHARACTER = '|';
+  static readonly DEFAULT_SECTION_SPACING_CHARACTER = ' ';
   static readonly DEFAULT_SPACING = 3;
+  static readonly DEFAULT_SPACING_CHARACTER = '-';
 
   /**
-   * The number of filler characters to write as spacing between notes written in the tablature
-   * element. It must be an integer number greater than 0.
+   * The number of spacing characters to write between notes in the tablature element. It must
+   * be an integer number greater than 0.
    */
   get spacing(): number {
     return this._spacing;
@@ -63,25 +63,25 @@ export abstract class TabElement {
   }
 
   /**
-   * The character used to represent spaces between notes written in the tablature element.
-   */
-  readonly filler: string;
-
-  /**
    * The total number of strings used in the tablature element.
    */
   readonly numberOfStrings: number;
 
   /**
+   * The character used to mark section divisions in the tablature element.
+   */
+  readonly sectionDivisionCharacter: string;
+
+  /**
    * The character used to represent spaces between elements in the header and footer sections
    * of the tablature element.
    */
-  readonly sectionFiller: string;
+  readonly sectionSpacingCharacter: string;
 
   /**
-   * The character used to mark section divisions in the tablature element.
+   * The character used to represent spaces between notes written in the tablature element.
    */
-  readonly sectionSymbol: string;
+  readonly spacingCharacter: string;
 
   private _spacing;
 
@@ -90,7 +90,13 @@ export abstract class TabElement {
    * @param options - The options used to create a tablature element.
    */
   constructor(options: TabElementOptions = {}) {
-    const { numberOfStrings, filler, spacing, sectionSymbol, sectionFiller } = options;
+    const {
+      numberOfStrings,
+      sectionDivisionCharacter,
+      sectionSpacingCharacter,
+      spacing,
+      spacingCharacter,
+    } = options;
 
     if (numberOfStrings === undefined) this.numberOfStrings = TabElement.DEFAULT_NUMBER_OF_STRINGS;
     else if (numberOfStrings < 1)
@@ -99,26 +105,28 @@ export abstract class TabElement {
       );
     else this.numberOfStrings = numberOfStrings;
 
-    if (!filler) this.filler = TabElement.DEFAULT_FILLER;
-    else if (filler.length !== 1)
+    if (!spacingCharacter) this.spacingCharacter = TabElement.DEFAULT_SPACING_CHARACTER;
+    else if (spacingCharacter.length !== 1)
       throw new Error(
-        `The parameter filler must be a single character string. Received value was "${filler}"`
+        `The parameter spacingCharacter must be a single character string. Received value was "${spacingCharacter}"`
       );
-    else this.filler = filler;
+    else this.spacingCharacter = spacingCharacter;
 
-    if (!sectionSymbol) this.sectionSymbol = TabElement.DEFAULT_SECTION_SYMBOL;
-    else if (sectionSymbol.length !== 1)
+    if (!sectionDivisionCharacter)
+      this.sectionDivisionCharacter = TabElement.DEFAULT_SECTION_DIVISION_CHARACTER;
+    else if (sectionDivisionCharacter.length !== 1)
       throw new Error(
-        `The parameter sectionSymbol must be a single character string. Received value was "${sectionSymbol}"`
+        `The parameter sectionDivisionCharacter must be a single character string. Received value was "${sectionDivisionCharacter}"`
       );
-    else this.sectionSymbol = sectionSymbol;
+    else this.sectionDivisionCharacter = sectionDivisionCharacter;
 
-    if (!sectionFiller) this.sectionFiller = TabElement.DEFAULT_SECTION_FILLER;
-    else if (sectionFiller.length !== 1)
+    if (!sectionSpacingCharacter)
+      this.sectionSpacingCharacter = TabElement.DEFAULT_SECTION_SPACING_CHARACTER;
+    else if (sectionSpacingCharacter.length !== 1)
       throw new Error(
-        `The parameter sectionFiller must be a single character string. Received value was "${sectionFiller}"`
+        `The parameter sectionSpacingCharacter must be a single character string. Received value was "${sectionSpacingCharacter}"`
       );
-    else this.sectionFiller = sectionFiller;
+    else this.sectionSpacingCharacter = sectionSpacingCharacter;
 
     if (spacing === undefined) this._spacing = TabElement.DEFAULT_SPACING;
     else if (spacing < 1)
@@ -168,23 +176,23 @@ export abstract class TabElement {
   abstract writeParallelNotes(notes: Note[]): this;
 
   /**
-   * Creates a filler string with the given length. All characters are equal to the
-   * `sectionFiller` character of the tablature element.
-   * @param fillerLength - The desired length of the filler string.
-   * @returns The created filler string.
+   * Creates a spacing string with the given length. All characters are equal to the
+   * `sectionSpacingCharacter` character of the tablature element.
+   * @param length - The desired length of the spacing string.
+   * @returns The created spacing string.
    */
-  protected getSectionFiller(fillerLength: number): string {
-    return Array(fillerLength + 1).join(this.sectionFiller);
+  protected getSectionSpacing(length: number): string {
+    return Array(length + 1).join(this.sectionSpacingCharacter);
   }
 
   /**
-   * Creates a filler string with the given length. All characters are equal to the
-   * `filler` character of the tablature element.
-   * @param fillerLength - The desired length of the filler string.
-   * @returns The created filler string.
+   * Creates a spacing string with the given length. All characters are equal to the
+   * `spacingCharacter` character of the tablature element.
+   * @param length - The desired length of the spacing string.
+   * @returns The created spacing string.
    */
-  protected getStringsFiller(fillerLength: number): string {
-    return Array(fillerLength + 1).join(this.filler);
+  protected getStringsSpacing(length: number): string {
+    return Array(length + 1).join(this.spacingCharacter);
   }
 
   /**

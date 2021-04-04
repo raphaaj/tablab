@@ -3,9 +3,9 @@ import { StringHelper } from '../helpers/string-helper';
 import { Note } from './note';
 
 type FooterInsertPreparation = {
-  fillersToAdd: number;
   footerInsertStartIdx: number;
   footerToAdd: string;
+  sectionSpacingToAdd: number;
 };
 
 type BlockSplitResult = {
@@ -14,7 +14,7 @@ type BlockSplitResult = {
 };
 
 export class TabBlock extends TabElement {
-  static readonly MINIMUM_BLOCK_END_FILLER_LENGTH = 1;
+  static readonly MINIMUM_BLOCK_END_SPACING_LENGTH = 1;
   static readonly MINIMUM_BLOCK_LENGTH = 15;
 
   /**
@@ -82,8 +82,8 @@ export class TabBlock extends TabElement {
   }
 
   /**
-   * Adds spacing characters in the tablature block. It uses the `filler` character
-   * as a spacing character for the strings section and the `sectionFiller` character
+   * Adds spacing characters in the tablature block. It uses the `spacingCharacter` character
+   * as a spacing character for the strings section and the `sectionSpacingCharacter` character
    * as a spacing character for the header and footer sections.
    * @param spacing - The number of spacing characters to add. If omitted, the
    * current `spacing` value of the tablature block will be used.
@@ -97,10 +97,10 @@ export class TabBlock extends TabElement {
         `The parameter spacing must be a positive integer. Received value was ${spacing}.`
       );
 
-    const stringsFiller = this.getStringsFiller(spacingToAdd);
+    const stringsSpacing = this.getStringsSpacing(spacingToAdd);
 
     this._strings.forEach(
-      (string, stringIdx) => (this._strings[stringIdx] = string + stringsFiller)
+      (string, stringIdx) => (this._strings[stringIdx] = string + stringsSpacing)
     );
 
     this._isBlockSet = false;
@@ -126,7 +126,7 @@ export class TabBlock extends TabElement {
 
     const formattedBlock: string[][] = [];
     while (blockToFormat) {
-      const blockTargetLength = blockLength - TabBlock.MINIMUM_BLOCK_END_FILLER_LENGTH;
+      const blockTargetLength = blockLength - TabBlock.MINIMUM_BLOCK_END_SPACING_LENGTH;
       const blockSplitIndex = this._getBlockSplitIndexForTargetLength(
         blockToFormat,
         blockTargetLength
@@ -142,21 +142,21 @@ export class TabBlock extends TabElement {
   }
 
   /**
-   * Returns the maximum spacing characters that can be removed from the
+   * Returns the maximum number of spacing characters that can be removed from the
    * tablature block.
-   * @returns The maximum removable spacing characters.
+   * @returns The maximum removable number of spacing characters.
    */
   getMaximumRemovableSpacing(): number {
     return this._strings.reduce((maxRemovableSpacing, string) => {
-      const nonFillerLastIdx = StringHelper.getIndexOfDifferent(
+      const nonSpacingLastIdx = StringHelper.getIndexOfDifferent(
         string,
-        this.filler,
+        this.spacingCharacter,
         string.length - 1,
         -1
       );
 
       const removableSpacing =
-        nonFillerLastIdx < 0 ? string.length : string.length - (nonFillerLastIdx + 1);
+        nonSpacingLastIdx < 0 ? string.length : string.length - (nonSpacingLastIdx + 1);
 
       return maxRemovableSpacing < 0
         ? removableSpacing
@@ -165,12 +165,12 @@ export class TabBlock extends TabElement {
   }
 
   /**
-   * Removes spacing characters from the tablature block. It considers the filler
-   * character as a spacing character for the strings section and the `sectionFiller`
+   * Removes spacing characters from the tablature block. It considers the `spacingCharacter`
+   * character as a spacing character for the strings section and the `sectionSpacingCharacter`
    * character as a spacing character for the header and footer sections.
    * @param spacing - The number of spacing characters to remove. It must be an
    * integer number greater than 0 and smaller than the maximum removable spacing.
-   * If omitted, the current `spacing` value of the tablature block will be used.
+   * If omitted, the maximum removable spacing will be used.
    * @returns The tablature block.
    *
    * @see {@link TabBlock.getMaximumRemovableSpacing}
@@ -209,24 +209,26 @@ export class TabBlock extends TabElement {
 
     this._setupForNewSection();
 
-    const { footerToAdd, footerInsertStartIdx, fillersToAdd } = this._getFooterInsertPreparation(
-      footer
-    );
+    const {
+      footerToAdd,
+      footerInsertStartIdx,
+      sectionSpacingToAdd,
+    } = this._getFooterInsertPreparation(footer);
 
-    if (fillersToAdd > 0) {
-      this._header += this.getSectionFiller(fillersToAdd);
+    if (sectionSpacingToAdd > 0) {
+      this._header += this.getSectionSpacing(sectionSpacingToAdd);
       this._strings.forEach(
         (string, stringIdx) =>
-          (this._strings[stringIdx] = string + this.getStringsFiller(fillersToAdd))
+          (this._strings[stringIdx] = string + this.getStringsSpacing(sectionSpacingToAdd))
       );
     }
 
-    const sectionFinalizer = this.sectionSymbol + this.getSectionFiller(this.spacing);
+    const sectionFinalizer = this.sectionDivisionCharacter + this.getSectionSpacing(this.spacing);
     this._footer = this._footer.slice(0, footerInsertStartIdx) + footerToAdd + sectionFinalizer;
 
     this._header += sectionFinalizer;
     this._strings.forEach(
-      (string, stringIdx) => (this._strings[stringIdx] = string + this.sectionSymbol)
+      (string, stringIdx) => (this._strings[stringIdx] = string + this.sectionDivisionCharacter)
     );
     this.addSpacing();
 
@@ -244,14 +246,17 @@ export class TabBlock extends TabElement {
     this._setupForNewSection();
 
     this._header +=
-      this.sectionSymbol + this.sectionFiller + header + this.getSectionFiller(this.spacing);
+      this.sectionDivisionCharacter +
+      this.sectionSpacingCharacter +
+      header +
+      this.getSectionSpacing(this.spacing);
 
     this._strings.forEach(
-      (string, stringIdx) => (this._strings[stringIdx] = string + this.sectionSymbol)
+      (string, stringIdx) => (this._strings[stringIdx] = string + this.sectionDivisionCharacter)
     );
     this.addSpacing();
 
-    this._footer += this.sectionSymbol + this.sectionFiller;
+    this._footer += this.sectionDivisionCharacter + this.sectionSpacingCharacter;
 
     this._isBlockSet = false;
 
@@ -317,10 +322,10 @@ export class TabBlock extends TabElement {
     const footer = this._getBlockFooter(block);
     const strings = this._getBlockStrings(block);
 
-    const formattedHeader = header + this.getSectionFiller(blockTargetLength - header.length);
-    const formattedFooter = footer + this.getSectionFiller(blockTargetLength - footer.length);
+    const formattedHeader = header + this.getSectionSpacing(blockTargetLength - header.length);
+    const formattedFooter = footer + this.getSectionSpacing(blockTargetLength - footer.length);
     const formattedStrings = strings.map(
-      (string) => string + this.getStringsFiller(blockTargetLength - string.length)
+      (string) => string + this.getStringsSpacing(blockTargetLength - string.length)
     );
 
     return [formattedHeader, ...formattedStrings, formattedFooter];
@@ -357,24 +362,25 @@ export class TabBlock extends TabElement {
   }
 
   private _getFooterInsertPreparation(footer: string): FooterInsertPreparation {
-    const footerToAdd = this.getSectionFiller(this.spacing) + footer + this.sectionFiller;
+    const footerToAdd =
+      this.getSectionSpacing(this.spacing) + footer + this.sectionSpacingCharacter;
 
-    const nonSectionFillerFooterIdx = StringHelper.getIndexOfDifferent(
+    const nonSectionSpacingFooterIdx = StringHelper.getIndexOfDifferent(
       this._footer,
-      this.sectionFiller,
+      this.sectionSpacingCharacter,
       -1,
       -1
     );
 
-    let footerInsertStartIdx = nonSectionFillerFooterIdx + 1;
-    let fillersToAdd = 0;
+    let footerInsertStartIdx = nonSectionSpacingFooterIdx + 1;
+    let sectionSpacingToAdd = 0;
     if (footerInsertStartIdx + footerToAdd.length <= this._stringsLength) {
       footerInsertStartIdx = this._stringsLength - footerToAdd.length;
     } else {
-      fillersToAdd = footerInsertStartIdx + footerToAdd.length - this._stringsLength;
+      sectionSpacingToAdd = footerInsertStartIdx + footerToAdd.length - this._stringsLength;
     }
 
-    return { footerToAdd, footerInsertStartIdx, fillersToAdd };
+    return { footerToAdd, footerInsertStartIdx, sectionSpacingToAdd };
   }
 
   private _getMinimumFooterLength(): number {
@@ -386,15 +392,15 @@ export class TabBlock extends TabElement {
   }
 
   private _getMinimumSectionLength(section: string): number {
-    const nonSectionFillerIdx = StringHelper.getIndexOfDifferent(
+    const nonSectionSpacingIdx = StringHelper.getIndexOfDifferent(
       section,
-      this.sectionFiller,
+      this.sectionSpacingCharacter,
       -1,
       -1
     );
 
     const minimumSectionLenth =
-      nonSectionFillerIdx > -1 ? nonSectionFillerIdx + this.spacing + 1 : 0;
+      nonSectionSpacingIdx > -1 ? nonSectionSpacingIdx + this.spacing + 1 : 0;
 
     return minimumSectionLenth;
   }
@@ -442,8 +448,8 @@ export class TabBlock extends TabElement {
     const nextCharacter = section[splitIndex + 1];
 
     return (
-      thisCharacter === this.sectionFiller &&
-      (nextCharacter === this.sectionFiller || nextCharacter === undefined)
+      thisCharacter === this.sectionSpacingCharacter &&
+      (nextCharacter === this.sectionSpacingCharacter || nextCharacter === undefined)
     );
   }
 
@@ -461,7 +467,8 @@ export class TabBlock extends TabElement {
     const stringsSplittableAtIndex = strings.reduce((stringsSplittableAtIndex, string) => {
       const nextCharacter = string[splitIndex + 1];
       return (
-        stringsSplittableAtIndex && (nextCharacter === this.filler || nextCharacter === undefined)
+        stringsSplittableAtIndex &&
+        (nextCharacter === this.spacingCharacter || nextCharacter === undefined)
       );
     }, true);
 
@@ -483,17 +490,17 @@ export class TabBlock extends TabElement {
 
     const header =
       this._header.length <= endBlockLength
-        ? this._header + this.getSectionFiller(endBlockLength - this._header.length)
+        ? this._header + this.getSectionSpacing(endBlockLength - this._header.length)
         : this._header.slice(0, endBlockLength);
 
     const footer =
       this._footer.length <= endBlockLength
-        ? this._footer + this.getSectionFiller(endBlockLength - this._footer.length)
+        ? this._footer + this.getSectionSpacing(endBlockLength - this._footer.length)
         : this._footer.slice(0, endBlockLength);
 
     const strings = this._strings.map((string) =>
       string.length < endBlockLength
-        ? string + this.getStringsFiller(endBlockLength - string.length)
+        ? string + this.getStringsSpacing(endBlockLength - string.length)
         : string
     );
 
@@ -536,11 +543,11 @@ export class TabBlock extends TabElement {
     this._strings.forEach((string, stringIdx) => {
       const noteToWrite = notes.find((note) => note.string === stringIdx + 1);
       if (noteToWrite) {
-        const stringFillerLength = maxInstructionLength - noteToWrite.fret.length;
+        const stringSpacingLength = maxInstructionLength - noteToWrite.fret.length;
         this._strings[stringIdx] =
-          string + noteToWrite.fret + this.getStringsFiller(stringFillerLength);
+          string + noteToWrite.fret + this.getStringsSpacing(stringSpacingLength);
       } else {
-        this._strings[stringIdx] = string + this.getStringsFiller(maxInstructionLength);
+        this._strings[stringIdx] = string + this.getStringsSpacing(maxInstructionLength);
       }
     });
 

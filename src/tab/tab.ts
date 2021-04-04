@@ -47,11 +47,11 @@ export class Tab extends TabElement {
    */
   addBlock(): Tab {
     const tabBlock = new TabBlock({
-      filler: this.filler,
       numberOfStrings: this.numberOfStrings,
-      sectionFiller: this.sectionFiller,
-      sectionSymbol: this.sectionSymbol,
+      sectionDivisionCharacter: this.sectionDivisionCharacter,
+      sectionSpacingCharacter: this.sectionSpacingCharacter,
       spacing: this.spacing,
+      spacingCharacter: this.spacingCharacter,
     });
 
     this.blocks.push(tabBlock);
