@@ -1,14 +1,40 @@
-const openingClosingEnclosureMap: Record<string, string> = {
-  '(': ')',
-  '[': ']',
-  '{': '}',
-  '<': '>',
+export enum Enclosure {
+  AngleBrackets = '<>',
+  CurlyBrackets = '{}',
+  RoundBrackets = '()',
+  SquareBrackets = '[]',
+  Parentheses = RoundBrackets,
+}
+
+const enclsoure2OpeningCharacterMap: Record<Enclosure, string> = {
+  [Enclosure.AngleBrackets]: '<',
+  [Enclosure.CurlyBrackets]: '{',
+  [Enclosure.RoundBrackets]: '(',
+  [Enclosure.SquareBrackets]: '[',
 };
 
-export class EnclosuresHelper {
-  static readonly closingEnclosures: string[] = Object.values(openingClosingEnclosureMap);
+const enclosure2ClosingCharacterMap: Record<Enclosure, string> = {
+  [Enclosure.AngleBrackets]: '>',
+  [Enclosure.CurlyBrackets]: '}',
+  [Enclosure.RoundBrackets]: ')',
+  [Enclosure.SquareBrackets]: ']',
+};
 
-  static readonly openingEnclosures: string[] = Object.keys(openingClosingEnclosureMap);
+const openingCharacter2ClosingCharacterMap = Object.keys(Enclosure).reduce((map, enclosureKey) => {
+  const enclosure = Enclosure[enclosureKey as keyof typeof Enclosure];
+
+  const openingCharacter = enclsoure2OpeningCharacterMap[enclosure];
+  const closingCharacter = enclosure2ClosingCharacterMap[enclosure];
+
+  map[openingCharacter] = closingCharacter;
+
+  return map;
+}, {} as Record<string, string>);
+
+export class EnclosuresHelper {
+  static readonly closingEnclosures: string[] = Object.values(enclosure2ClosingCharacterMap);
+
+  static readonly openingEnclosures: string[] = Object.values(enclsoure2OpeningCharacterMap);
 
   static getClosingEnclosureFromOpeningEnclosure(openingEnclosure: string): string {
     if (!EnclosuresHelper.isOpeningEnclosure(openingEnclosure))
@@ -19,7 +45,7 @@ export class EnclosuresHelper {
           )}". Received value was "${openingEnclosure}".`
       );
 
-    return openingClosingEnclosureMap[openingEnclosure];
+    return openingCharacter2ClosingCharacterMap[openingEnclosure];
   }
 
   static getIndexOfMatchingClosingEnclosure(str: string, openingEnclosureIndex: number): number {
@@ -34,6 +60,10 @@ export class EnclosuresHelper {
       );
 
     return EnclosuresHelper._getIndexOfMatchingClosingEnclosure(str, openingEnclosureIndex);
+  }
+
+  static getOpeningEnclosureFromEnclosureType(enclosureType: Enclosure): string {
+    return enclsoure2OpeningCharacterMap[enclosureType];
   }
 
   static getValueInsideEnclosure(str: string, openingEnclosureIndex: number): string {

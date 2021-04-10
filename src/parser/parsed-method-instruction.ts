@@ -1,4 +1,4 @@
-import { EnclosuresHelper } from '../helpers/enclosures-helper';
+import { Enclosure, EnclosuresHelper } from '../helpers/enclosures-helper';
 import { ParsedInstructionData } from './parsed-instruction';
 import { MethodInstructionData } from '../instruction/core/instruction-factory-base';
 
@@ -50,10 +50,14 @@ export class ParsedMethodInstruction implements ParsedMethodInstructionData, Met
 
   static extractMethodArguments(
     instruction: string,
-    argumentsOpeningEnclosure: string,
+    argumentsEnclosure: Enclosure,
     argumentsSeparator: string
   ): string[] {
-    const indexOfArgumentsOpeningEnclosure = instruction.indexOf(argumentsOpeningEnclosure);
+    const openingEnclosureCharacter = EnclosuresHelper.getOpeningEnclosureFromEnclosureType(
+      argumentsEnclosure
+    );
+
+    const indexOfArgumentsOpeningEnclosure = instruction.indexOf(openingEnclosureCharacter);
     if (indexOfArgumentsOpeningEnclosure < 0) return [];
 
     const methodArguments = EnclosuresHelper.getValueInsideEnclosure(
@@ -68,9 +72,13 @@ export class ParsedMethodInstruction implements ParsedMethodInstructionData, Met
 
   static extractMethodTarget(
     instruction: string,
-    targetsOpeningEnclosure: string
+    targetsEnclosure: Enclosure
   ): MethodTargetExtractionResult | null {
-    const indexOfTargetsOpeningEnclosure = instruction.indexOf(targetsOpeningEnclosure);
+    const openingEnclosureCharacter = EnclosuresHelper.getOpeningEnclosureFromEnclosureType(
+      targetsEnclosure
+    );
+
+    const indexOfTargetsOpeningEnclosure = instruction.indexOf(openingEnclosureCharacter);
     if (indexOfTargetsOpeningEnclosure < 0) return null;
 
     const methodTarget = EnclosuresHelper.getValueInsideEnclosure(

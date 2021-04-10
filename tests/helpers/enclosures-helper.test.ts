@@ -1,92 +1,6 @@
-import { EnclosuresHelper } from '../../src/helpers/enclosures-helper';
+import { Enclosure, EnclosuresHelper } from '../../src/helpers/enclosures-helper';
 
 describe(`[${EnclosuresHelper.name}]`, () => {
-  describe(`[isOpeningEnclosure]`, () => {
-    it('should identify opening enclosures', () => {
-      const isOpeningEnclosureMap: Record<string, boolean | null> = {
-        '(': null,
-        '[': null,
-        '{': null,
-        '<': null,
-      };
-
-      Object.keys(isOpeningEnclosureMap).forEach((key) => {
-        isOpeningEnclosureMap[key] = EnclosuresHelper.isOpeningEnclosure(key);
-      });
-
-      expect(isOpeningEnclosureMap['(']).toBe(true);
-      expect(isOpeningEnclosureMap['[']).toBe(true);
-      expect(isOpeningEnclosureMap['{']).toBe(true);
-      expect(isOpeningEnclosureMap['<']).toBe(true);
-    });
-  });
-
-  describe(`[isClosingEnclosure]`, () => {
-    it('should closing enclosures', () => {
-      const isClosingEnclosureMap: Record<string, boolean | null> = {
-        ')': null,
-        ']': null,
-        '}': null,
-        '>': null,
-      };
-
-      Object.keys(isClosingEnclosureMap).forEach((key) => {
-        isClosingEnclosureMap[key] = EnclosuresHelper.isClosingEnclosure(key);
-      });
-
-      expect(isClosingEnclosureMap[')']).toBe(true);
-      expect(isClosingEnclosureMap[']']).toBe(true);
-      expect(isClosingEnclosureMap['}']).toBe(true);
-      expect(isClosingEnclosureMap['>']).toBe(true);
-    });
-  });
-
-  describe(`[hasOpeningEnclosure]`, () => {
-    it('should return false when the string has no opening enclosures', () => {
-      const str = 'some string without opening enclosures';
-      const hasOpeningEnclosures = EnclosuresHelper.hasOpeningEnclosure(str);
-
-      expect(hasOpeningEnclosures).toBe(false);
-    });
-
-    it('should return true if the string has one opening enclosure', () => {
-      const str = 'some string with a opening bracket (';
-      const hasOpeningEnclosures = EnclosuresHelper.hasOpeningEnclosure(str);
-
-      expect(hasOpeningEnclosures).toBe(true);
-    });
-
-    it('should return true if the string has multiple opening enclosures', () => {
-      const str = 'some string with a bunch of opening enclosures (< ( { [[ {(';
-      const hasOpeningEnclosures = EnclosuresHelper.hasOpeningEnclosure(str);
-
-      expect(hasOpeningEnclosures).toBe(true);
-    });
-  });
-
-  describe(`[hasClosingEnclosure]`, () => {
-    it('should return false when the string has no closing enclosures', () => {
-      const str = 'some string without closing brackets';
-      const hasClosingEnclosures = EnclosuresHelper.hasClosingEnclosure(str);
-
-      expect(hasClosingEnclosures).toBe(false);
-    });
-
-    it('should return true if the string has one opening enclosure', () => {
-      const str = 'some string with a closing bracket }';
-      const hasClosingEnclosures = EnclosuresHelper.hasClosingEnclosure(str);
-
-      expect(hasClosingEnclosures).toBe(true);
-    });
-
-    it('should return true if the string has multiple opening enclosures', () => {
-      const str = 'some string with a bunch of closing brackets ]}) )} >] ';
-      const hasClosingEnclosures = EnclosuresHelper.hasClosingEnclosure(str);
-
-      expect(hasClosingEnclosures).toBe(true);
-    });
-  });
-
   describe(`[getClosingEnclosureFromOpeningEnclosure]`, () => {
     it('should throw if the given opening enclosure is not a valid open enclosure', () => {
       const openingEnclosure = 't';
@@ -169,6 +83,34 @@ describe(`[${EnclosuresHelper.name}]`, () => {
     });
   });
 
+  describe('[getOpeningEnclosureFromEnclosureType]', () => {
+    const openingAngleBracket = EnclosuresHelper.getOpeningEnclosureFromEnclosureType(
+      Enclosure.AngleBrackets
+    );
+
+    const openingCurlyBracket = EnclosuresHelper.getOpeningEnclosureFromEnclosureType(
+      Enclosure.CurlyBrackets
+    );
+
+    const openingParentheses = EnclosuresHelper.getOpeningEnclosureFromEnclosureType(
+      Enclosure.Parentheses
+    );
+
+    const openingRoundBracket = EnclosuresHelper.getOpeningEnclosureFromEnclosureType(
+      Enclosure.RoundBrackets
+    );
+
+    const openingSquareBracket = EnclosuresHelper.getOpeningEnclosureFromEnclosureType(
+      Enclosure.SquareBrackets
+    );
+
+    expect(openingAngleBracket).toBe('<');
+    expect(openingCurlyBracket).toBe('{');
+    expect(openingParentheses).toBe('(');
+    expect(openingRoundBracket).toBe('(');
+    expect(openingSquareBracket).toBe('[');
+  });
+
   describe('[getValueInsideEnclosure]', () => {
     it('should throw if there is not a opening enclosure at the given index', () => {
       const str = 'test';
@@ -194,6 +136,92 @@ describe(`[${EnclosuresHelper.name}]`, () => {
       const value = EnclosuresHelper.getValueInsideEnclosure(str, str.indexOf(openingEnclosure));
 
       expect(value).toBe(expectedValue);
+    });
+  });
+
+  describe(`[hasClosingEnclosure]`, () => {
+    it('should return false when the string has no closing enclosures', () => {
+      const str = 'some string without closing brackets';
+      const hasClosingEnclosures = EnclosuresHelper.hasClosingEnclosure(str);
+
+      expect(hasClosingEnclosures).toBe(false);
+    });
+
+    it('should return true if the string has one opening enclosure', () => {
+      const str = 'some string with a closing bracket }';
+      const hasClosingEnclosures = EnclosuresHelper.hasClosingEnclosure(str);
+
+      expect(hasClosingEnclosures).toBe(true);
+    });
+
+    it('should return true if the string has multiple opening enclosures', () => {
+      const str = 'some string with a bunch of closing brackets ]}) )} >] ';
+      const hasClosingEnclosures = EnclosuresHelper.hasClosingEnclosure(str);
+
+      expect(hasClosingEnclosures).toBe(true);
+    });
+  });
+
+  describe(`[hasOpeningEnclosure]`, () => {
+    it('should return false when the string has no opening enclosures', () => {
+      const str = 'some string without opening enclosures';
+      const hasOpeningEnclosures = EnclosuresHelper.hasOpeningEnclosure(str);
+
+      expect(hasOpeningEnclosures).toBe(false);
+    });
+
+    it('should return true if the string has one opening enclosure', () => {
+      const str = 'some string with a opening bracket (';
+      const hasOpeningEnclosures = EnclosuresHelper.hasOpeningEnclosure(str);
+
+      expect(hasOpeningEnclosures).toBe(true);
+    });
+
+    it('should return true if the string has multiple opening enclosures', () => {
+      const str = 'some string with a bunch of opening enclosures (< ( { [[ {(';
+      const hasOpeningEnclosures = EnclosuresHelper.hasOpeningEnclosure(str);
+
+      expect(hasOpeningEnclosures).toBe(true);
+    });
+  });
+
+  describe(`[isClosingEnclosure]`, () => {
+    it('should closing enclosures', () => {
+      const isClosingEnclosureMap: Record<string, boolean | null> = {
+        ')': null,
+        ']': null,
+        '}': null,
+        '>': null,
+      };
+
+      Object.keys(isClosingEnclosureMap).forEach((key) => {
+        isClosingEnclosureMap[key] = EnclosuresHelper.isClosingEnclosure(key);
+      });
+
+      expect(isClosingEnclosureMap[')']).toBe(true);
+      expect(isClosingEnclosureMap[']']).toBe(true);
+      expect(isClosingEnclosureMap['}']).toBe(true);
+      expect(isClosingEnclosureMap['>']).toBe(true);
+    });
+  });
+
+  describe(`[isOpeningEnclosure]`, () => {
+    it('should identify opening enclosures', () => {
+      const isOpeningEnclosureMap: Record<string, boolean | null> = {
+        '(': null,
+        '[': null,
+        '{': null,
+        '<': null,
+      };
+
+      Object.keys(isOpeningEnclosureMap).forEach((key) => {
+        isOpeningEnclosureMap[key] = EnclosuresHelper.isOpeningEnclosure(key);
+      });
+
+      expect(isOpeningEnclosureMap['(']).toBe(true);
+      expect(isOpeningEnclosureMap['[']).toBe(true);
+      expect(isOpeningEnclosureMap['{']).toBe(true);
+      expect(isOpeningEnclosureMap['<']).toBe(true);
     });
   });
 });

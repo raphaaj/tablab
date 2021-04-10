@@ -1,4 +1,4 @@
-import { EnclosuresHelper } from '../helpers/enclosures-helper';
+import { Enclosure, EnclosuresHelper } from '../helpers/enclosures-helper';
 import { StringHelper } from '../helpers/string-helper';
 import { MethodInstructionIdentifier } from '../instruction/enums/method-instruction-identifier';
 import { ParsedInstruction, ParsedInstructionData } from './parsed-instruction';
@@ -24,14 +24,11 @@ export interface ParserOptions {
   methodInstructionAlias2IdentifierMap?: Record<string, string>;
 
   /**
-   * The opening bracket character to be considered for identification of the
-   * method arguments while parsing method instructions. The data from the
-   * opening bracket to the matching closing bracket will be considered the
-   * arguments of the method instruction.
-   * It must be one of: `{`, `[`, `<` or `(`.
-   * @defaultValue {@link Parser.DEFAULT_METHOD_INSTRUCTION_ARGS_OPENING_ENCLOSURE}
+   * The enclosure type to be used to identify the method arguments while parsing
+   * method instructions. It must be different from the value of `methodInstructionTargetsEnclosure`.
+   * @defaultValue {@link Parser.DEFAULT_METHOD_INSTRUCTION_ARGS_ENCLOSURE}
    */
-  methodInstructionArgsOpeningEnclosure?: string;
+  methodInstructionArgsEnclosure?: Enclosure;
 
   /**
    * The character to be considered as the separator of the arguments of a
@@ -42,14 +39,11 @@ export interface ParserOptions {
   methodInstructionArgsSeparator?: string;
 
   /**
-   * The opening bracket character to be considered for identification of the
-   * method targets while parsing method instructions. The data from the
-   * opening bracket to the matching closing bracket will be considered the
-   * targets of the method instruction.
-   * It must be one of: `{`, `[`, `<` or `(`.
-   * @defaultValue {@link Parser.DEFAULT_METHOD_INSTRUCTION_ARGS_OPENING_ENCLOSURE}
+   * The enclosure type to be used to identify the method targets while parsing
+   * method instructions. It must be different from the value of `methodInstructionArgsEnclosure`.
+   * @defaultValue {@link Parser.DEFAULT_METHOD_INSTRUCTION_TARGETS_ENCLOSURE}
    */
-  methodInstructionTargetsOpeningEnclosure?: string;
+  methodInstructionTargetsEnclosure?: Enclosure;
 }
 
 export class Parser {
@@ -62,9 +56,9 @@ export class Parser {
     repeat: MethodInstructionIdentifier.Repeat,
     spacing: MethodInstructionIdentifier.SetSpacing,
   };
-  static readonly DEFAULT_METHOD_INSTRUCTION_ARGS_OPENING_ENCLOSURE = '(';
+  static readonly DEFAULT_METHOD_INSTRUCTION_ARGS_ENCLOSURE = Enclosure.Parentheses;
   static readonly DEFAULT_METHOD_INSTRUCTION_ARGS_SEPARATOR = ',';
-  static readonly DEFAULT_METHOD_INSTRUCTION_TARGETS_OPENING_ENCLOSURE = '{';
+  static readonly DEFAULT_METHOD_INSTRUCTION_TARGETS_ENCLOSURE = Enclosure.CurlyBrackets;
 
   /**
    * The character used to separate instructions. It must be a single character string.
@@ -75,30 +69,31 @@ export class Parser {
   set instructionsSeparator(value: string) {
     if (value.length !== 1)
       throw new Error(
-        'The parameter instructionsSeparator must be a single character string. ' +
-          `Received value was ${value}`
+        'Invalid value for property "instructionsSeparator". ' +
+          'It must be a single character string. ' +
+          `Received value was "${value}"`
       );
 
     this._instructionsSeparator = value;
   }
 
   /**
-   * The opening bracket character used to identify the method arguments while parsing
-   * method instructions. The data inside the brackets pair, from the opening bracket
-   * character to the matching closing bracket character, will be considered the
-   * arguments of the method instruction. It must be one of: `{`, `[`, `<` or `(`.
+   * The enclosure type used to identify the method arguments while parsing method
+   * instructions. It must be different from the value of `methodInstructionTargetsEnclosure`.
    */
-  get methodInstructionArgsOpeningEnclosure(): string {
-    return this._methodInstructionArgsOpeningEnclosure;
+  get methodInstructionArgsEnclosure(): Enclosure {
+    return this._methodInstructionArgsEnclosure;
   }
-  set methodInstructionArgsOpeningEnclosure(value: string) {
-    if (!EnclosuresHelper.isOpeningEnclosure(value))
+  set methodInstructionArgsEnclosure(value: Enclosure) {
+    if (value === this.methodInstructionTargetsEnclosure) {
       throw new Error(
-        'The parameter methodInstructionArgsOpeningEnclosure must be one of ' +
-          `"${EnclosuresHelper.openingEnclosures.join('", "')}". Received value was "${value}".`
+        'Invalid value for property "methodInstructionArgsEnclosure". ' +
+          'It must be different from the value of the "methodInstructionTargetsEnclosure" property. ' +
+          `Received value was "${value}"`
       );
+    }
 
-    this._methodInstructionArgsOpeningEnclosure = value;
+    this._methodInstructionArgsEnclosure = value;
   }
 
   /**
@@ -111,29 +106,30 @@ export class Parser {
   set methodInstructionArgsSeparator(value: string) {
     if (value.length !== 1)
       throw new Error(
-        'The parameter methodInstructionArgsSeparator must be a single character string. ' +
-          `Received value was ${value}`
+        'Invalid value for porperty "methodInstructionArgsSeparator". ' +
+          'It must be a single character string. ' +
+          `Received value was "${value}"`
       );
     this._methodInstructionArgsSeparator = value;
   }
 
   /**
-   * The opening bracket character used to identify the method targets while parsing
-   * method instructions. The data inside the brackets pair, from the opening bracket
-   * character to the matching closing bracket character, will be considered the targets
-   * of the method instruction. It must be one of: `{`, `[`, `<` or `(`.
+   * The enclosure type used to identify the method targets while parsing method
+   * instructions. It must be different from the value of `methodInstructionArgsEnclosure`.
    */
-  get methodInstructionTargetsOpeningEnclosure(): string {
-    return this._methodInstructionTargetsOpeningEnclosure;
+  get methodInstructionTargetsEnclosure(): Enclosure {
+    return this._methodInstructionTargetsEnclosure;
   }
-  set methodInstructionTargetsOpeningEnclosure(value: string) {
-    if (!EnclosuresHelper.isOpeningEnclosure(value))
+  set methodInstructionTargetsEnclosure(value: Enclosure) {
+    if (value === this.methodInstructionArgsEnclosure) {
       throw new Error(
-        'The parameter methodInstructionTargetsOpeningEnclosure must be one of ' +
-          `"${EnclosuresHelper.openingEnclosures.join('", "')}". Received value was "${value}".`
+        'Invalid value for property "methodInstructionTargetsEnclosure". ' +
+          'It must be different from the value of "methodInstructionArgsEnclosure" property. ' +
+          `Received value was "${value}"`
       );
+    }
 
-    this._methodInstructionTargetsOpeningEnclosure = value;
+    this._methodInstructionTargetsEnclosure = value;
   }
 
   /**
@@ -144,11 +140,9 @@ export class Parser {
   methodInstructionAlias2IdentifierMap = Parser.DEFAULT_METHOD_INSTRUCTION_ALIAS_2_IDENTIFIER_MAP;
 
   private _instructionsSeparator = Parser.DEFAULT_INSTRUCTIONS_SEPARATOR;
-  private _methodInstructionArgsOpeningEnclosure =
-    Parser.DEFAULT_METHOD_INSTRUCTION_ARGS_OPENING_ENCLOSURE;
+  private _methodInstructionArgsEnclosure = Parser.DEFAULT_METHOD_INSTRUCTION_ARGS_ENCLOSURE;
   private _methodInstructionArgsSeparator = Parser.DEFAULT_METHOD_INSTRUCTION_ARGS_SEPARATOR;
-  private _methodInstructionTargetsOpeningEnclosure =
-    Parser.DEFAULT_METHOD_INSTRUCTION_TARGETS_OPENING_ENCLOSURE;
+  private _methodInstructionTargetsEnclosure = Parser.DEFAULT_METHOD_INSTRUCTION_TARGETS_ENCLOSURE;
 
   /**
    * The parser constructor creates a parser that reads instructions separated by one or
@@ -160,13 +154,11 @@ export class Parser {
    *      used to identify the method. The parser uses the `methodInstructionAlias2IdentifierMap`
    *      map to determine the method identifier from its alias.
    *    - The method arguments (optional): It is a set of values separated by the
-   *      `methodInstructionArgsSeparator` character. This set must follow the opening bracket
-   *      `methodInstructionArgsOpeningEnclosure` character and should be followed by the matching
-   *      closing bracket character.
+   *      `methodInstructionArgsSeparator` character. This set of values must be enclosed by the
+   *      enclosure characters of the type specified by the `methodInstructionArgsEnclosure`.
    *    - The method targets (optional): It is a set of instructions that will be parsed with the
-   *      method instruction. This set must follow the opening bracket
-   *      `methodInstructionTargetsOpeningEnclosure` character and should be followed by the matching
-   *      closing bracket character.
+   *      method instruction. This set must be enclosed by the enclosure characters of the type
+   *      specified by the `methodInstructionTargetsEnclosure`.
    *  - Basic instructions: Any instruction that does not have a method alias will be considered a
    *    basic instruction. These instructions will be read as is.
    *
@@ -177,8 +169,8 @@ export class Parser {
       instructionsSeparator,
       methodInstructionAlias2IdentifierMap,
       methodInstructionArgsSeparator,
-      methodInstructionArgsOpeningEnclosure,
-      methodInstructionTargetsOpeningEnclosure,
+      methodInstructionArgsEnclosure,
+      methodInstructionTargetsEnclosure,
     } = options;
 
     if (instructionsSeparator !== undefined) this.instructionsSeparator = instructionsSeparator;
@@ -189,11 +181,11 @@ export class Parser {
     if (methodInstructionArgsSeparator !== undefined)
       this.methodInstructionArgsSeparator = methodInstructionArgsSeparator;
 
-    if (methodInstructionArgsOpeningEnclosure !== undefined)
-      this.methodInstructionArgsOpeningEnclosure = methodInstructionArgsOpeningEnclosure;
+    if (methodInstructionArgsEnclosure !== undefined)
+      this.methodInstructionArgsEnclosure = methodInstructionArgsEnclosure;
 
-    if (methodInstructionTargetsOpeningEnclosure !== undefined)
-      this.methodInstructionTargetsOpeningEnclosure = methodInstructionTargetsOpeningEnclosure;
+    if (methodInstructionTargetsEnclosure !== undefined)
+      this.methodInstructionTargetsEnclosure = methodInstructionTargetsEnclosure;
   }
 
   /**
@@ -362,13 +354,13 @@ export class Parser {
     if (methodAlias) {
       const methodArguments = ParsedMethodInstruction.extractMethodArguments(
         instruction,
-        this.methodInstructionArgsOpeningEnclosure,
+        this.methodInstructionArgsEnclosure,
         this.methodInstructionArgsSeparator
       );
 
       const methodTargetData = ParsedMethodInstruction.extractMethodTarget(
         instruction,
-        this.methodInstructionTargetsOpeningEnclosure
+        this.methodInstructionTargetsEnclosure
       );
 
       let methodTargets: ParsedInstruction[] = [];

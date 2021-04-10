@@ -1,6 +1,7 @@
 import { Parser } from '../../src/parser/parser';
 import { ParsedInstructionData } from '../../src/parser/parsed-instruction';
 import { ParsedMethodInstructionData } from '../../src/parser/parsed-method-instruction';
+import { Enclosure } from '../../src/helpers/enclosures-helper';
 
 const globalIndexReference = 5;
 
@@ -19,11 +20,11 @@ describe(`[${Parser.name}]`, () => {
       expect(parser.methodInstructionArgsSeparator).toBe(
         Parser.DEFAULT_METHOD_INSTRUCTION_ARGS_SEPARATOR
       );
-      expect(parser.methodInstructionArgsOpeningEnclosure).toBe(
-        Parser.DEFAULT_METHOD_INSTRUCTION_ARGS_OPENING_ENCLOSURE
+      expect(parser.methodInstructionArgsEnclosure).toBe(
+        Parser.DEFAULT_METHOD_INSTRUCTION_ARGS_ENCLOSURE
       );
-      expect(parser.methodInstructionTargetsOpeningEnclosure).toBe(
-        Parser.DEFAULT_METHOD_INSTRUCTION_TARGETS_OPENING_ENCLOSURE
+      expect(parser.methodInstructionTargetsEnclosure).toBe(
+        Parser.DEFAULT_METHOD_INSTRUCTION_TARGETS_ENCLOSURE
       );
     });
 
@@ -48,22 +49,20 @@ describe(`[${Parser.name}]`, () => {
       expect(parser.methodInstructionArgsSeparator).toBe(methodInstructionArgsSeparator);
     });
 
-    it('should set the methodInstructionArgsOpeningEnclosure if one is set at instantiation', () => {
-      const methodInstructionArgsOpeningEnclosure = '<';
-      const parser = new Parser({ methodInstructionArgsOpeningEnclosure });
+    it('should set the methodInstructionArgsEnclosure if one is set at instantiation', () => {
+      const methodInstructionArgsEnclosure = Enclosure.AngleBrackets;
 
-      expect(parser.methodInstructionArgsOpeningEnclosure).toBe(
-        methodInstructionArgsOpeningEnclosure
-      );
+      const parser = new Parser({ methodInstructionArgsEnclosure });
+
+      expect(parser.methodInstructionArgsEnclosure).toBe(methodInstructionArgsEnclosure);
     });
 
-    it('should set the methodInstructionTargetsOpeningEnclosure if one is set at instantiation', () => {
-      const methodInstructionTargetsOpeningEnclosure = '[';
-      const parser = new Parser({ methodInstructionTargetsOpeningEnclosure });
+    it('should set the methodInstructionTargetsEnclosure if one is set at instantiation', () => {
+      const methodInstructionTargetsEnclosure = Enclosure.SquareBrackets;
 
-      expect(parser.methodInstructionTargetsOpeningEnclosure).toBe(
-        methodInstructionTargetsOpeningEnclosure
-      );
+      const parser = new Parser({ methodInstructionTargetsEnclosure });
+
+      expect(parser.methodInstructionTargetsEnclosure).toBe(methodInstructionTargetsEnclosure);
     });
   });
 
@@ -102,46 +101,44 @@ describe(`[${Parser.name}]`, () => {
       });
     });
 
-    describe('[methodInstructionArgsOpeningEnclosure]', () => {
-      it('should set the methodInstructionArgsOpeningEnclosure property', () => {
-        const methodInstructionArgsOpeningEnclosure = '<';
+    describe('[methodInstructionArgsEnclosure]', () => {
+      it('should set the methodInstructionArgsEnclosure property', () => {
+        const methodInstructionArgsEnclosure = Enclosure.AngleBrackets;
 
-        parser.methodInstructionArgsOpeningEnclosure = methodInstructionArgsOpeningEnclosure;
+        parser.methodInstructionArgsEnclosure = methodInstructionArgsEnclosure;
 
-        expect(parser.methodInstructionArgsOpeningEnclosure).toBe(
-          methodInstructionArgsOpeningEnclosure
-        );
+        expect(parser.methodInstructionArgsEnclosure).toBe(methodInstructionArgsEnclosure);
       });
 
-      it('should throw if methodInstructionArgsOpeningEnclosure is set to an invalid opening enclosure', () => {
-        const methodInstructionArgsOpeningEnclosure = '%';
-
-        expect(
-          () =>
-            (parser.methodInstructionArgsOpeningEnclosure = methodInstructionArgsOpeningEnclosure)
-        ).toThrow();
-      });
+      it(
+        'should throw if the methodInstructionArgsEnclosure property is set to the ' +
+          'same value of the methodInstructionTargetsEnclosure property',
+        () => {
+          expect(
+            () => (parser.methodInstructionArgsEnclosure = parser.methodInstructionTargetsEnclosure)
+          ).toThrow();
+        }
+      );
     });
 
-    describe('[methodInstructionTargetsOpeningEnclosure]', () => {
-      it('should set the methodInstructionTargetsOpeningEnclosure property', () => {
-        const methodInstructionTargetsOpeningEnclosure = '[';
+    describe('[methodInstructionTargetsEnclosure]', () => {
+      it('should set the methodInstructionTargetsEnclosure property', () => {
+        const methodInstructionTargetsEnclosure = Enclosure.SquareBrackets;
 
-        parser.methodInstructionTargetsOpeningEnclosure = methodInstructionTargetsOpeningEnclosure;
+        parser.methodInstructionTargetsEnclosure = methodInstructionTargetsEnclosure;
 
-        expect(parser.methodInstructionTargetsOpeningEnclosure).toBe(
-          methodInstructionTargetsOpeningEnclosure
-        );
+        expect(parser.methodInstructionTargetsEnclosure).toBe(methodInstructionTargetsEnclosure);
       });
 
-      it('should throw if methodInstructionTargetsOpeningEnclosure is set to an invalid opening enclosure', () => {
-        const methodInstructionTargetsOpeningEnclosure = '%';
-
-        expect(
-          () =>
-            (parser.methodInstructionTargetsOpeningEnclosure = methodInstructionTargetsOpeningEnclosure)
-        ).toThrow();
-      });
+      it(
+        'should throw if methodInstructionTargetsEnclosure property is set to the ' +
+          'same value of the methodInstructionArgsEnclosure property',
+        () => {
+          expect(
+            () => (parser.methodInstructionTargetsEnclosure = parser.methodInstructionArgsEnclosure)
+          ).toThrow();
+        }
+      );
     });
   });
 
@@ -249,13 +246,13 @@ describe(`[${Parser.name}]`, () => {
 
       it('should parse the arguments of a method instruction when available', () => {
         const methodInstructionArgsSeparator = '|';
-        const methodInstructionArgsOpeningEnclosure = '<';
+        const methodInstructionArgsEnclosure = Enclosure.AngleBrackets;
         const args = ['1', '1.11', 'some text argument'];
         const instruction = `instr<${args.join(methodInstructionArgsSeparator)}>`;
 
         const parser = new Parser({
           methodInstructionArgsSeparator,
-          methodInstructionArgsOpeningEnclosure,
+          methodInstructionArgsEnclosure,
         });
 
         const parsedInstruction = parser.parseOne(instruction);
@@ -265,7 +262,7 @@ describe(`[${Parser.name}]`, () => {
 
       it('should parse the arguments of a method instruction when available, even with spaces', () => {
         const methodInstructionArgsSeparator = '|';
-        const methodInstructionArgsOpeningEnclosure = '<';
+        const methodInstructionArgsEnclosure = Enclosure.AngleBrackets;
         const args = ['1', '1.11', 'some text input'];
         const instruction = `  instr  <  ${args.join(
           `  ${methodInstructionArgsSeparator}  `
@@ -273,7 +270,7 @@ describe(`[${Parser.name}]`, () => {
 
         const parser = new Parser({
           methodInstructionArgsSeparator,
-          methodInstructionArgsOpeningEnclosure,
+          methodInstructionArgsEnclosure,
         });
 
         const parsedInstruction = parser.parseOne(instruction);
@@ -291,13 +288,11 @@ describe(`[${Parser.name}]`, () => {
       });
 
       it('should parse the targets of a method instruction when available', () => {
-        const methodInstructionTargetsOpeningEnclosure = '[';
+        const methodInstructionTargetsEnclosure = Enclosure.SquareBrackets;
 
         const targets = ['1-2', '2-3'];
         const instruction = `instr[${targets.join(' ')}]`;
-        const parser = new Parser({
-          methodInstructionTargetsOpeningEnclosure,
-        });
+        const parser = new Parser({ methodInstructionTargetsEnclosure });
 
         const parsedInstruction = parser.parseOne(instruction);
         const parsedTargets = parsedInstruction?.method?.targets?.map((target) => target.value);
@@ -306,13 +301,11 @@ describe(`[${Parser.name}]`, () => {
       });
 
       it('should parse the targets of a method instruction when available, even with spaces', () => {
-        const methodInstructionTargetsOpeningEnclosure = '[';
+        const methodInstructionTargetsEnclosure = Enclosure.SquareBrackets;
 
         const targets = ['1-2', '2-3'];
         const instruction = `  instr  [  ${targets.join('  ')}  ]  `;
-        const parser = new Parser({
-          methodInstructionTargetsOpeningEnclosure,
-        });
+        const parser = new Parser({ methodInstructionTargetsEnclosure });
 
         const parsedInstruction = parser.parseOne(instruction);
         const parsedTargets = parsedInstruction?.method?.targets?.map((target) => target.value);
