@@ -189,9 +189,9 @@ outputs
 
 ```js
 {
-  success: true,
   failureReasonIdentifier: null,
   failureMessage: null
+  success: true,
 }
 ```
 
@@ -215,9 +215,9 @@ outputs
 
 ```js
 {
-  success: false,
   failureReasonIdentifier: "INVALID_WRITE_NOTE_INSTRUCTION",
   failureMessage: "Invalid instruction"
+  success: false,
 }
 ```
 

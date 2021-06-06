@@ -12,15 +12,6 @@ export type InstructionWriteResultData = {
 
 export abstract class InstructionWriteResult {
   /**
-   * Indicates whether the writing operation has succeeded or not. The writing
-   * operation is considered to have been completed successfully if the
-   * `failureReasonIdentifier` value is null.
-   */
-  get success(): boolean {
-    return this.failureReasonIdentifier === null;
-  }
-
-  /**
    * A message that describes the reason for the writing operation to have failed.
    */
   failureMessage: string | null;
@@ -31,6 +22,11 @@ export abstract class InstructionWriteResult {
   failureReasonIdentifier: string | null;
 
   /**
+   * Indicates whether the writing operation has succeeded or not.
+   */
+  success: boolean;
+
+  /**
    * Creates an instruction writing result.
    * @param writingResultData - The data that describes the writing operation
    * result. The `failureReasonIdentifier` value will be used to determine
@@ -39,10 +35,11 @@ export abstract class InstructionWriteResult {
    * @see {@link InstructionWriteResult.success}
    */
   constructor(writingResultData: InstructionWriteResultData) {
-    const { failureReasonIdentifier: failureReason, failureMessage } = writingResultData;
+    const { failureReasonIdentifier, failureMessage } = writingResultData;
 
-    this.failureReasonIdentifier = failureReason || null;
+    this.failureReasonIdentifier = failureReasonIdentifier || null;
     this.failureMessage = failureMessage || null;
+    this.success = this.failureReasonIdentifier === null;
   }
 }
 
