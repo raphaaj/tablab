@@ -1,11 +1,8 @@
 import { Tab } from '../../tab/tab';
-import { InstructionBase } from '../core/instruction-base';
-import {
-  InstructionWriteResult,
-  SuccessInstructionWriteResult,
-} from '../core/instruction-write-result';
+import { Instruction } from './instruction';
+import { InstructionWriteResult, SuccessInstructionWriteResult } from '../instruction-write-result';
 
-export class WriteHeaderInstruction extends InstructionBase {
+export class WriteHeaderInstruction extends Instruction {
   readonly header: string;
 
   /**

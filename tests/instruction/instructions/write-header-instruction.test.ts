@@ -1,5 +1,5 @@
 import { WriteHeaderInstruction } from '../../../src/instruction/instructions/write-header-instruction';
-import { MergeableInstructionBase } from '../../../src/instruction/core/mergeable-instruction-base';
+import { MergeableInstruction } from '../../../src/instruction/instructions/mergeable-instruction';
 import { Tab } from '../../../src/tab/tab';
 import { InvalidInstructionReason } from '../../../src/instruction/enums/invalid-instruction-reason';
 
@@ -7,7 +7,7 @@ describe(`[${WriteHeaderInstruction.name}]`, () => {
   it('should not be a mergeable instruction', () => {
     const instruction = new WriteHeaderInstruction('test header');
 
-    expect(instruction).not.toBeInstanceOf(MergeableInstructionBase);
+    expect(instruction).not.toBeInstanceOf(MergeableInstruction);
   });
 
   describe('[writeOnTab]', () => {

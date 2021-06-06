@@ -1,12 +1,9 @@
 import { Tab } from '../../tab/tab';
-import { InstructionBase } from '../core/instruction-base';
-import {
-  InstructionWriteResult,
-  SuccessInstructionWriteResult,
-} from '../core/instruction-write-result';
+import { Instruction } from './instruction';
+import { InstructionWriteResult, SuccessInstructionWriteResult } from '../instruction-write-result';
 
-export class RepeatInstruction extends InstructionBase {
-  readonly instructions: InstructionBase[];
+export class RepeatInstruction extends Instruction {
+  readonly instructions: Instruction[];
   readonly repetitions: number;
 
   /**
@@ -14,7 +11,7 @@ export class RepeatInstruction extends InstructionBase {
    * @param instructions - The instruction instances to be repeated.
    * @param repetitions - The number of repetitions.
    */
-  constructor(instructions: InstructionBase[], repetitions: number) {
+  constructor(instructions: Instruction[], repetitions: number) {
     super();
 
     this.instructions = instructions;

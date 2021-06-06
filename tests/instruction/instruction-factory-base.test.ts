@@ -1,19 +1,19 @@
-import { InstructionBase } from '../../../src/instruction/core/instruction-base';
 import {
   ArgumentNumberValidation,
   ArgumentsValidation,
   MethodInstructionBuilder,
   InstructionFactoryBase,
   TargetsValidation,
-} from '../../../src/instruction/core/instruction-factory-base';
-import { InstructionWriteResult } from '../../../src/instruction/core/instruction-write-result';
-import { InvalidInstruction } from '../../../src/instruction/core/invalid-instruction';
-import { WriteNoteInstruction } from '../../../src/instruction/core/write-note-instruction';
-import { InvalidInstructionReason } from '../../../src/instruction/enums/invalid-instruction-reason';
+} from '../../src/instruction/instruction-factory-base';
+import { InstructionWriteResult } from '../../src/instruction/instruction-write-result';
+import { InvalidInstructionReason } from '../../src/instruction/enums/invalid-instruction-reason';
+import { Instruction } from '../../src/instruction/instructions/instruction';
+import { InvalidInstruction } from '../../src/instruction/instructions/invalid-instruction';
+import { WriteNoteInstruction } from '../../src/instruction/instructions/write-note-instruction';
 
 const TEST_METHOD_IDENTIFIER = 'testIdentifier';
 
-class TestInstruction extends InstructionBase {
+class TestInstruction extends Instruction {
   writeOnTab(): InstructionWriteResult {
     throw new Error('Method not implemented.');
   }
@@ -49,7 +49,7 @@ class TestInstructionFactoryBase extends InstructionFactoryBase {
     return this.validateNumberOfTargets(targetsValidation);
   }
 
-  protected buildTestInstruction(): InstructionBase {
+  protected buildTestInstruction(): Instruction {
     return new TestInstruction();
   }
 }

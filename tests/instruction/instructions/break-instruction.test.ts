@@ -1,5 +1,5 @@
 import { BreakInstruction } from '../../../src/instruction/instructions/break-instruction';
-import { MergeableInstructionBase } from '../../../src/instruction/core/mergeable-instruction-base';
+import { MergeableInstruction } from '../../../src/instruction/instructions/mergeable-instruction';
 import { Tab } from '../../../src/tab/tab';
 import { InvalidInstructionReason } from '../../../src/instruction/enums/invalid-instruction-reason';
 
@@ -7,7 +7,7 @@ describe(`[${BreakInstruction.name}]`, () => {
   it('should not be a mergeable instruction', () => {
     const instruction = new BreakInstruction();
 
-    expect(instruction).not.toBeInstanceOf(MergeableInstructionBase);
+    expect(instruction).not.toBeInstanceOf(MergeableInstruction);
   });
 
   describe('[writeOnTab]', () => {

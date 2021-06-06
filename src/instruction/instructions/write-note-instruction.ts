@@ -1,18 +1,18 @@
-import { MergeableInstructionBase } from '../core/mergeable-instruction-base';
+import { MergeableInstruction } from './mergeable-instruction';
 import { Note } from '../../tab/note';
 import { Tab } from '../../tab/tab';
 import {
   FailedInstructionWriteResult,
   InstructionWriteResult,
   SuccessInstructionWriteResult,
-} from '../core/instruction-write-result';
+} from '../instruction-write-result';
 import { StringHelper } from '../../helpers/string-helper';
 import {
   InvalidInstructionReason,
   InvalidInstructionReasonDescription,
 } from '../enums/invalid-instruction-reason';
 
-export class WriteNoteInstruction extends MergeableInstructionBase {
+export class WriteNoteInstruction extends MergeableInstruction {
   /**
    * Creates a write note instruction instance.
    * @param note - The note to be written to the tablature.

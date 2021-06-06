@@ -1,7 +1,7 @@
 import { Note } from '../../tab/note';
-import { InstructionBase } from './instruction-base';
+import { Instruction } from './instruction';
 
-export abstract class MergeableInstructionBase extends InstructionBase {
+export abstract class MergeableInstruction extends Instruction {
   readonly note: Note;
 
   constructor(note: Note) {

@@ -1,12 +1,12 @@
-import { StringHelper } from '../../helpers/string-helper';
-import { InstructionBase } from '../core/instruction-base';
-import { InvalidInstruction } from './invalid-instruction';
+import { StringHelper } from '../helpers/string-helper';
+import { Instruction } from './instructions/instruction';
+import { InvalidInstruction } from './instructions/invalid-instruction';
+import { WriteNoteInstruction } from './instructions/write-note-instruction';
 import {
   InvalidInstructionReason,
   InvalidInstructionReasonDescription,
-} from '../enums/invalid-instruction-reason';
-import { Note } from '../../tab/note';
-import { WriteNoteInstruction } from './write-note-instruction';
+} from './enums/invalid-instruction-reason';
+import { Note } from '../tab/note';
 
 /**
  * The method data of a method instruction.
@@ -216,7 +216,7 @@ export type TargetsValidation = {
 
 export type MethodInstructionBuilder = (
   methodInstructionData: MethodInstructionData
-) => InstructionBase;
+) => Instruction;
 
 export abstract class InstructionFactoryBase {
   private static _extractNoteFromInstruction(instruction: string): Note | null {
@@ -253,7 +253,7 @@ export abstract class InstructionFactoryBase {
    * @param instructionData - The instruction data.
    * @returns The instruction instance.
    */
-  getInstruction(instructionData: InstructionData): InstructionBase {
+  getInstruction(instructionData: InstructionData): Instruction {
     if (instructionData.method) {
       return this._getInstructionFromMethodData(instructionData.method);
     } else {
@@ -355,7 +355,7 @@ export abstract class InstructionFactoryBase {
     return new InvalidInstruction(reasonIdentifier, description);
   }
 
-  private _buildWriteNoteInstruction(instructionValue: string): InstructionBase {
+  private _buildWriteNoteInstruction(instructionValue: string): Instruction {
     const note = InstructionFactoryBase._extractNoteFromInstruction(instructionValue);
 
     if (!note)
@@ -366,7 +366,7 @@ export abstract class InstructionFactoryBase {
     return new WriteNoteInstruction(note);
   }
 
-  private _getInstructionFromMethodData(methodData: MethodInstructionData): InstructionBase {
+  private _getInstructionFromMethodData(methodData: MethodInstructionData): Instruction {
     if (!methodData.identifier)
       return this._buildInvalidInstructionBase(
         InvalidInstructionReason.MethodInstructionWithoutIdentifier
@@ -384,7 +384,7 @@ export abstract class InstructionFactoryBase {
     return buildMethodInstruction(methodData);
   }
 
-  private _getInstructionFromValue(instructionValue: string): InstructionBase {
+  private _getInstructionFromValue(instructionValue: string): Instruction {
     return this._buildWriteNoteInstruction(instructionValue);
   }
 }

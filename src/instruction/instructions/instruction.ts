@@ -1,11 +1,11 @@
 import { Tab } from '../../tab/tab';
-import { FailedInstructionWriteResult, InstructionWriteResult } from './instruction-write-result';
+import { FailedInstructionWriteResult, InstructionWriteResult } from '../instruction-write-result';
 import {
   InvalidInstructionReason,
   InvalidInstructionReasonDescription,
 } from '../enums/invalid-instruction-reason';
 
-export abstract class InstructionBase {
+export abstract class Instruction {
   abstract writeOnTab(tab: Tab): InstructionWriteResult;
 
   /**

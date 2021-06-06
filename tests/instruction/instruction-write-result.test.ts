@@ -1,7 +1,7 @@
 import {
   FailedInstructionWriteResult,
   SuccessInstructionWriteResult,
-} from '../../../src/instruction/core/instruction-write-result';
+} from '../../src/instruction/instruction-write-result';
 
 describe(`[${SuccessInstructionWriteResult.name}]`, () => {
   it('should have the success property set to true', () => {

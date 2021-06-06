@@ -12,26 +12,24 @@ export {
   TargetsMinNumberValidation,
   TargetsMaxNumberValidation,
   TargetsValidation,
-} from './core/instruction-factory-base';
+} from './instruction-factory-base';
 
-export { InstructionFactoryOptions, InstructionFactory } from './factories/instruction-factory';
+export { InstructionFactoryOptions, InstructionFactory } from './instruction-factory';
 
 export {
   InstructionWriteResultData,
   InstructionWriteResult,
   SuccessInstructionWriteResult,
   FailedInstructionWriteResult,
-} from './core/instruction-write-result';
-
-export { InvalidInstructionReason } from './enums/invalid-instruction-reason';
+} from './instruction-write-result';
 
 export { MethodInstructionIdentifier } from './enums/method-instruction-identifier';
+export { InvalidInstructionReason } from './enums/invalid-instruction-reason';
 
-export { InstructionBase } from './core/instruction-base';
-export { MergeableInstructionBase } from './core/mergeable-instruction-base';
-
-export { InvalidInstruction } from './core/invalid-instruction';
-export { WriteNoteInstruction } from './core/write-note-instruction';
+export { Instruction } from './instructions/instruction';
+export { MergeableInstruction } from './instructions/mergeable-instruction';
+export { InvalidInstruction } from './instructions/invalid-instruction';
+export { WriteNoteInstruction } from './instructions/write-note-instruction';
 export { BreakInstruction } from './instructions/break-instruction';
 export { MergeInstruction } from './instructions/merge-instruction';
 export { RepeatInstruction } from './instructions/repeat-instruction';

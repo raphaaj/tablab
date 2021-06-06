@@ -1,23 +1,23 @@
-import { MethodInstructionIdentifier } from '../enums/method-instruction-identifier';
 import {
   InstructionFactoryBase,
   MethodInstructionBuilder,
   MethodInstructionData,
   InstructionData,
-} from '../core/instruction-factory-base';
+} from './instruction-factory-base';
 import {
   InvalidInstructionReason,
   InvalidInstructionReasonDescription,
-} from '../enums/invalid-instruction-reason';
-import { InstructionBase } from '../core/instruction-base';
-import { MergeableInstructionBase } from '../core/mergeable-instruction-base';
-import { InvalidInstruction } from '../core/invalid-instruction';
-import { BreakInstruction } from '../instructions/break-instruction';
-import { MergeInstruction } from '../instructions/merge-instruction';
-import { RepeatInstruction } from '../instructions/repeat-instruction';
-import { SetSpacingInstruction } from '../instructions/set-spacing-instruction';
-import { WriteFooterInstruction } from '../instructions/write-footer-instruction';
-import { WriteHeaderInstruction } from '../instructions/write-header-instruction';
+} from './enums/invalid-instruction-reason';
+import { MethodInstructionIdentifier } from './enums/method-instruction-identifier';
+import { Instruction } from './instructions/instruction';
+import { MergeableInstruction } from './instructions/mergeable-instruction';
+import { InvalidInstruction } from './instructions/invalid-instruction';
+import { BreakInstruction } from './instructions/break-instruction';
+import { MergeInstruction } from './instructions/merge-instruction';
+import { RepeatInstruction } from './instructions/repeat-instruction';
+import { SetSpacingInstruction } from './instructions/set-spacing-instruction';
+import { WriteFooterInstruction } from './instructions/write-footer-instruction';
+import { WriteHeaderInstruction } from './instructions/write-header-instruction';
 
 /**
  * The options to create an instruction factory.
@@ -99,7 +99,7 @@ export class InstructionFactory extends InstructionFactoryBase {
    *
    * @see {@link BreakInstruction}
    */
-  protected buildBreakInstruction(): InstructionBase {
+  protected buildBreakInstruction(): Instruction {
     return new BreakInstruction();
   }
 
@@ -113,7 +113,7 @@ export class InstructionFactory extends InstructionFactoryBase {
    *
    * @see {@link WriteFooter}
    */
-  protected buildFooterInstruction(methodData: MethodInstructionData): InstructionBase {
+  protected buildFooterInstruction(methodData: MethodInstructionData): Instruction {
     const invalidArguments = this._validateWriteFooterInstructionArguments(methodData.args);
     if (invalidArguments) return invalidArguments;
 
@@ -131,7 +131,7 @@ export class InstructionFactory extends InstructionFactoryBase {
    *
    * @see {@link WriteHeader}
    */
-  protected buildHeaderInstruction(methodData: MethodInstructionData): InstructionBase {
+  protected buildHeaderInstruction(methodData: MethodInstructionData): Instruction {
     const invalidArguments = this._validateWriteHeaderInstructionArguments(methodData.args);
     if (invalidArguments) return invalidArguments;
 
@@ -150,7 +150,7 @@ export class InstructionFactory extends InstructionFactoryBase {
    *
    * @see {@link MergeInstruction}
    */
-  protected buildMergeInstruction(methodData: MethodInstructionData): InstructionBase {
+  protected buildMergeInstruction(methodData: MethodInstructionData): Instruction {
     const invalidTargets = this._validateMergeInstructionTargets(methodData.targets);
     if (invalidTargets) return invalidTargets;
 
@@ -161,7 +161,7 @@ export class InstructionFactory extends InstructionFactoryBase {
     const invalidInstructionsToMerge = this._validateInstructionsToMerge(instructionsToMerge);
     if (invalidInstructionsToMerge) return invalidInstructionsToMerge;
 
-    return new MergeInstruction(instructionsToMerge as MergeableInstructionBase[]);
+    return new MergeInstruction(instructionsToMerge as MergeableInstruction[]);
   }
 
   /**
@@ -174,7 +174,7 @@ export class InstructionFactory extends InstructionFactoryBase {
    *
    * @see {@link RepeatInstruction}
    */
-  protected buildRepeatInstruction(methodData: MethodInstructionData): InstructionBase {
+  protected buildRepeatInstruction(methodData: MethodInstructionData): Instruction {
     const invalidArguments = this._validateRepeatInstructionArguments(methodData.args);
     if (invalidArguments) return invalidArguments;
 
@@ -199,7 +199,7 @@ export class InstructionFactory extends InstructionFactoryBase {
    *
    * @see {@link SetSpacingInstruction}
    */
-  protected buildSpacingInstruction(methodData: MethodInstructionData): InstructionBase {
+  protected buildSpacingInstruction(methodData: MethodInstructionData): Instruction {
     const invalidArguments = this._validateSetSpacingInstructionArguments(methodData.args);
     if (invalidArguments) return invalidArguments;
 
@@ -214,8 +214,8 @@ export class InstructionFactory extends InstructionFactoryBase {
   }
 
   private _getConcurrentInstructionsToMerge(
-    instructions: MergeableInstructionBase[]
-  ): MergeableInstructionBase[] {
+    instructions: MergeableInstruction[]
+  ): MergeableInstruction[] {
     const noteString2InstructionsMap = instructions.reduce(
       (string2InstructionsMap, instruction) => {
         if (!string2InstructionsMap[instruction.note.string]) {
@@ -226,19 +226,19 @@ export class InstructionFactory extends InstructionFactoryBase {
 
         return string2InstructionsMap;
       },
-      {} as Record<string, MergeableInstructionBase[]>
+      {} as Record<string, MergeableInstruction[]>
     );
 
     const concurrentInstructions = Object.keys(noteString2InstructionsMap)
       .filter((noteString) => noteString2InstructionsMap[noteString].length > 1)
       .reduce((concurrentInstructions, noteString) => {
         return concurrentInstructions.concat(noteString2InstructionsMap[noteString]);
-      }, [] as MergeableInstructionBase[]);
+      }, [] as MergeableInstruction[]);
 
     return concurrentInstructions;
   }
 
-  private _validateInstructionsToMerge(instructions: InstructionBase[]): InvalidInstruction | null {
+  private _validateInstructionsToMerge(instructions: Instruction[]): InvalidInstruction | null {
     const invalidInstructions = instructions.filter(
       (instruction) => instruction instanceof InvalidInstruction
     );
@@ -247,7 +247,7 @@ export class InstructionFactory extends InstructionFactoryBase {
     }
 
     const nonMergeableInstructions = instructions.filter(
-      (instruction) => !(instruction instanceof MergeableInstructionBase)
+      (instruction) => !(instruction instanceof MergeableInstruction)
     );
     if (nonMergeableInstructions.length > 0) {
       return this._buildInvalidInstruction(
@@ -256,7 +256,7 @@ export class InstructionFactory extends InstructionFactoryBase {
     }
 
     const concurrentInstructions = this._getConcurrentInstructionsToMerge(
-      instructions as MergeableInstructionBase[]
+      instructions as MergeableInstruction[]
     );
     if (concurrentInstructions.length > 0) {
       return this._buildInvalidInstruction(

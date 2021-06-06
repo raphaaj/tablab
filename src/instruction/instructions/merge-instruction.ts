@@ -1,25 +1,25 @@
-import { InstructionBase } from '../core/instruction-base';
-import { MergeableInstructionBase } from '../core/mergeable-instruction-base';
+import { Instruction } from './instruction';
+import { MergeableInstruction } from './mergeable-instruction';
 import { Tab } from '../../tab/tab';
 import {
   FailedInstructionWriteResult,
   InstructionWriteResult,
   SuccessInstructionWriteResult,
-} from '../core/instruction-write-result';
+} from '../instruction-write-result';
 import {
   InvalidInstructionReason,
   InvalidInstructionReasonDescription,
 } from '../enums/invalid-instruction-reason';
 import { StringHelper } from '../../helpers/string-helper';
 
-export class MergeInstruction extends InstructionBase {
-  readonly instructions: MergeableInstructionBase[];
+export class MergeInstruction extends Instruction {
+  readonly instructions: MergeableInstruction[];
 
   /**
    * Creates a merge instruction instance.
    * @param instructions - The instruction instances to be merged.
    */
-  constructor(instructions: MergeableInstructionBase[]) {
+  constructor(instructions: MergeableInstruction[]) {
     super();
 
     this.instructions = instructions;

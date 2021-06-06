@@ -1,12 +1,12 @@
-import { InvalidInstruction } from '../../../src/instruction/core/invalid-instruction';
-import { MergeableInstructionBase } from '../../../src/instruction/core/mergeable-instruction-base';
+import { InvalidInstruction } from '../../../src/instruction/instructions/invalid-instruction';
+import { MergeableInstruction } from '../../../src/instruction/instructions/mergeable-instruction';
 
 describe(`[${InvalidInstruction.name}]`, () => {
   it('should not be a mergeable instruction', () => {
     const invalidationReasonIdentifier = 'TEST_REASON';
     const instruction = new InvalidInstruction(invalidationReasonIdentifier);
 
-    expect(instruction).not.toBeInstanceOf(MergeableInstructionBase);
+    expect(instruction).not.toBeInstanceOf(MergeableInstruction);
   });
 
   describe('[writeOnTab]', () => {

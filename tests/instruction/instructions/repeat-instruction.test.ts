@@ -1,21 +1,21 @@
 import { RepeatInstruction } from '../../../src/instruction/instructions/repeat-instruction';
-import { MergeableInstructionBase } from '../../../src/instruction/core/mergeable-instruction-base';
+import { MergeableInstruction } from '../../../src/instruction/instructions/mergeable-instruction';
 import { Tab } from '../../../src/tab/tab';
 import { InvalidInstructionReason } from '../../../src/instruction/enums/invalid-instruction-reason';
-import { InstructionBase } from '../../../src/instruction/core/instruction-base';
+import { Instruction } from '../../../src/instruction/instructions/instruction';
 import {
   FailedInstructionWriteResult,
   InstructionWriteResult,
   SuccessInstructionWriteResult,
-} from '../../../src/instruction/core/instruction-write-result';
+} from '../../../src/instruction/instruction-write-result';
 
-class SuccessWriteTestInstruction extends InstructionBase {
+class SuccessWriteTestInstruction extends Instruction {
   writeOnTab(): InstructionWriteResult {
     return new SuccessInstructionWriteResult();
   }
 }
 
-class FailedWriteTestInstruction extends InstructionBase {
+class FailedWriteTestInstruction extends Instruction {
   constructor(public failureReasonIdentifier: string) {
     super();
   }
@@ -27,7 +27,7 @@ class FailedWriteTestInstruction extends InstructionBase {
   }
 }
 
-class ErroredWriteTestInstruction extends InstructionBase {
+class ErroredWriteTestInstruction extends Instruction {
   writeOnTab(): InstructionWriteResult {
     throw new Error('Method not implemented.');
   }
@@ -37,7 +37,7 @@ describe(`[${RepeatInstruction.name}]`, () => {
   it('should not be a mergeable instruction', () => {
     const instruction = new RepeatInstruction([], 2);
 
-    expect(instruction).not.toBeInstanceOf(MergeableInstructionBase);
+    expect(instruction).not.toBeInstanceOf(MergeableInstruction);
   });
 
   describe('[writeOnTab]', () => {

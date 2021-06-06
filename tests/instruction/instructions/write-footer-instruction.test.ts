@@ -1,5 +1,5 @@
 import { WriteFooterInstruction } from '../../../src/instruction/instructions/write-footer-instruction';
-import { MergeableInstructionBase } from '../../../src/instruction/core/mergeable-instruction-base';
+import { MergeableInstruction } from '../../../src/instruction/instructions/mergeable-instruction';
 import { Tab } from '../../../src/tab/tab';
 import { InvalidInstructionReason } from '../../../src/instruction/enums/invalid-instruction-reason';
 
@@ -7,7 +7,7 @@ describe(`[${WriteFooterInstruction.name}]`, () => {
   it('should not be a mergeable instruction', () => {
     const instruction = new WriteFooterInstruction('test footer');
 
-    expect(instruction).not.toBeInstanceOf(MergeableInstructionBase);
+    expect(instruction).not.toBeInstanceOf(MergeableInstruction);
   });
 
   describe('[writeOnTab]', () => {

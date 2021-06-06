@@ -1,5 +1,5 @@
-import { WriteNoteInstruction } from '../../../src/instruction/core/write-note-instruction';
-import { MergeableInstructionBase } from '../../../src/instruction/core/mergeable-instruction-base';
+import { WriteNoteInstruction } from '../../../src/instruction/instructions/write-note-instruction';
+import { MergeableInstruction } from '../../../src/instruction/instructions/mergeable-instruction';
 import { Note } from '../../../src/tab/note';
 import { Tab } from '../../../src/tab/tab';
 import { InvalidInstructionReason } from '../../../src/instruction/enums/invalid-instruction-reason';
@@ -8,7 +8,7 @@ describe(`[${WriteNoteInstruction.name}]`, () => {
   it('should be a mergeable instruction', () => {
     const instruction = new WriteNoteInstruction(new Note(1, '1'));
 
-    expect(instruction).toBeInstanceOf(MergeableInstructionBase);
+    expect(instruction).toBeInstanceOf(MergeableInstruction);
   });
 
   describe('[writeOnTab]', () => {

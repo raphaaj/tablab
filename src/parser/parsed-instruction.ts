@@ -1,5 +1,5 @@
 import { ParsedMethodInstructionData } from './parsed-method-instruction';
-import { InstructionData } from '../instruction/core/instruction-factory-base';
+import { InstructionData } from '../instruction/instruction-factory-base';
 
 /**
  * The data of an instruction extracted from a string of instructions.

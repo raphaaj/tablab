@@ -1,7 +1,7 @@
-import { InstructionBase } from './instruction-base';
-import { FailedInstructionWriteResult, InstructionWriteResult } from './instruction-write-result';
+import { Instruction } from './instruction';
+import { FailedInstructionWriteResult, InstructionWriteResult } from '../instruction-write-result';
 
-export class InvalidInstruction extends InstructionBase {
+export class InvalidInstruction extends Instruction {
   description: string | null;
   reasonIdentifier: string;
 
