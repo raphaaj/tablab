@@ -1,8 +1,8 @@
 export enum Enclosure {
-  AngleBrackets = '<>',
-  CurlyBrackets = '{}',
-  RoundBrackets = '()',
-  SquareBrackets = '[]',
+  AngleBrackets = 'AngleBrackets',
+  CurlyBrackets = 'CurlyBrackets',
+  RoundBrackets = 'RoundBrackets',
+  SquareBrackets = 'SquareBrackets',
   Parentheses = RoundBrackets,
 }
 
