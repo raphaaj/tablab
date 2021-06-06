@@ -50,11 +50,11 @@ export class Parser {
   static readonly DEFAULT_INSTRUCTIONS_SEPARATOR = ' ';
   static readonly DEFAULT_METHOD_INSTRUCTION_ALIAS_2_IDENTIFIER_MAP: Record<string, string> = {
     break: MethodInstructionIdentifier.Break,
-    footer: MethodInstructionIdentifier.WriteFooter,
-    header: MethodInstructionIdentifier.WriteHeader,
+    footer: MethodInstructionIdentifier.Footer,
+    header: MethodInstructionIdentifier.Header,
     merge: MethodInstructionIdentifier.Merge,
     repeat: MethodInstructionIdentifier.Repeat,
-    spacing: MethodInstructionIdentifier.SetSpacing,
+    spacing: MethodInstructionIdentifier.Spacing,
   };
   static readonly DEFAULT_METHOD_INSTRUCTION_ARGS_ENCLOSURE = Enclosure.Parentheses;
   static readonly DEFAULT_METHOD_INSTRUCTION_ARGS_SEPARATOR = ',';

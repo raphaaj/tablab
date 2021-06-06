@@ -21,8 +21,8 @@ describe(`[${InstructionFactory.name}]`, () => {
 
     it('should enable only the given method instructions when specified', () => {
       const methodInstructionsToUse = [
-        MethodInstructionIdentifier.WriteHeader,
-        MethodInstructionIdentifier.WriteFooter,
+        MethodInstructionIdentifier.Header,
+        MethodInstructionIdentifier.Footer,
       ];
 
       const factory = new InstructionFactory({ useMethods: methodInstructionsToUse });
@@ -289,13 +289,13 @@ describe(`[${InstructionFactory.name}]`, () => {
     });
   });
 
-  describe(`[instruction method: ${MethodInstructionIdentifier.SetSpacing}]`, () => {
+  describe(`[instruction method: ${MethodInstructionIdentifier.Spacing}]`, () => {
     it('should return an invalid instruction when no arguments are given', () => {
       const factory = new InstructionFactory();
 
       const instructionData = {
-        value: MethodInstructionIdentifier.SetSpacing.toLowerCase(),
-        method: { args: [], targets: [], identifier: MethodInstructionIdentifier.SetSpacing },
+        value: MethodInstructionIdentifier.Spacing.toLowerCase(),
+        method: { args: [], targets: [], identifier: MethodInstructionIdentifier.Spacing },
       };
 
       const instruction = factory.getInstruction(instructionData);
@@ -311,11 +311,11 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const args = ['arg1', 'arg2'];
       const instructionData = {
-        value: `${MethodInstructionIdentifier.SetSpacing.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.Spacing.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: MethodInstructionIdentifier.SetSpacing,
+          identifier: MethodInstructionIdentifier.Spacing,
         },
       };
 
@@ -332,11 +332,11 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const args = ['arg1'];
       const instructionData = {
-        value: `${MethodInstructionIdentifier.SetSpacing.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.Spacing.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: MethodInstructionIdentifier.SetSpacing,
+          identifier: MethodInstructionIdentifier.Spacing,
         },
       };
 
@@ -353,11 +353,11 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const args = ['0'];
       const instructionData = {
-        value: `${MethodInstructionIdentifier.SetSpacing.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.Spacing.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: MethodInstructionIdentifier.SetSpacing,
+          identifier: MethodInstructionIdentifier.Spacing,
         },
       };
 
@@ -375,11 +375,11 @@ describe(`[${InstructionFactory.name}]`, () => {
       const spacing = 2;
       const args = [spacing.toString()];
       const instructionData = {
-        value: `${MethodInstructionIdentifier.SetSpacing.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.Spacing.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: MethodInstructionIdentifier.SetSpacing,
+          identifier: MethodInstructionIdentifier.Spacing,
         },
       };
 
@@ -390,13 +390,13 @@ describe(`[${InstructionFactory.name}]`, () => {
     });
   });
 
-  describe(`[instruction method: ${MethodInstructionIdentifier.WriteFooter}]`, () => {
+  describe(`[instruction method: ${MethodInstructionIdentifier.Footer}]`, () => {
     it('should return an invalid instruction when no arguments are given', () => {
       const factory = new InstructionFactory();
 
       const instructionData = {
-        value: MethodInstructionIdentifier.WriteFooter.toLowerCase(),
-        method: { args: [], targets: [], identifier: MethodInstructionIdentifier.WriteFooter },
+        value: MethodInstructionIdentifier.Footer.toLowerCase(),
+        method: { args: [], targets: [], identifier: MethodInstructionIdentifier.Footer },
       };
 
       const instruction = factory.getInstruction(instructionData);
@@ -412,11 +412,11 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const args = ['arg1', 'arg2'];
       const instructionData = {
-        value: `${MethodInstructionIdentifier.WriteFooter.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.Footer.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: MethodInstructionIdentifier.WriteFooter,
+          identifier: MethodInstructionIdentifier.Footer,
         },
       };
 
@@ -433,11 +433,11 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const args = ['   '];
       const instructionData = {
-        value: `${MethodInstructionIdentifier.WriteFooter.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.Footer.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: MethodInstructionIdentifier.WriteFooter,
+          identifier: MethodInstructionIdentifier.Footer,
         },
       };
 
@@ -455,11 +455,11 @@ describe(`[${InstructionFactory.name}]`, () => {
       const footer = 'test footer';
       const args = [footer];
       const instructionData = {
-        value: `${MethodInstructionIdentifier.WriteFooter.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.Footer.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: MethodInstructionIdentifier.WriteFooter,
+          identifier: MethodInstructionIdentifier.Footer,
         },
       };
 
@@ -470,13 +470,13 @@ describe(`[${InstructionFactory.name}]`, () => {
     });
   });
 
-  describe(`[instruction method: ${MethodInstructionIdentifier.WriteHeader}]`, () => {
+  describe(`[instruction method: ${MethodInstructionIdentifier.Header}]`, () => {
     it('should return an invalid instruction when no arguments are given', () => {
       const factory = new InstructionFactory();
 
       const instructionData = {
-        value: MethodInstructionIdentifier.WriteHeader.toLowerCase(),
-        method: { args: [], targets: [], identifier: MethodInstructionIdentifier.WriteHeader },
+        value: MethodInstructionIdentifier.Header.toLowerCase(),
+        method: { args: [], targets: [], identifier: MethodInstructionIdentifier.Header },
       };
 
       const instruction = factory.getInstruction(instructionData);
@@ -492,11 +492,11 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const args = ['arg1', 'arg2'];
       const instructionData = {
-        value: `${MethodInstructionIdentifier.WriteHeader.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.Header.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: MethodInstructionIdentifier.WriteHeader,
+          identifier: MethodInstructionIdentifier.Header,
         },
       };
 
@@ -513,11 +513,11 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const args = ['   '];
       const instructionData = {
-        value: `${MethodInstructionIdentifier.WriteHeader.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.Header.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: MethodInstructionIdentifier.WriteHeader,
+          identifier: MethodInstructionIdentifier.Header,
         },
       };
 
@@ -535,11 +535,11 @@ describe(`[${InstructionFactory.name}]`, () => {
       const header = 'test header';
       const args = [header];
       const instructionData = {
-        value: `${MethodInstructionIdentifier.WriteHeader.toLowerCase()} (${args.join(', ')})`,
+        value: `${MethodInstructionIdentifier.Header.toLowerCase()} (${args.join(', ')})`,
         method: {
           args: args,
           targets: [],
-          identifier: MethodInstructionIdentifier.WriteHeader,
+          identifier: MethodInstructionIdentifier.Header,
         },
       };
 

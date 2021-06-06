@@ -241,14 +241,14 @@ The `methodInstructionAlias2IdentifierMap` option is used to perform these custo
 
 Its default value, indicated below, results in the mapping described in the [available method instructions section](#available-method-instructions).
 
-```js
+```
 {
   break: MethodInstructionIdentifier.Break,
-  footer: MethodInstructionIdentifier.WriteFooter,
-  header: MethodInstructionIdentifier.WriteHeader,
+  footer: MethodInstructionIdentifier.Footer,
+  header: MethodInstructionIdentifier.Header,
   merge: MethodInstructionIdentifier.Merge,
   repeat: MethodInstructionIdentifier.Repeat,
-  spacing: MethodInstructionIdentifier.SetSpacing,
+  spacing: MethodInstructionIdentifier.Spacing
 }
 ```
 
@@ -256,14 +256,14 @@ Its default value, indicated below, results in the mapping described in the [ava
 
 Each one of the method instructions described in the [available method instructions section](#available-method-instructions) has a unique string identifier. The `MethodInstructionIdentifier` enumerator can be used for easy access to the method instructions identifiers. Below, the identifier of each method instruction and the corresponding member value of the `MethodInstructionIdentifier` enumerator:
 
-|           Method Instruction           |    Identifier    | `MethodInstructionIdentifier` Member |
-| :------------------------------------: | :--------------: | :----------------------------------: |
-|   [Break](#method-instruction-break)   |    `"BREAK"`     |               `Break`                |
-|  [Footer](#method-instruction-footer)  | `"WRITE_FOOTER"` |            `WriteFooter`             |
-|  [Header](#method-instruction-header)  | `"WRITE_HEADER"` |            `WriteHeader`             |
-|   [Merge](#method-instruction-merge)   |    `"MERGE"`     |               `Merge`                |
-|  [Repeat](#method-instruction-repeat)  |    `"REPEAT"`    |               `Repeat`               |
-| [Spacing](#method-instruction-spacing) | `"SET_SPACING"`  |             `SetSpacing`             |
+|           Method Instruction           | Method Instruction Identifier | `MethodInstructionIdentifier` Member |
+| :------------------------------------: | :---------------------------: | :----------------------------------: |
+|   [Break](#method-instruction-break)   |            `Break`            |               `Break`                |
+|  [Footer](#method-instruction-footer)  |           `Footer`            |               `Footer`               |
+|  [Header](#method-instruction-header)  |           `Header`            |               `Header`               |
+|   [Merge](#method-instruction-merge)   |            `Merge`            |               `Merge`                |
+|  [Repeat](#method-instruction-repeat)  |           `Repeat`            |               `Repeat`               |
+| [Spacing](#method-instruction-spacing) |           `Spacing`           |              `Spacing`               |
 
 The `MethodInstructionIdentifier` enumerator is available to be required, as indicated below:
 

@@ -38,9 +38,9 @@ export class InstructionFactory extends InstructionFactoryBase {
     MethodInstructionIdentifier.Break,
     MethodInstructionIdentifier.Merge,
     MethodInstructionIdentifier.Repeat,
-    MethodInstructionIdentifier.SetSpacing,
-    MethodInstructionIdentifier.WriteHeader,
-    MethodInstructionIdentifier.WriteFooter,
+    MethodInstructionIdentifier.Spacing,
+    MethodInstructionIdentifier.Header,
+    MethodInstructionIdentifier.Footer,
   ];
 
   private static _getDefaultMethodInstructionBuilderMap(
@@ -50,9 +50,9 @@ export class InstructionFactory extends InstructionFactoryBase {
       [MethodInstructionIdentifier.Break]: context.buildBreakInstruction.bind(context),
       [MethodInstructionIdentifier.Merge]: context.buildMergeInstruction.bind(context),
       [MethodInstructionIdentifier.Repeat]: context.buildRepeatInstruction.bind(context),
-      [MethodInstructionIdentifier.SetSpacing]: context.buildSetSpacingInstruction.bind(context),
-      [MethodInstructionIdentifier.WriteHeader]: context.buildWriteHeaderInstruction.bind(context),
-      [MethodInstructionIdentifier.WriteFooter]: context.buildWriteFooterInstruction.bind(context),
+      [MethodInstructionIdentifier.Spacing]: context.buildSpacingInstruction.bind(context),
+      [MethodInstructionIdentifier.Header]: context.buildHeaderInstruction.bind(context),
+      [MethodInstructionIdentifier.Footer]: context.buildFooterInstruction.bind(context),
     };
   }
 
@@ -101,6 +101,42 @@ export class InstructionFactory extends InstructionFactoryBase {
    */
   protected buildBreakInstruction(): InstructionBase {
     return new BreakInstruction();
+  }
+
+  /**
+   * Creates a write footer instruction instance. It must have one argument,
+   * the footer to write to the tablature element, which must be a non-empty
+   * string. If any of these conditions are not verified, an invalid instruction
+   * instance will be created instead.
+   * @param methodData - The method instruction data.
+   * @returns The created instruction instance.
+   *
+   * @see {@link WriteFooter}
+   */
+  protected buildFooterInstruction(methodData: MethodInstructionData): InstructionBase {
+    const invalidArguments = this._validateWriteFooterInstructionArguments(methodData.args);
+    if (invalidArguments) return invalidArguments;
+
+    const footer = methodData.args[0];
+    return new WriteFooterInstruction(footer);
+  }
+
+  /**
+   * Creates a write header instruction instance. It must have one argument,
+   * the header to write to the tablature element, which must be a non-empty
+   * string. If any of these conditions are not verified, an invalid instruction
+   * instance will be created instead.
+   * @param methodData - The method instruction data.
+   * @returns The created instruction instance.
+   *
+   * @see {@link WriteHeader}
+   */
+  protected buildHeaderInstruction(methodData: MethodInstructionData): InstructionBase {
+    const invalidArguments = this._validateWriteHeaderInstructionArguments(methodData.args);
+    if (invalidArguments) return invalidArguments;
+
+    const header = methodData.args[0];
+    return new WriteHeaderInstruction(header);
   }
 
   /**
@@ -163,48 +199,12 @@ export class InstructionFactory extends InstructionFactoryBase {
    *
    * @see {@link SetSpacingInstruction}
    */
-  protected buildSetSpacingInstruction(methodData: MethodInstructionData): InstructionBase {
+  protected buildSpacingInstruction(methodData: MethodInstructionData): InstructionBase {
     const invalidArguments = this._validateSetSpacingInstructionArguments(methodData.args);
     if (invalidArguments) return invalidArguments;
 
     const spacing = Number(methodData.args[0]);
     return new SetSpacingInstruction(spacing);
-  }
-
-  /**
-   * Creates a write footer instruction instance. It must have one argument,
-   * the footer to write to the tablature element, which must be a non-empty
-   * string. If any of these conditions are not verified, an invalid instruction
-   * instance will be created instead.
-   * @param methodData - The method instruction data.
-   * @returns The created instruction instance.
-   *
-   * @see {@link WriteFooter}
-   */
-  protected buildWriteFooterInstruction(methodData: MethodInstructionData): InstructionBase {
-    const invalidArguments = this._validateWriteFooterInstructionArguments(methodData.args);
-    if (invalidArguments) return invalidArguments;
-
-    const footer = methodData.args[0];
-    return new WriteFooterInstruction(footer);
-  }
-
-  /**
-   * Creates a write header instruction instance. It must have one argument,
-   * the header to write to the tablature element, which must be a non-empty
-   * string. If any of these conditions are not verified, an invalid instruction
-   * instance will be created instead.
-   * @param methodData - The method instruction data.
-   * @returns The created instruction instance.
-   *
-   * @see {@link WriteHeader}
-   */
-  protected buildWriteHeaderInstruction(methodData: MethodInstructionData): InstructionBase {
-    const invalidArguments = this._validateWriteHeaderInstructionArguments(methodData.args);
-    if (invalidArguments) return invalidArguments;
-
-    const header = methodData.args[0];
-    return new WriteHeaderInstruction(header);
   }
 
   private _buildInvalidInstruction(reasonIdentifier: InvalidInstructionReason): InvalidInstruction {
