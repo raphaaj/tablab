@@ -22,7 +22,7 @@ export class BreakInstruction extends Instruction {
       tab.addBlock();
       result = new SuccessInstructionWriteResult();
     } catch (e) {
-      result = this.getUnmappepFailureResult();
+      result = this.getFailureResultOnError(e);
     }
 
     return result;

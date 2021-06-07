@@ -1,19 +1,19 @@
 export enum InvalidInstructionReason {
-  UnmappedReason = 'UNMAPPED_REASON',
-  MethodInstructionWithoutIdentifier = 'METHOD_INSTRUCTION_WITHOUT_IDENTIFIER',
-  MethodInstructionWithUnmappedIdentifier = 'METHOD_INSTRUCTION_WITH_UNMAPPED_IDENTIFIER',
-  WriteNoteInstructionInvalid = 'INVALID_WRITE_NOTE_INSTRUCTION',
-  WriteNoteInstructionWithNonWritableNote = 'WRITE_NOTE_INSTRUCTION_WITH_NON_WRITABLE_NOTE',
-  WriteHeaderInstructionWithoutArguments = 'WRITE_HEADER_INSTRUCTION_WITHOUT_ARGUMENTS',
-  WriteHeaderInstructionWithUnmappedArguments = 'WRITE_HEADER_INSTRUCTION_WITH_UNMAPPED_ARGUMENTS',
-  WriteHeaderInstructionWithInvalidHeader = 'WRITE_HEADER_INSTRUCTION_WITH_INVALID_HEADER',
-  WriteFooterInstructionWithoutArguments = 'WRITE_FOOTER_INSTRUCTION_WITHOUT_ARGUMENTS',
-  WriteFooterInstructionWithUnmappedArguments = 'WRITE_FOOTER_INSTRUCTION_WITH_UNMAPPED_ARGUMENTS',
-  WriteFooterInstructionWithInvalidFooter = 'WRITE_FOOTER_INSTRUCTION_WITH_INVALID_FOOTER',
-  SetSpacingInstructionWithoutArguments = 'SET_SPACING_INSTRUCTION_WITHOUT_ARGUMENTS',
-  SetSpacingInstructionWithUnmappedArguments = 'SET_SPACING_INSTRUCTION_WITH_UNMAPPED_ARGUMENTS',
-  SetSpacingInstructionWithInvalidSpacingValueType = 'SET_SPACING_INSTRUCTION_WITH_INVALID_SPACING_VALUE_TYPE',
-  SetSpacingInstructionWithInvalidSpacingValue = 'SET_SPACING_INSTRUCTION_WITH_INVALID_SPACING_VALUE',
+  UnknownReason = 'UNKNOWN_REASON',
+  BasicInstructionInvalid = 'BASIC_INSTRUCTION_INVALID',
+  BasicInstructionWithNonWritableNote = 'BASIC_INSTRUCTION_WITH_NON_WRITABLE_NOTE',
+  UnidentifiedMethodInstruction = 'UNIDENTIFIED_METHOD_INSTRUCTION',
+  UnknownMethodInstruction = 'UNKNOWN_METHOD_INSTRUCTION',
+  HeaderInstructionWithoutArguments = 'HEADER_INSTRUCTION_WITHOUT_ARGUMENTS',
+  HeaderInstructionWithUnmappedArguments = 'HEADER_INSTRUCTION_WITH_UNMAPPED_ARGUMENTS',
+  HeaderInstructionWithInvalidHeader = 'HEADER_INSTRUCTION_WITH_INVALID_HEADER',
+  FooterInstructionWithoutArguments = 'FOOTER_INSTRUCTION_WITHOUT_ARGUMENTS',
+  FooterInstructionWithUnmappedArguments = 'FOOTER_INSTRUCTION_WITH_UNMAPPED_ARGUMENTS',
+  FooterInstructionWithInvalidFooter = 'FOOTER_INSTRUCTION_WITH_INVALID_FOOTER',
+  SpacingInstructionWithoutArguments = 'SPACING_INSTRUCTION_WITHOUT_ARGUMENTS',
+  SpacingInstructionWithUnmappedArguments = 'SPACING_INSTRUCTION_WITH_UNMAPPED_ARGUMENTS',
+  SpacingInstructionWithInvalidSpacingValueType = 'SPACING_INSTRUCTION_WITH_INVALID_SPACING_VALUE_TYPE',
+  SpacingInstructionWithInvalidSpacingValue = 'SPACING_INSTRUCTION_WITH_INVALID_SPACING_VALUE',
   RepeatInstructionWithoutArguments = 'REPEAT_INSTRUCTION_WITHOUT_ARGUMENTS',
   RepeatInstructionWithUnmappedArguments = 'REPEAT_INSTRUCTION_WITH_UNMAPPED_ARGUMENTS',
   RepeatInstructionWithInvalidRepetitionsValueType = 'REPEAT_INSTRUCTION_WITH_INVALID_REPETITIONS_VALUE_TYPE',
@@ -26,32 +26,33 @@ export enum InvalidInstructionReason {
 }
 
 export const InvalidInstructionReasonDescription: Record<InvalidInstructionReason, string> = {
-  [InvalidInstructionReason.UnmappedReason]: 'Unable to process instruction',
-  [InvalidInstructionReason.MethodInstructionWithoutIdentifier]: 'Unknown method',
-  [InvalidInstructionReason.MethodInstructionWithUnmappedIdentifier]: 'Unknown method',
-  [InvalidInstructionReason.WriteNoteInstructionInvalid]: 'Invalid instruction',
-  [InvalidInstructionReason.WriteNoteInstructionWithNonWritableNote]:
+  [InvalidInstructionReason.UnknownReason]: 'An unexpected error occurred: {0}',
+  [InvalidInstructionReason.BasicInstructionInvalid]: 'Invalid basic instruction',
+  [InvalidInstructionReason.BasicInstructionWithNonWritableNote]:
     'String value must be between 1 and {0}',
-  [InvalidInstructionReason.WriteHeaderInstructionWithInvalidHeader]:
-    'The header value should be a string with at least one character other than a whitespace',
-  [InvalidInstructionReason.WriteHeaderInstructionWithUnmappedArguments]:
-    'The header method requires only one argument: the header value',
-  [InvalidInstructionReason.WriteHeaderInstructionWithoutArguments]:
-    'The header method requires one argument: the header value',
-  [InvalidInstructionReason.WriteFooterInstructionWithInvalidFooter]:
-    'The footer value should be a string with at least one character other than a whitespace',
-  [InvalidInstructionReason.WriteFooterInstructionWithUnmappedArguments]:
-    'The footer method requires only one argument: the footer value',
-  [InvalidInstructionReason.WriteFooterInstructionWithoutArguments]:
-    'The footer method requires one argument: the footer value',
-  [InvalidInstructionReason.SetSpacingInstructionWithInvalidSpacingValueType]:
+  [InvalidInstructionReason.UnidentifiedMethodInstruction]:
+    'Unidentified method instruction for alias "{0}"',
+  [InvalidInstructionReason.UnknownMethodInstruction]: 'Unknown method instruction',
+  [InvalidInstructionReason.HeaderInstructionWithInvalidHeader]:
+    'The header message should be a string with at least one character other than a whitespace',
+  [InvalidInstructionReason.HeaderInstructionWithUnmappedArguments]:
+    'The header method requires only one argument: the header message',
+  [InvalidInstructionReason.HeaderInstructionWithoutArguments]:
+    'The header method requires one argument: the header message',
+  [InvalidInstructionReason.FooterInstructionWithInvalidFooter]:
+    'The footer message should be a string with at least one character other than a whitespace',
+  [InvalidInstructionReason.FooterInstructionWithUnmappedArguments]:
+    'The footer method requires only one argument: the footer message',
+  [InvalidInstructionReason.FooterInstructionWithoutArguments]:
+    'The footer method requires one argument: the footer message',
+  [InvalidInstructionReason.SpacingInstructionWithInvalidSpacingValueType]:
     'The spacing value must be an integer number',
-  [InvalidInstructionReason.SetSpacingInstructionWithInvalidSpacingValue]:
+  [InvalidInstructionReason.SpacingInstructionWithInvalidSpacingValue]:
     'The spacing value must be at least 1',
-  [InvalidInstructionReason.SetSpacingInstructionWithUnmappedArguments]:
-    'The set spacing method requires only one argument: the new spacing value',
-  [InvalidInstructionReason.SetSpacingInstructionWithoutArguments]:
-    'The set spacing method requires one argument: the new spacing value',
+  [InvalidInstructionReason.SpacingInstructionWithUnmappedArguments]:
+    'The spacing method requires only one argument: the new spacing value',
+  [InvalidInstructionReason.SpacingInstructionWithoutArguments]:
+    'The spacing method requires one argument: the new spacing value',
   [InvalidInstructionReason.RepeatInstructionWithoutArguments]:
     'The repeat method requires one argument: the number of repetitions',
   [InvalidInstructionReason.RepeatInstructionWithUnmappedArguments]:
@@ -61,13 +62,13 @@ export const InvalidInstructionReasonDescription: Record<InvalidInstructionReaso
   [InvalidInstructionReason.RepeatInstructionWithInvalidRepetitionsValue]:
     'The repetitions value must be at least 1',
   [InvalidInstructionReason.RepeatInstructionWithoutTargets]:
-    'The repeat method requires at least one target instruction',
+    'The repeat method requires at least one target instruction to repeat',
   [InvalidInstructionReason.MergeInstructionWithoutTargets]:
-    'The merge method requires at least one target instruction',
+    'The merge method requires at least one target instruction to merge',
   [InvalidInstructionReason.MergeInstructionWithUnmergeableTargets]:
     'The targets of the merge method must not be method instructions',
   [InvalidInstructionReason.MergeInstructionTargetsWithNonWritableNotes]:
-    'Identified target instructions with string out of tab range. String value must be between 1 and {0}',
+    'Identified target instructions with strings out of tab range. String value must be between 1 and {0}',
   [InvalidInstructionReason.MergeInstructionTargetsWithConcurrentNotes]:
     'Identified multiple target instructions applied to the same string',
 };

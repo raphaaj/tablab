@@ -28,8 +28,12 @@ class FailedWriteTestInstruction extends Instruction {
 }
 
 class ErroredWriteTestInstruction extends Instruction {
+  constructor(public errorMessage: string) {
+    super();
+  }
+
   writeOnTab(): InstructionWriteResult {
-    throw new Error('Method not implemented.');
+    throw new Error(this.errorMessage);
   }
 }
 
@@ -66,7 +70,8 @@ describe(`[${RepeatInstruction.name}]`, () => {
     });
 
     it('should return a failed write result on error', () => {
-      const instructionToRepeat = new ErroredWriteTestInstruction();
+      const errorMessage = 'repeat: an unexpected error occurred';
+      const instructionToRepeat = new ErroredWriteTestInstruction(errorMessage);
       const instruction = new RepeatInstruction([instructionToRepeat], 1);
       const tab = new Tab();
 
@@ -75,7 +80,8 @@ describe(`[${RepeatInstruction.name}]`, () => {
 
       expect(instructionToRepeat.writeOnTab).toHaveBeenCalled();
       expect(writeResult.success).toBe(false);
-      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionReason.UnmappedReason);
+      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionReason.UnknownReason);
+      expect(writeResult.failureMessage).toContain(errorMessage);
     });
 
     it('should return a failed write result when the instruction to repeat fails to be written on tab', () => {

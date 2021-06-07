@@ -35,7 +35,7 @@ export class WriteNoteInstruction extends MergeableInstruction {
 
         result = new SuccessInstructionWriteResult();
       } catch (e) {
-        result = this.getUnmappepFailureResult();
+        result = this.getFailureResultOnError(e);
       }
     } else {
       result = this._getNonWritableNoteFailureResult(tab.numberOfStrings);
@@ -47,7 +47,7 @@ export class WriteNoteInstruction extends MergeableInstruction {
   private _getNonWritableNoteFailureResult(
     maxTabStringValue: number
   ): FailedInstructionWriteResult {
-    const failureReason = InvalidInstructionReason.WriteNoteInstructionWithNonWritableNote;
+    const failureReason = InvalidInstructionReason.BasicInstructionWithNonWritableNote;
     const description = InvalidInstructionReasonDescription[failureReason];
     const failureMessage = StringHelper.format(description, [maxTabStringValue.toString()]);
 

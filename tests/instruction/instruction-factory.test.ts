@@ -9,6 +9,8 @@ import { SetSpacingInstruction } from '../../src/instruction/instructions/set-sp
 import { WriteFooterInstruction } from '../../src/instruction/instructions/write-footer-instruction';
 import { WriteHeaderInstruction } from '../../src/instruction/instructions/write-header-instruction';
 
+const TEST_METHOD_ALIAS = 'testAlias';
+
 describe(`[${InstructionFactory.name}]`, () => {
   describe('[constructor]', () => {
     it('should enable the default method instructions if not specified', () => {
@@ -37,7 +39,12 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const instructionData = {
         value: MethodInstructionIdentifier.Break.toLowerCase(),
-        method: { args: [], targets: [], identifier: MethodInstructionIdentifier.Break },
+        method: {
+          args: [],
+          targets: [],
+          identifier: MethodInstructionIdentifier.Break,
+          alias: TEST_METHOD_ALIAS,
+        },
       };
 
       const instruction = factory.getInstruction(instructionData);
@@ -52,7 +59,12 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const instructionData = {
         value: MethodInstructionIdentifier.Merge.toLowerCase(),
-        method: { args: [], targets: [], identifier: MethodInstructionIdentifier.Merge },
+        method: {
+          args: [],
+          targets: [],
+          identifier: MethodInstructionIdentifier.Merge,
+          alias: TEST_METHOD_ALIAS,
+        },
       };
 
       const instruction = factory.getInstruction(instructionData);
@@ -72,6 +84,7 @@ describe(`[${InstructionFactory.name}]`, () => {
           args: [],
           targets: [],
           identifier: MethodInstructionIdentifier.Break,
+          alias: TEST_METHOD_ALIAS,
         },
       };
 
@@ -81,6 +94,7 @@ describe(`[${InstructionFactory.name}]`, () => {
           args: [],
           targets: [targetData],
           identifier: MethodInstructionIdentifier.Merge,
+          alias: TEST_METHOD_ALIAS,
         },
       };
 
@@ -103,6 +117,7 @@ describe(`[${InstructionFactory.name}]`, () => {
           args: [],
           targets: [targetData],
           identifier: MethodInstructionIdentifier.Merge,
+          alias: TEST_METHOD_ALIAS,
         },
       };
 
@@ -130,6 +145,7 @@ describe(`[${InstructionFactory.name}]`, () => {
           args: [],
           targets: targetsData,
           identifier: MethodInstructionIdentifier.Merge,
+          alias: TEST_METHOD_ALIAS,
         },
       };
 
@@ -152,6 +168,7 @@ describe(`[${InstructionFactory.name}]`, () => {
           args: [],
           targets: [targetData],
           identifier: MethodInstructionIdentifier.Merge,
+          alias: TEST_METHOD_ALIAS,
         },
       };
 
@@ -169,7 +186,12 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const instructionData = {
         value: MethodInstructionIdentifier.Repeat.toLowerCase(),
-        method: { args: [], targets: [], identifier: MethodInstructionIdentifier.Repeat },
+        method: {
+          args: [],
+          targets: [],
+          identifier: MethodInstructionIdentifier.Repeat,
+          alias: TEST_METHOD_ALIAS,
+        },
       };
 
       const instruction = factory.getInstruction(instructionData);
@@ -190,6 +212,7 @@ describe(`[${InstructionFactory.name}]`, () => {
           args: args,
           targets: [],
           identifier: MethodInstructionIdentifier.Repeat,
+          alias: TEST_METHOD_ALIAS,
         },
       };
 
@@ -211,6 +234,7 @@ describe(`[${InstructionFactory.name}]`, () => {
           args: args,
           targets: [],
           identifier: MethodInstructionIdentifier.Repeat,
+          alias: TEST_METHOD_ALIAS,
         },
       };
 
@@ -232,6 +256,7 @@ describe(`[${InstructionFactory.name}]`, () => {
           args: args,
           targets: [],
           identifier: MethodInstructionIdentifier.Repeat,
+          alias: TEST_METHOD_ALIAS,
         },
       };
 
@@ -249,7 +274,12 @@ describe(`[${InstructionFactory.name}]`, () => {
       const args = ['1'];
       const instructionData = {
         value: `${MethodInstructionIdentifier.Repeat.toLowerCase()} (${args.join(', ')})`,
-        method: { args: args, targets: [], identifier: MethodInstructionIdentifier.Repeat },
+        method: {
+          args: args,
+          targets: [],
+          identifier: MethodInstructionIdentifier.Repeat,
+          alias: TEST_METHOD_ALIAS,
+        },
       };
 
       const instruction = factory.getInstruction(instructionData);
@@ -277,6 +307,7 @@ describe(`[${InstructionFactory.name}]`, () => {
           args: args,
           targets: [targetData],
           identifier: MethodInstructionIdentifier.Repeat,
+          alias: TEST_METHOD_ALIAS,
         },
       };
 
@@ -295,14 +326,19 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const instructionData = {
         value: MethodInstructionIdentifier.Spacing.toLowerCase(),
-        method: { args: [], targets: [], identifier: MethodInstructionIdentifier.Spacing },
+        method: {
+          args: [],
+          targets: [],
+          identifier: MethodInstructionIdentifier.Spacing,
+          alias: TEST_METHOD_ALIAS,
+        },
       };
 
       const instruction = factory.getInstruction(instructionData);
 
       expect(instruction).toBeInstanceOf(InvalidInstruction);
       expect((instruction as InvalidInstruction).reasonIdentifier).toBe(
-        InvalidInstructionReason.SetSpacingInstructionWithoutArguments
+        InvalidInstructionReason.SpacingInstructionWithoutArguments
       );
     });
 
@@ -316,6 +352,7 @@ describe(`[${InstructionFactory.name}]`, () => {
           args: args,
           targets: [],
           identifier: MethodInstructionIdentifier.Spacing,
+          alias: TEST_METHOD_ALIAS,
         },
       };
 
@@ -323,7 +360,7 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       expect(instruction).toBeInstanceOf(InvalidInstruction);
       expect((instruction as InvalidInstruction).reasonIdentifier).toBe(
-        InvalidInstructionReason.SetSpacingInstructionWithUnmappedArguments
+        InvalidInstructionReason.SpacingInstructionWithUnmappedArguments
       );
     });
 
@@ -337,6 +374,7 @@ describe(`[${InstructionFactory.name}]`, () => {
           args: args,
           targets: [],
           identifier: MethodInstructionIdentifier.Spacing,
+          alias: TEST_METHOD_ALIAS,
         },
       };
 
@@ -344,7 +382,7 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       expect(instruction).toBeInstanceOf(InvalidInstruction);
       expect((instruction as InvalidInstruction).reasonIdentifier).toBe(
-        InvalidInstructionReason.SetSpacingInstructionWithInvalidSpacingValueType
+        InvalidInstructionReason.SpacingInstructionWithInvalidSpacingValueType
       );
     });
 
@@ -358,6 +396,7 @@ describe(`[${InstructionFactory.name}]`, () => {
           args: args,
           targets: [],
           identifier: MethodInstructionIdentifier.Spacing,
+          alias: TEST_METHOD_ALIAS,
         },
       };
 
@@ -365,7 +404,7 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       expect(instruction).toBeInstanceOf(InvalidInstruction);
       expect((instruction as InvalidInstruction).reasonIdentifier).toBe(
-        InvalidInstructionReason.SetSpacingInstructionWithInvalidSpacingValue
+        InvalidInstructionReason.SpacingInstructionWithInvalidSpacingValue
       );
     });
 
@@ -380,6 +419,7 @@ describe(`[${InstructionFactory.name}]`, () => {
           args: args,
           targets: [],
           identifier: MethodInstructionIdentifier.Spacing,
+          alias: TEST_METHOD_ALIAS,
         },
       };
 
@@ -396,14 +436,19 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const instructionData = {
         value: MethodInstructionIdentifier.Footer.toLowerCase(),
-        method: { args: [], targets: [], identifier: MethodInstructionIdentifier.Footer },
+        method: {
+          args: [],
+          targets: [],
+          identifier: MethodInstructionIdentifier.Footer,
+          alias: TEST_METHOD_ALIAS,
+        },
       };
 
       const instruction = factory.getInstruction(instructionData);
 
       expect(instruction).toBeInstanceOf(InvalidInstruction);
       expect((instruction as InvalidInstruction).reasonIdentifier).toBe(
-        InvalidInstructionReason.WriteFooterInstructionWithoutArguments
+        InvalidInstructionReason.FooterInstructionWithoutArguments
       );
     });
 
@@ -417,6 +462,7 @@ describe(`[${InstructionFactory.name}]`, () => {
           args: args,
           targets: [],
           identifier: MethodInstructionIdentifier.Footer,
+          alias: TEST_METHOD_ALIAS,
         },
       };
 
@@ -424,7 +470,7 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       expect(instruction).toBeInstanceOf(InvalidInstruction);
       expect((instruction as InvalidInstruction).reasonIdentifier).toBe(
-        InvalidInstructionReason.WriteFooterInstructionWithUnmappedArguments
+        InvalidInstructionReason.FooterInstructionWithUnmappedArguments
       );
     });
 
@@ -438,6 +484,7 @@ describe(`[${InstructionFactory.name}]`, () => {
           args: args,
           targets: [],
           identifier: MethodInstructionIdentifier.Footer,
+          alias: TEST_METHOD_ALIAS,
         },
       };
 
@@ -445,7 +492,7 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       expect(instruction).toBeInstanceOf(InvalidInstruction);
       expect((instruction as InvalidInstruction).reasonIdentifier).toBe(
-        InvalidInstructionReason.WriteFooterInstructionWithInvalidFooter
+        InvalidInstructionReason.FooterInstructionWithInvalidFooter
       );
     });
 
@@ -460,6 +507,7 @@ describe(`[${InstructionFactory.name}]`, () => {
           args: args,
           targets: [],
           identifier: MethodInstructionIdentifier.Footer,
+          alias: TEST_METHOD_ALIAS,
         },
       };
 
@@ -476,14 +524,19 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       const instructionData = {
         value: MethodInstructionIdentifier.Header.toLowerCase(),
-        method: { args: [], targets: [], identifier: MethodInstructionIdentifier.Header },
+        method: {
+          args: [],
+          targets: [],
+          identifier: MethodInstructionIdentifier.Header,
+          alias: TEST_METHOD_ALIAS,
+        },
       };
 
       const instruction = factory.getInstruction(instructionData);
 
       expect(instruction).toBeInstanceOf(InvalidInstruction);
       expect((instruction as InvalidInstruction).reasonIdentifier).toBe(
-        InvalidInstructionReason.WriteHeaderInstructionWithoutArguments
+        InvalidInstructionReason.HeaderInstructionWithoutArguments
       );
     });
 
@@ -497,6 +550,7 @@ describe(`[${InstructionFactory.name}]`, () => {
           args: args,
           targets: [],
           identifier: MethodInstructionIdentifier.Header,
+          alias: TEST_METHOD_ALIAS,
         },
       };
 
@@ -504,7 +558,7 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       expect(instruction).toBeInstanceOf(InvalidInstruction);
       expect((instruction as InvalidInstruction).reasonIdentifier).toBe(
-        InvalidInstructionReason.WriteHeaderInstructionWithUnmappedArguments
+        InvalidInstructionReason.HeaderInstructionWithUnmappedArguments
       );
     });
 
@@ -518,6 +572,7 @@ describe(`[${InstructionFactory.name}]`, () => {
           args: args,
           targets: [],
           identifier: MethodInstructionIdentifier.Header,
+          alias: TEST_METHOD_ALIAS,
         },
       };
 
@@ -525,7 +580,7 @@ describe(`[${InstructionFactory.name}]`, () => {
 
       expect(instruction).toBeInstanceOf(InvalidInstruction);
       expect((instruction as InvalidInstruction).reasonIdentifier).toBe(
-        InvalidInstructionReason.WriteHeaderInstructionWithInvalidHeader
+        InvalidInstructionReason.HeaderInstructionWithInvalidHeader
       );
     });
 
@@ -540,6 +595,7 @@ describe(`[${InstructionFactory.name}]`, () => {
           args: args,
           targets: [],
           identifier: MethodInstructionIdentifier.Header,
+          alias: TEST_METHOD_ALIAS,
         },
       };
 

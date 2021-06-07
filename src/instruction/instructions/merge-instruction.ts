@@ -44,7 +44,7 @@ export class MergeInstruction extends Instruction {
 
         result = new SuccessInstructionWriteResult();
       } catch (e) {
-        result = this.getUnmappepFailureResult();
+        result = this.getFailureResultOnError(e);
       }
     }
 

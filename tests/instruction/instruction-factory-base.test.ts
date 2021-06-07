@@ -11,6 +11,7 @@ import { Instruction } from '../../src/instruction/instructions/instruction';
 import { InvalidInstruction } from '../../src/instruction/instructions/invalid-instruction';
 import { WriteNoteInstruction } from '../../src/instruction/instructions/write-note-instruction';
 
+const TEST_METHOD_ALIAS = 'testAlias';
 const TEST_METHOD_IDENTIFIER = 'testIdentifier';
 
 class TestInstruction extends Instruction {
@@ -72,12 +73,12 @@ describe(`[${InstructionFactoryBase.name}]`, () => {
 
         const instruction = factory.getInstruction({
           value: 'unknown',
-          method: { args: [], targets: [], identifier: null },
+          method: { args: [], targets: [], identifier: null, alias: TEST_METHOD_ALIAS },
         });
 
         expect(instruction).toBeInstanceOf(InvalidInstruction);
         expect((instruction as InvalidInstruction).reasonIdentifier).toBe(
-          InvalidInstructionReason.MethodInstructionWithoutIdentifier
+          InvalidInstructionReason.UnidentifiedMethodInstruction
         );
       });
 
@@ -86,12 +87,12 @@ describe(`[${InstructionFactoryBase.name}]`, () => {
 
         const instruction = factory.getInstruction({
           value: 'unknown',
-          method: { args: [], targets: [], identifier: 'unknown' },
+          method: { args: [], targets: [], identifier: 'unknown', alias: TEST_METHOD_ALIAS },
         });
 
         expect(instruction).toBeInstanceOf(InvalidInstruction);
         expect((instruction as InvalidInstruction).reasonIdentifier).toBe(
-          InvalidInstructionReason.MethodInstructionWithUnmappedIdentifier
+          InvalidInstructionReason.UnknownMethodInstruction
         );
       });
 
@@ -100,7 +101,12 @@ describe(`[${InstructionFactoryBase.name}]`, () => {
 
         const instruction = factory.getInstruction({
           value: TEST_METHOD_IDENTIFIER,
-          method: { args: [], targets: [], identifier: TEST_METHOD_IDENTIFIER },
+          method: {
+            args: [],
+            targets: [],
+            identifier: TEST_METHOD_IDENTIFIER,
+            alias: TEST_METHOD_ALIAS,
+          },
         });
 
         expect(instruction).toBeInstanceOf(TestInstruction);
@@ -118,7 +124,7 @@ describe(`[${InstructionFactoryBase.name}]`, () => {
 
         expect(instruction).toBeInstanceOf(InvalidInstruction);
         expect((instruction as InvalidInstruction).reasonIdentifier).toBe(
-          InvalidInstructionReason.WriteNoteInstructionInvalid
+          InvalidInstructionReason.BasicInstructionInvalid
         );
       });
 

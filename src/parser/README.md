@@ -187,7 +187,7 @@ console.log(writeResult);
 
 outputs
 
-```js
+```
 {
   failureReasonIdentifier: null,
   failureMessage: null
@@ -213,11 +213,11 @@ console.log(writeResult);
 
 outputs
 
-```js
+```
 {
-  failureReasonIdentifier: "INVALID_WRITE_NOTE_INSTRUCTION",
-  failureMessage: "Invalid instruction"
-  success: false,
+  failureReasonIdentifier: "BASIC_INSTRUCTION_INVALID",
+  failureMessage: "Invalid basic instruction",
+  success: false
 }
 ```
 
@@ -275,7 +275,7 @@ const { MethodInstructionIdentifier } = require('tablab');
 
 One of the use cases of the `methodInstructionAlias2IdentifierMap` option is to disable the parser to identify some method instructions.
 
-In the following example, the parser is set to read the [repeat instruction](#method-instruction-repeat) only under the alias `repeat`. The other aliases described in the [available method instructions section](#available-method-instructions) are disabled, resulting in unidentified method instructions.
+In the following example, the parser is set to read the [repeat instruction](#method-instruction-repeat) only, under the alias `repeat`. The other aliases described in the [available method instructions section](#available-method-instructions) are disabled, resulting in unidentified method instructions.
 
 ```js
 const { Parser, InstructionFactory, Tab, MethodInstructionIdentifier } = require('tablab');
@@ -285,11 +285,13 @@ const instructionFactory = new InstructionFactory();
 
 const parser = new Parser({
   methodInstructionAlias2IdentifierMap: {
-    repeat: MethodInstructionIdentifier.Repeat, // maps the repeat instruction under the alias "repeat"
+    repeat: MethodInstructionIdentifier.Repeat, // maps only the repeat instruction under the alias "repeat"
   },
 });
 
-const parsedInstructions = parser.parseAll('header(Example) repeat(2){ 1-0 2-0 }');
+const parsedInstructions = parser.parseAll(
+  'header(Example) repeat(2){ 1-0 2-0 } merge { 1-0 2-0 }'
+);
 
 parsedInstructions.forEach((parsedInstructionData) => {
   const instruction = instructionFactory.getInstruction(parsedInstructionData);
@@ -311,7 +313,8 @@ console.log(tab.format(50));
 outputs
 
 ```
-Failed to write instruction < header(Example) > at position 0. Unknown method (METHOD_INSTRUCTION_WITHOUT_IDENTIFIER)
+Failed to write instruction < header(Example) > at position 0. Unidentified method instruction for alias "header" (UNIDENTIFIED_METHOD_INSTRUCTION)
+Failed to write instruction < merge { 1-0 2-0 } > at position 37. Unidentified method instruction for alias "merge" (UNIDENTIFIED_METHOD_INSTRUCTION)
 [
   [
     '                                                  ',
@@ -372,7 +375,7 @@ console.log(tab.format(50));
 outputs
 
 ```
-Failed to write instruction < repeat(2){ 1-0 2-0 } > at position 0. Unknown method (METHOD_INSTRUCTION_WITHOUT_IDENTIFIER)
+Failed to write instruction < repeat(2){ 1-0 2-0 } > at position 0. Unidentified method instruction for alias "repeat" (UNIDENTIFIED_METHOD_INSTRUCTION)
 [
   [
     '                                                  ',
@@ -401,7 +404,7 @@ const instructionFactory = new InstructionFactory();
 
 const parser = new Parser({
   methodInstructionAlias2IdentifierMap: {
-    ...Parser.DEFAULT_METHOD_INSTRUCTION_ALIAS_2_IDENTIFIER_MAP, // extends the predefined mapping
+    ...Parser.DEFAULT_METHOD_INSTRUCTION_ALIAS_2_IDENTIFIER_MAP, // extends the default mapping
     r: MethodInstructionIdentifier.Repeat, // maps the repeat instruction under the alias "r"
   },
 });

@@ -13,6 +13,11 @@ import { Note } from '../tab/note';
  */
 export interface MethodInstructionData {
   /**
+   * The method alias.
+   */
+  alias: string;
+
+  /**
    * The method instruction arguments.
    */
   args: string[];
@@ -347,20 +352,34 @@ export abstract class InstructionFactoryBase {
     return null;
   }
 
-  private _buildInvalidInstructionBase(
-    reasonIdentifier: InvalidInstructionReason
+  private _buildInvalidInstructionForMethodData(
+    reasonIdentifier: InvalidInstructionReason,
+    methodData: MethodInstructionData
   ): InvalidInstruction {
-    const description = InvalidInstructionReasonDescription[reasonIdentifier];
+    const reasonDescription = InvalidInstructionReasonDescription[reasonIdentifier];
+
+    let description = null;
+    if (reasonIdentifier === InvalidInstructionReason.UnidentifiedMethodInstruction) {
+      description = StringHelper.format(reasonDescription, [methodData.alias]);
+    } else {
+      description = reasonDescription;
+    }
 
     return new InvalidInstruction(reasonIdentifier, description);
+  }
+
+  private _buildInvalidInstructionForValue(reasonIdentifier: InvalidInstructionReason) {
+    const reasonDescription = InvalidInstructionReasonDescription[reasonIdentifier];
+
+    return new InvalidInstruction(reasonIdentifier, reasonDescription);
   }
 
   private _buildWriteNoteInstruction(instructionValue: string): Instruction {
     const note = InstructionFactoryBase._extractNoteFromInstruction(instructionValue);
 
     if (!note)
-      return this._buildInvalidInstructionBase(
-        InvalidInstructionReason.WriteNoteInstructionInvalid
+      return this._buildInvalidInstructionForValue(
+        InvalidInstructionReason.BasicInstructionInvalid
       );
 
     return new WriteNoteInstruction(note);
@@ -368,8 +387,9 @@ export abstract class InstructionFactoryBase {
 
   private _getInstructionFromMethodData(methodData: MethodInstructionData): Instruction {
     if (!methodData.identifier)
-      return this._buildInvalidInstructionBase(
-        InvalidInstructionReason.MethodInstructionWithoutIdentifier
+      return this._buildInvalidInstructionForMethodData(
+        InvalidInstructionReason.UnidentifiedMethodInstruction,
+        methodData
       );
 
     const buildMethodInstruction = this.methodInstructionIdentifier2InstructionBuilderMap[
@@ -377,8 +397,9 @@ export abstract class InstructionFactoryBase {
     ];
 
     if (!buildMethodInstruction)
-      return this._buildInvalidInstructionBase(
-        InvalidInstructionReason.MethodInstructionWithUnmappedIdentifier
+      return this._buildInvalidInstructionForMethodData(
+        InvalidInstructionReason.UnknownMethodInstruction,
+        methodData
       );
 
     return buildMethodInstruction(methodData);

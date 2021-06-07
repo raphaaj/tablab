@@ -23,14 +23,19 @@ describe(`[${SetSpacingInstruction.name}]`, () => {
     });
 
     it('should return a failed write result on error', () => {
-      const spacing = 0;
-      const instruction = new SetSpacingInstruction(spacing);
+      const errorMessage = 'spacing: an unexpected error occurred';
+      const instruction = new SetSpacingInstruction(1);
       const tab = new Tab();
 
+      tab.setSpacing = jest.fn(() => {
+        throw new Error(errorMessage);
+      });
       const writeResult = instruction.writeOnTab(tab);
 
+      expect(tab.setSpacing).toHaveBeenCalled();
       expect(writeResult.success).toBe(false);
-      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionReason.UnmappedReason);
+      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionReason.UnknownReason);
+      expect(writeResult.failureMessage).toContain(errorMessage);
     });
   });
 });

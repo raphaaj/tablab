@@ -24,11 +24,11 @@ export class SetSpacingInstruction extends Instruction {
     let result: InstructionWriteResult;
 
     try {
-      tab.spacing = this.spacing;
+      tab.setSpacing(this.spacing);
 
       result = new SuccessInstructionWriteResult();
     } catch (e) {
-      result = this.getUnmappepFailureResult();
+      result = this.getFailureResultOnError(e);
     }
 
     return result;

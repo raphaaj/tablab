@@ -24,18 +24,19 @@ describe(`[${WriteHeaderInstruction.name}]`, () => {
     });
 
     it('should return a failed write result on error', () => {
-      const header = '';
-      const instruction = new WriteHeaderInstruction(header);
+      const errorMessage = 'header: an unexpected error occurred';
+      const instruction = new WriteHeaderInstruction('');
       const tab = new Tab();
 
       tab.writeHeader = jest.fn(() => {
-        throw new Error();
+        throw new Error(errorMessage);
       });
       const writeResult = instruction.writeOnTab(tab);
 
       expect(tab.writeHeader).toHaveBeenCalled();
       expect(writeResult.success).toBe(false);
-      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionReason.UnmappedReason);
+      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionReason.UnknownReason);
+      expect(writeResult.failureMessage).toContain(errorMessage);
     });
   });
 });

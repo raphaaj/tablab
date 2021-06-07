@@ -50,9 +50,9 @@ export class InstructionFactory extends InstructionFactoryBase {
       [MethodInstructionIdentifier.Break]: context.buildBreakInstruction.bind(context),
       [MethodInstructionIdentifier.Merge]: context.buildMergeInstruction.bind(context),
       [MethodInstructionIdentifier.Repeat]: context.buildRepeatInstruction.bind(context),
-      [MethodInstructionIdentifier.Spacing]: context.buildSpacingInstruction.bind(context),
-      [MethodInstructionIdentifier.Header]: context.buildHeaderInstruction.bind(context),
-      [MethodInstructionIdentifier.Footer]: context.buildFooterInstruction.bind(context),
+      [MethodInstructionIdentifier.Spacing]: context.buildSetSpacingInstruction.bind(context),
+      [MethodInstructionIdentifier.Header]: context.buildWriteHeaderInstruction.bind(context),
+      [MethodInstructionIdentifier.Footer]: context.buildWriteFooterInstruction.bind(context),
     };
   }
 
@@ -101,42 +101,6 @@ export class InstructionFactory extends InstructionFactoryBase {
    */
   protected buildBreakInstruction(): Instruction {
     return new BreakInstruction();
-  }
-
-  /**
-   * Creates a write footer instruction instance. It must have one argument,
-   * the footer to write to the tablature element, which must be a non-empty
-   * string. If any of these conditions are not verified, an invalid instruction
-   * instance will be created instead.
-   * @param methodData - The method instruction data.
-   * @returns The created instruction instance.
-   *
-   * @see {@link WriteFooter}
-   */
-  protected buildFooterInstruction(methodData: MethodInstructionData): Instruction {
-    const invalidArguments = this._validateWriteFooterInstructionArguments(methodData.args);
-    if (invalidArguments) return invalidArguments;
-
-    const footer = methodData.args[0];
-    return new WriteFooterInstruction(footer);
-  }
-
-  /**
-   * Creates a write header instruction instance. It must have one argument,
-   * the header to write to the tablature element, which must be a non-empty
-   * string. If any of these conditions are not verified, an invalid instruction
-   * instance will be created instead.
-   * @param methodData - The method instruction data.
-   * @returns The created instruction instance.
-   *
-   * @see {@link WriteHeader}
-   */
-  protected buildHeaderInstruction(methodData: MethodInstructionData): Instruction {
-    const invalidArguments = this._validateWriteHeaderInstructionArguments(methodData.args);
-    if (invalidArguments) return invalidArguments;
-
-    const header = methodData.args[0];
-    return new WriteHeaderInstruction(header);
   }
 
   /**
@@ -199,12 +163,48 @@ export class InstructionFactory extends InstructionFactoryBase {
    *
    * @see {@link SetSpacingInstruction}
    */
-  protected buildSpacingInstruction(methodData: MethodInstructionData): Instruction {
+  protected buildSetSpacingInstruction(methodData: MethodInstructionData): Instruction {
     const invalidArguments = this._validateSetSpacingInstructionArguments(methodData.args);
     if (invalidArguments) return invalidArguments;
 
     const spacing = Number(methodData.args[0]);
     return new SetSpacingInstruction(spacing);
+  }
+
+  /**
+   * Creates a write footer instruction instance. It must have one argument,
+   * the footer to write to the tablature element, which must be a non-empty
+   * string. If any of these conditions are not verified, an invalid instruction
+   * instance will be created instead.
+   * @param methodData - The method instruction data.
+   * @returns The created instruction instance.
+   *
+   * @see {@link WriteFooterInstruction}
+   */
+  protected buildWriteFooterInstruction(methodData: MethodInstructionData): Instruction {
+    const invalidArguments = this._validateWriteFooterInstructionArguments(methodData.args);
+    if (invalidArguments) return invalidArguments;
+
+    const footer = methodData.args[0];
+    return new WriteFooterInstruction(footer);
+  }
+
+  /**
+   * Creates a write header instruction instance. It must have one argument,
+   * the header to write to the tablature element, which must be a non-empty
+   * string. If any of these conditions are not verified, an invalid instruction
+   * instance will be created instead.
+   * @param methodData - The method instruction data.
+   * @returns The created instruction instance.
+   *
+   * @see {@link WriteHeaderInstruction}
+   */
+  protected buildWriteHeaderInstruction(methodData: MethodInstructionData): Instruction {
+    const invalidArguments = this._validateWriteHeaderInstructionArguments(methodData.args);
+    if (invalidArguments) return invalidArguments;
+
+    const header = methodData.args[0];
+    return new WriteHeaderInstruction(header);
   }
 
   private _buildInvalidInstruction(reasonIdentifier: InvalidInstructionReason): InvalidInstruction {
@@ -337,13 +337,13 @@ export class InstructionFactory extends InstructionFactoryBase {
       minNumberValidation: {
         minNumber: 1,
         invalidInstructionIfLess: this._buildInvalidInstruction(
-          InvalidInstructionReason.SetSpacingInstructionWithoutArguments
+          InvalidInstructionReason.SpacingInstructionWithoutArguments
         ),
       },
       maxNumberValidation: {
         maxNumber: 1,
         invalidInstructionIfMore: this._buildInvalidInstruction(
-          InvalidInstructionReason.SetSpacingInstructionWithUnmappedArguments
+          InvalidInstructionReason.SpacingInstructionWithUnmappedArguments
         ),
       },
     });
@@ -352,12 +352,12 @@ export class InstructionFactory extends InstructionFactoryBase {
     const invalidSpacingValue = this.validateMethodArgumentForNumberValue({
       arg: args[0],
       invalidInstructionIfNaN: this._buildInvalidInstruction(
-        InvalidInstructionReason.SetSpacingInstructionWithInvalidSpacingValueType
+        InvalidInstructionReason.SpacingInstructionWithInvalidSpacingValueType
       ),
       minValueValidation: {
         minValue: 1,
         invalidInstructionIfSmaller: this._buildInvalidInstruction(
-          InvalidInstructionReason.SetSpacingInstructionWithInvalidSpacingValue
+          InvalidInstructionReason.SpacingInstructionWithInvalidSpacingValue
         ),
       },
     });
@@ -372,13 +372,13 @@ export class InstructionFactory extends InstructionFactoryBase {
       minNumberValidation: {
         minNumber: 1,
         invalidInstructionIfLess: this._buildInvalidInstruction(
-          InvalidInstructionReason.WriteFooterInstructionWithoutArguments
+          InvalidInstructionReason.FooterInstructionWithoutArguments
         ),
       },
       maxNumberValidation: {
         maxNumber: 1,
         invalidInstructionIfMore: this._buildInvalidInstruction(
-          InvalidInstructionReason.WriteFooterInstructionWithUnmappedArguments
+          InvalidInstructionReason.FooterInstructionWithUnmappedArguments
         ),
       },
     });
@@ -387,7 +387,7 @@ export class InstructionFactory extends InstructionFactoryBase {
     const footer = args[0];
     if (!(footer && footer.trim())) {
       return this._buildInvalidInstruction(
-        InvalidInstructionReason.WriteFooterInstructionWithInvalidFooter
+        InvalidInstructionReason.FooterInstructionWithInvalidFooter
       );
     }
 
@@ -400,13 +400,13 @@ export class InstructionFactory extends InstructionFactoryBase {
       minNumberValidation: {
         minNumber: 1,
         invalidInstructionIfLess: this._buildInvalidInstruction(
-          InvalidInstructionReason.WriteHeaderInstructionWithoutArguments
+          InvalidInstructionReason.HeaderInstructionWithoutArguments
         ),
       },
       maxNumberValidation: {
         maxNumber: 1,
         invalidInstructionIfMore: this._buildInvalidInstruction(
-          InvalidInstructionReason.WriteHeaderInstructionWithUnmappedArguments
+          InvalidInstructionReason.HeaderInstructionWithUnmappedArguments
         ),
       },
     });
@@ -415,7 +415,7 @@ export class InstructionFactory extends InstructionFactoryBase {
     const header = args[0];
     if (!(header && header.trim())) {
       return this._buildInvalidInstruction(
-        InvalidInstructionReason.WriteHeaderInstructionWithInvalidHeader
+        InvalidInstructionReason.HeaderInstructionWithInvalidHeader
       );
     }
 

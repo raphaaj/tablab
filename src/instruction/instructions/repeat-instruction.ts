@@ -38,7 +38,7 @@ export class RepeatInstruction extends Instruction {
         }
       }
     } catch (e) {
-      result = this.getUnmappepFailureResult();
+      result = this.getFailureResultOnError(e);
     }
 
     return result;

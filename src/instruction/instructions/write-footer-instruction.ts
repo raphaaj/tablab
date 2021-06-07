@@ -28,7 +28,7 @@ export class WriteFooterInstruction extends Instruction {
 
       result = new SuccessInstructionWriteResult();
     } catch (e) {
-      result = this.getUnmappepFailureResult();
+      result = this.getFailureResultOnError(e);
     }
 
     return result;

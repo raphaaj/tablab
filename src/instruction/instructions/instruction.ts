@@ -4,17 +4,20 @@ import {
   InvalidInstructionReason,
   InvalidInstructionReasonDescription,
 } from '../enums/invalid-instruction-reason';
+import { StringHelper } from '../../helpers/string-helper';
 
 export abstract class Instruction {
   abstract writeOnTab(tab: Tab): InstructionWriteResult;
 
   /**
-   * Returns the default writing result for an unexpected failure reason.
-   * @returns A failed writing result for an unexpected reason.
+   * Creates a failed instruction write result based on a given error.
+   * @param error - The error to be used to create the writing result.
+   * @returns The created failed instruction writing result.
    */
-  protected getUnmappepFailureResult(): FailedInstructionWriteResult {
-    const failureReason = InvalidInstructionReason.UnmappedReason;
-    const failureMessage = InvalidInstructionReasonDescription[failureReason];
+  protected getFailureResultOnError(error: Error): FailedInstructionWriteResult {
+    const failureReason = InvalidInstructionReason.UnknownReason;
+    const failureDescription = InvalidInstructionReasonDescription[failureReason];
+    const failureMessage = StringHelper.format(failureDescription, [error.message]);
 
     return new FailedInstructionWriteResult({
       failureReasonIdentifier: failureReason,
