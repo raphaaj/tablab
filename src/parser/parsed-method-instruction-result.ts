@@ -1,5 +1,5 @@
 import { Enclosure, EnclosuresHelper } from '../helpers/enclosures-helper';
-import { ParsedInstructionData } from './parsed-instruction';
+import { ParsedInstruction } from './parsed-instruction-result';
 import { MethodInstructionData } from '../instruction/instruction-factory-base';
 
 export type MethodTargetExtractionResult = {
@@ -10,7 +10,7 @@ export type MethodTargetExtractionResult = {
 /**
  * The method data of an extracted method instruction.
  */
-export interface ParsedMethodInstructionData {
+export interface ParsedMethodInstruction {
   /**
    * The alias used to reference the method.
    */
@@ -32,10 +32,11 @@ export interface ParsedMethodInstructionData {
    * applied. If the method instruction has no targets, it will be an empty
    * array.
    */
-  targets: ParsedInstructionData[];
+  targets: ParsedInstruction[];
 }
 
-export class ParsedMethodInstruction implements ParsedMethodInstructionData, MethodInstructionData {
+export class ParsedMethodInstructionResult
+  implements ParsedMethodInstruction, MethodInstructionData {
   static extractMethodAlias(instruction: string): string | null {
     const extractionRegexp = /^([a-z]+)(?!-)/i;
     const extractionResult = extractionRegexp.exec(instruction);
@@ -92,9 +93,9 @@ export class ParsedMethodInstruction implements ParsedMethodInstructionData, Met
   alias: string;
   args: string[];
   identifier: string | null;
-  targets: ParsedInstructionData[];
+  targets: ParsedInstruction[];
 
-  constructor({ alias, args, identifier, targets }: ParsedMethodInstructionData) {
+  constructor({ alias, args, identifier, targets }: ParsedMethodInstruction) {
     this.alias = alias;
     this.args = args;
     this.identifier = identifier || null;

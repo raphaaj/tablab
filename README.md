@@ -38,6 +38,8 @@ Check out the `Tab` class [usage documentation](src/tab/README.md) for more info
 - The available [options](src/tab/README.md#tablature-options) to customize your tablature;
 - The available [methods](src/tab/README.md#tablature-methods) to perform the writing operations.
 
+Below, an example of how the `Tab` class can be used to write a tablature:
+
 ```js
 const { Tab, Note } = require('tablab');
 
@@ -129,7 +131,7 @@ outputs
 
 As in the strategy [step by step](#writing-a-tablature-step-by-step), the `Tab` class is responsible for managing the tablature. The difference from this strategy is that instead of calling each method direct from a tablature instance, the writing operations will be determined from a text input of instructions.
 
-`Tablab` provides the `Parser` and the `InstructionFactory` classes to determine the writing operations from the text input of instructions. The former is responsible for reading the given instructions and convert them to structured data. The latter is responsible for determining the writing operation to be performed over the tablature from this structured data.
+`Tablab` provides the `Parser` class to read the given text input of instructions and determine the writing operation to be performed over the tablature for each parsed instruction.
 
 Check out the `Parser` class [usage documentation](src/parser/README.md) for more information about:
 
@@ -138,50 +140,29 @@ Check out the `Parser` class [usage documentation](src/parser/README.md) for mor
 - The available [options](src/parser/README.md#parser-options) to customize the parser;
 - The available [methods](src/parser/README.md#parser-methods) to parse instructions.
 
+Below, an example of how the `Parser` class can be used with the `Tab` class to write a tablature:
+
 ```js
-const { Tab, Parser, InstructionFactory } = require('tablab');
+const { Tab, Parser } = require('tablab');
 
-const instructions = [
-  'header(Simple Notes Example)',
-  '1-0',
-  'spacing(2)',
-  '2-1',
-  '3-2',
-  '4-1/3',
-  '5-3',
-  '6-1',
-  '5-2',
-  '4-3',
-  '3-1h3',
-  '2-3p1',
-  '1-2',
-  'footer(x2)',
-  'break',
-  'spacing(5)',
-  'header(Chord Example (C Major))',
-  'merge{ 1-0 2-1 3-0 4-2 5-3 }',
-  'merge{ 1-0 2-1 3-0 4-2 5-3 }',
-  'break',
-  'header(Chord Example (E Major))',
-  'merge{ 1-0 2-0 3-1 4-2 5-2 6-0 }',
-  'merge{ 1-0 2-0 3-1 4-2 5-2 6-0 }',
-];
-
-const instructionsString = instructions.join(' ');
+const instructions =
+  'header(Simple Notes Example) 1-0 spacing(2) ' +
+  '2-1 3-2 4-1/3 5-3 6-1 5-2 4-3 3-1h3 2-3p1 1-2 footer(x2) break spacing(5) ' +
+  'header(Chord Example (C Major)) merge{ 1-0 2-1 3-0 4-2 5-3 } ' +
+  'merge{ 1-0 2-1 3-0 4-2 5-3 } break header(Chord Example (E Major)) ' +
+  'merge{ 1-0 2-0 3-1 4-2 5-2 6-0 } merge{ 1-0 2-0 3-1 4-2 5-2 6-0 }';
 
 const tab = new Tab();
 const parser = new Parser();
-const instructionFactory = new InstructionFactory();
 
-parser.parseAll(instructionsString).forEach((result) => {
-  const instruction = instructionFactory.getInstruction(result);
-  const instructionWriteResult = instruction.writeOnTab(tab);
+parser.parseAll(instructions).forEach((parsedInstruction) => {
+  const writeResult = parsedInstruction.writeOnTab(tab);
 
-  if (!instructionWriteResult.success) {
+  if (!writeResult.success) {
     console.log(
-      `Failed to write instruction < ${result.value} > at position ` +
-        `${result.readFromIndex}. (${instructionWriteResult.failureReasonIdentifier}) ` +
-        `- ${instructionWriteResult.failureMessage} `
+      `Failed to write instruction < ${parsedInstruction.value} > at position ` +
+        `${parsedInstruction.readFromIndex}. (${writeResult.failureReasonIdentifier}) ` +
+        `- ${writeResult.failureMessage} `
     );
   }
 });

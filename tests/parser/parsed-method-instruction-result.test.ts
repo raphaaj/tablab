@@ -1,22 +1,42 @@
-import { ParsedMethodInstruction } from '../../src/parser/parsed-method-instruction';
-import { ParsedInstruction } from '../../src/parser/parsed-instruction';
+import { ParsedMethodInstructionResult } from '../../src/parser/parsed-method-instruction-result';
+import { ParsedInstructionResult } from '../../src/parser/parsed-instruction-result';
 import { Enclosure } from '../../src/helpers/enclosures-helper';
+import { Instruction } from '../../src/instruction/instructions/instruction';
+import { InstructionProvider } from '../../src/instruction/instruction-factory-base';
+import {
+  InstructionWriteResult,
+  SuccessInstructionWriteResult,
+} from '../../src/instruction/instruction-write-result';
+
+class NullInstruction extends Instruction {
+  writeOnTab(): InstructionWriteResult {
+    return new SuccessInstructionWriteResult();
+  }
+}
+
+class NullInstructionProvider implements InstructionProvider {
+  getInstruction(): Instruction {
+    return new NullInstruction();
+  }
+}
 
 const getTestParsedMethodInstruction = (identifier: string | null) => {
   const alias = 'testAlias';
   const args = ['arg1', '123', 'arg2', '321'];
+  const instructionProvider = new NullInstructionProvider();
 
   const targetValue = '1-0';
   const targets = [
-    new ParsedInstruction({
+    new ParsedInstructionResult({
       value: targetValue,
       method: null,
       readFromIndex: 0,
       readToIndex: targetValue.length - 1,
+      instructionProvider,
     }),
   ];
 
-  const parsedMethodInstruction = new ParsedMethodInstruction({
+  const parsedMethodInstruction = new ParsedMethodInstructionResult({
     alias,
     args,
     targets,
@@ -47,7 +67,7 @@ const getNonIdentifiedTestParsedMethodInstruction = () => {
   return parsedMethodInstruction;
 };
 
-describe(`[${ParsedMethodInstruction.name}]`, () => {
+describe(`[${ParsedMethodInstructionResult.name}]`, () => {
   describe('[constructor]', () => {
     it('should set the parsed method instruction properties when the identifier is given', () => {
       const {
@@ -84,7 +104,7 @@ describe(`[${ParsedMethodInstruction.name}]`, () => {
       const alias = 'test';
       const instruction = `${alias} ( arg1, arg2 ) { 1-0 2-0 3-0 }`;
 
-      const methodAlias = ParsedMethodInstruction.extractMethodAlias(instruction);
+      const methodAlias = ParsedMethodInstructionResult.extractMethodAlias(instruction);
 
       expect(methodAlias).toBe(alias);
     });
@@ -92,7 +112,7 @@ describe(`[${ParsedMethodInstruction.name}]`, () => {
     it('should return null if the instruction is not a method instruction', () => {
       const instruction = '1-0';
 
-      const methodAlias = ParsedMethodInstruction.extractMethodAlias(instruction);
+      const methodAlias = ParsedMethodInstructionResult.extractMethodAlias(instruction);
 
       expect(methodAlias).toBe(null);
     });
@@ -103,7 +123,7 @@ describe(`[${ParsedMethodInstruction.name}]`, () => {
       const args = ['0', 'arg1', 'arg2', '3'];
       const instruction = `test (${args.join(', ')})`;
 
-      const methodArguments = ParsedMethodInstruction.extractMethodArguments(
+      const methodArguments = ParsedMethodInstructionResult.extractMethodArguments(
         instruction,
         Enclosure.Parentheses,
         ','
@@ -115,7 +135,7 @@ describe(`[${ParsedMethodInstruction.name}]`, () => {
     it('should return an empty array if the instruction is a method instruction without arguments', () => {
       const instruction = 'test';
 
-      const methodArguments = ParsedMethodInstruction.extractMethodArguments(
+      const methodArguments = ParsedMethodInstructionResult.extractMethodArguments(
         instruction,
         Enclosure.Parentheses,
         ','
@@ -127,7 +147,7 @@ describe(`[${ParsedMethodInstruction.name}]`, () => {
     it('should return an empty array if the instruction is not a method instruction', () => {
       const instruction = '1-0';
 
-      const methodArguments = ParsedMethodInstruction.extractMethodArguments(
+      const methodArguments = ParsedMethodInstructionResult.extractMethodArguments(
         instruction,
         Enclosure.Parentheses,
         ','
@@ -142,7 +162,7 @@ describe(`[${ParsedMethodInstruction.name}]`, () => {
       const target = ' 1-0 2-0 3-0 ';
       const instruction = `test {${target}}`;
 
-      const methodTargetExtractionResult = ParsedMethodInstruction.extractMethodTarget(
+      const methodTargetExtractionResult = ParsedMethodInstructionResult.extractMethodTarget(
         instruction,
         Enclosure.CurlyBrackets
       );
@@ -154,7 +174,7 @@ describe(`[${ParsedMethodInstruction.name}]`, () => {
     it('should return null if the instruction is a method instruction without target', () => {
       const instruction = 'test';
 
-      const methodTargetExtractionResult = ParsedMethodInstruction.extractMethodTarget(
+      const methodTargetExtractionResult = ParsedMethodInstructionResult.extractMethodTarget(
         instruction,
         Enclosure.CurlyBrackets
       );
@@ -165,7 +185,7 @@ describe(`[${ParsedMethodInstruction.name}]`, () => {
     it('should return null if the instruction is not a method instruction', () => {
       const instruction = '1-0';
 
-      const methodTargetExtractionResult = ParsedMethodInstruction.extractMethodTarget(
+      const methodTargetExtractionResult = ParsedMethodInstructionResult.extractMethodTarget(
         instruction,
         Enclosure.CurlyBrackets
       );

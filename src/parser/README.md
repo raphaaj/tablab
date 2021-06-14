@@ -93,37 +93,33 @@ The `Parser` class provides a few strategies on how to parse [basic](#basic-inst
 ```js
 const { Parser } = require('tablab');
 
-const instructionsToParse =
-  '1-0 2-0 3-5 1-3 4-5h7 3-5b6 ' +
-  'break header(Example Header) footer(Example Footer) ' +
-  'merge{ 1-0 2-0 } repeat(2){ 1-0 2-3h5 } spacing(2)';
+const instructions =
+  '1-0 2-0 3-5 1-3 4-5h7 3-5b6 break header(Example Header) ' +
+  'footer(Example Footer) merge{ 1-0 2-0 } repeat(2){ 1-0 2-3h5 } ' +
+  'spacing(2)';
 
 const parser = new Parser();
 
-const parsedInstructions = parser.parseAll(instructionsToParse);
+const parsedInstructions = parser.parseAll(instructions);
 ```
 
 Check out the [other](#parser-methods) strategies available for parsing instructions.
 
 ## Writing a tablature with the parsed instructions
 
-With your text input of instructions [parsed](#parsing-instructions), create an `InstructionFactory` instance and use the `getInstruction` method to convert the parsed data into an `Instruction` instance. This instruction instance can then be used to perform the writing operation to your tablature, using the `writeOnTab` method. Check out the example below:
+With your text input of instructions [parsed](#parsing-instructions), use the `writeOnTab` method of the result to write each instruction to the tableture. Check out the example below:
 
 ```js
-const { InstructionFactory, Tab } = require('tablab');
+const { Tab } = require('tablab');
 
 const tab = new Tab();
-const instructionFactory = new InstructionFactory();
-
-parsedInstructions.forEach((parsedInstructionData) => {
-  const instruction = instructionFactory.getInstruction(parsedInstructionData);
-
-  const writeResult = instruction.writeOnTab(tab);
+parsedInstructions.forEach((parsedInstruction) => {
+  const writeResult = parsedInstruction.writeOnTab(tab);
 
   if (!writeResult.success) {
     console.log(
-      `Failed to write instruction < ${parsedInstructionData.value} > at position ` +
-        `${parsedInstructionData.readFromIndex}. ${writeResult.failureMessage} ` +
+      `Failed to write instruction < ${parsedInstruction.value} > at position ` +
+        `${parsedInstruction.readFromIndex}. ${writeResult.failureMessage} ` +
         `(${writeResult.failureReasonIdentifier})`
     );
   }
@@ -172,15 +168,13 @@ Because of that, you should check the result of the `writeOnTab` method call to 
 Below, an example of the result for a **successfully** written instruction:
 
 ```js
-const { Parser, InstructionFactory, Tab } = require('tablab');
+const { Parser, Tab } = require('tablab');
 
 const tab = new Tab();
 const parser = new Parser();
-const instructionFactory = new InstructionFactory();
 
 const parsedInstruction = parser.parseOne('1-0');
-const instruction = instructionFactory.getInstruction(parsedInstruction);
-const writeResult = instruction.writeOnTab(tab);
+const writeResult = parsedInstruction.writeOnTab(tab);
 
 console.log(writeResult);
 ```
@@ -198,15 +192,13 @@ outputs
 Below, an example of the result for a **failed** written one:
 
 ```js
-const { Parser, InstructionFactory, Tab } = require('tablab');
+const { Parser, Tab } = require('tablab');
 
 const tab = new Tab();
 const parser = new Parser();
-const instructionFactory = new InstructionFactory();
 
 const parsedInstruction = parser.parseOne('1'); // Basic instruction without the fret indication
-const instruction = instructionFactory.getInstruction(parsedInstruction);
-const writeResult = instruction.writeOnTab(tab);
+const writeResult = parsedInstruction.writeOnTab(tab);
 
 console.log(writeResult);
 ```
@@ -278,30 +270,24 @@ One of the use cases of the `methodInstructionAlias2IdentifierMap` option is to 
 In the following example, the parser is set to read the [repeat instruction](#method-instruction-repeat) only, under the alias `repeat`. The other aliases described in the [available method instructions section](#available-method-instructions) are disabled, resulting in unidentified method instructions.
 
 ```js
-const { Parser, InstructionFactory, Tab, MethodInstructionIdentifier } = require('tablab');
+const { Parser, Tab, MethodInstructionIdentifier } = require('tablab');
 
 const tab = new Tab();
-const instructionFactory = new InstructionFactory();
-
 const parser = new Parser({
   methodInstructionAlias2IdentifierMap: {
     repeat: MethodInstructionIdentifier.Repeat, // maps only the repeat instruction under the alias "repeat"
   },
 });
 
-const parsedInstructions = parser.parseAll(
-  'header(Example) repeat(2){ 1-0 2-0 } merge { 1-0 2-0 }'
-);
+const instructions = 'header(Example) repeat(2){ 1-0 2-0 } merge { 1-0 2-0 }';
 
-parsedInstructions.forEach((parsedInstructionData) => {
-  const instruction = instructionFactory.getInstruction(parsedInstructionData);
-
-  const writeResult = instruction.writeOnTab(tab);
+parser.parseAll(instructions).forEach((parsedInstruction) => {
+  const writeResult = parsedInstruction.writeOnTab(tab);
 
   if (!writeResult.success) {
     console.log(
-      `Failed to write instruction < ${parsedInstructionData.value} > at position ` +
-        `${parsedInstructionData.readFromIndex}. ${writeResult.failureMessage} ` +
+      `Failed to write instruction < ${parsedInstruction.value} > at position ` +
+        `${parsedInstruction.readFromIndex}. ${writeResult.failureMessage} ` +
         `(${writeResult.failureReasonIdentifier})`
     );
   }
@@ -336,15 +322,15 @@ The `methodInstructionAlias2IdentifierMap` option can also be used to change the
 In the following example, the parser is set to read the [repeat instruction](#method-instruction-repeat) under the alias `r` instead of the default `repeat` alias.
 
 ```js
-const { Parser, InstructionFactory, Tab, MethodInstructionIdentifier } = require('tablab');
+const { Parser, Tab, MethodInstructionIdentifier } = require('tablab');
 
 const tab = new Tab();
-const instructionFactory = new InstructionFactory();
 
+// copies the default mapping
 const customAlias2IdentifierMap = Object.assign(
   {},
   Parser.DEFAULT_METHOD_INSTRUCTION_ALIAS_2_IDENTIFIER_MAP
-); // copies the default mapping
+);
 
 delete customAlias2IdentifierMap.repeat; // removes the mapping for the alias "repeat"
 customAlias2IdentifierMap.r = MethodInstructionIdentifier.Repeat; // maps the repeat instruction under the alias "r"
@@ -353,17 +339,15 @@ const parser = new Parser({
   methodInstructionAlias2IdentifierMap: customAlias2IdentifierMap,
 });
 
-const parsedInstructions = parser.parseAll('repeat(2){ 1-0 2-0 } r(2){ 1-0 2-0 } ');
+const instructions = 'repeat(2){ 1-0 2-0 } r(2){ 1-0 2-0 }';
 
-parsedInstructions.forEach((parsedInstructionData) => {
-  const instruction = instructionFactory.getInstruction(parsedInstructionData);
-
-  const writeResult = instruction.writeOnTab(tab);
+parser.parseAll(instructions).forEach((parsedInstruction) => {
+  const writeResult = parsedInstruction.writeOnTab(tab);
 
   if (!writeResult.success) {
     console.log(
-      `Failed to write instruction < ${parsedInstructionData.value} > at position ` +
-        `${parsedInstructionData.readFromIndex}. ${writeResult.failureMessage} ` +
+      `Failed to write instruction < ${parsedInstruction.value} > at position ` +
+        `${parsedInstruction.readFromIndex}. ${writeResult.failureMessage} ` +
         `(${writeResult.failureReasonIdentifier})`
     );
   }
@@ -397,11 +381,9 @@ Another use case of the `methodInstructionAlias2IdentifierMap` option is to add 
 In the following example, the parser is set to read all the predefined aliases as described in the [available method instructions section](#available-method-instructions) but with one difference: It can also read the [repeat instruction](#method-instruction-repeat) under the alias `r`, besides the default `repeat` alias.
 
 ```js
-const { Parser, InstructionFactory, Tab, MethodInstructionIdentifier } = require('tablab');
+const { Parser, Tab, MethodInstructionIdentifier } = require('tablab');
 
 const tab = new Tab();
-const instructionFactory = new InstructionFactory();
-
 const parser = new Parser({
   methodInstructionAlias2IdentifierMap: {
     ...Parser.DEFAULT_METHOD_INSTRUCTION_ALIAS_2_IDENTIFIER_MAP, // extends the default mapping
@@ -409,17 +391,15 @@ const parser = new Parser({
   },
 });
 
-const parsedInstructions = parser.parseAll('repeat(2){ 1-5 2-5 } r(2){ 1-0 2-0 }');
+const instructions = 'repeat(2){ 1-5 2-5 } r(2){ 1-0 2-0 }';
 
-parsedInstructions.forEach((parsedInstructionData) => {
-  const instruction = instructionFactory.getInstruction(parsedInstructionData);
-
-  const writeResult = instruction.writeOnTab(tab);
+parser.parseAll(instructions).forEach((parsedInstruction) => {
+  const writeResult = parsedInstruction.writeOnTab(tab);
 
   if (!writeResult.success) {
     console.log(
-      `Failed to write instruction < ${parsedInstructionData.value} > at position ` +
-        `${parsedInstructionData.readFromIndex}. ${writeResult.failureMessage} ` +
+      `Failed to write instruction < ${parsedInstruction.value} > at position ` +
+        `${parsedInstruction.readFromIndex}. ${writeResult.failureMessage} ` +
         `(${writeResult.failureReasonIdentifier})`
     );
   }
@@ -541,7 +521,9 @@ const { Parser } = require('tablab');
 
 const parser = new Parser();
 
-const parsedInstructions = parser.parseAll('1-0 2-0 break 3-0 4-0 break 5-0 6-0');
+const instructions = '1-0 2-0 break 3-0 4-0 break 5-0 6-0';
+
+const parsedInstructions = parser.parseAll(instructions);
 
 parsedInstructions.forEach((parsedInstruction) => {
   // handle parsed instructions
@@ -557,7 +539,9 @@ const { Parser } = require('tablab');
 
 const parser = new Parser();
 
-parser.parseAllAsync('1-0 2-0 break 3-0 4-0 break 5-0 6-0').then((parsedInstructions) => {
+const instructions = '1-0 2-0 break 3-0 4-0 break 5-0 6-0';
+
+parser.parseAllAsync(instructions).then((parsedInstructions) => {
   parsedInstructions.forEach((parsedInstruction) => {
     // handle parsed instructions
   });

@@ -1,5 +1,6 @@
 export {
   InstructionData,
+  InstructionProvider,
   MethodInstructionData,
   MethodInstructionBuilder,
   InstructionFactoryBase,

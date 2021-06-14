@@ -1,18 +1,32 @@
 import { Parser } from '../../src/parser/parser';
-import { ParsedInstructionData } from '../../src/parser/parsed-instruction';
-import { ParsedMethodInstructionData } from '../../src/parser/parsed-method-instruction';
+import {
+  ParsedInstruction,
+  ParsedInstructionResult,
+} from '../../src/parser/parsed-instruction-result';
+import { ParsedMethodInstructionResult } from '../../src/parser/parsed-method-instruction-result';
 import { Enclosure } from '../../src/helpers/enclosures-helper';
+import { Instruction } from '../../src/instruction/instructions/instruction';
+import { InstructionProvider } from '../../src/instruction/instruction-factory-base';
+import { InstructionFactory } from '../../src/instruction/instruction-factory';
 
-const globalIndexReference = 5;
+const GLOBAL_INDEX_REFERENCE = 5;
+
+class NullInstructionProvider implements InstructionProvider {
+  getInstruction(): Instruction {
+    throw new Error('Method not implemented');
+  }
+}
 
 let parser: Parser;
 beforeEach(() => {
-  parser = new Parser();
+  parser = new Parser({ instructionProvider: new NullInstructionProvider() });
 });
 
 describe(`[${Parser.name}]`, () => {
   describe('[constructor]', () => {
     it('should create a parser with the default parameters if no configuration is given', () => {
+      const parser = new Parser();
+
       expect(parser.instructionsSeparator).toBe(Parser.DEFAULT_INSTRUCTIONS_SEPARATOR);
       expect(parser.methodInstructionAlias2IdentifierMap).toBe(
         Parser.DEFAULT_METHOD_INSTRUCTION_ALIAS_2_IDENTIFIER_MAP
@@ -26,6 +40,7 @@ describe(`[${Parser.name}]`, () => {
       expect(parser.methodInstructionTargetsEnclosure).toBe(
         Parser.DEFAULT_METHOD_INSTRUCTION_TARGETS_ENCLOSURE
       );
+      expect(parser.instructionProvider).toBeInstanceOf(InstructionFactory);
     });
 
     it('should set the instructionsSeparator if one is set at instantiation', () => {
@@ -33,6 +48,13 @@ describe(`[${Parser.name}]`, () => {
       const parser = new Parser({ instructionsSeparator });
 
       expect(parser.instructionsSeparator).toBe(instructionsSeparator);
+    });
+
+    it('should set the instructionProvider if one is set at instantiation', () => {
+      const instructionProvider = new NullInstructionProvider();
+      const parser = new Parser({ instructionProvider });
+
+      expect(parser.instructionProvider).toBe(instructionProvider);
     });
 
     it('should set the methodInstructionAlias2IdentifierMap if one is set at instantiation', () => {
@@ -145,13 +167,14 @@ describe(`[${Parser.name}]`, () => {
   describe('[parse single instruction]', () => {
     const nonMethodInstruction = '1-0';
 
-    const getExpectedParsedNonMethodInstruction = (): ParsedInstructionData => {
-      return {
+    const getExpectedParsedNonMethodInstruction = (): ParsedInstruction => {
+      return new ParsedInstructionResult({
         method: null,
         value: nonMethodInstruction,
         readFromIndex: 0,
         readToIndex: nonMethodInstruction.length - 1,
-      };
+        instructionProvider: new NullInstructionProvider(),
+      });
     };
 
     describe('[parseOne]', () => {
@@ -174,10 +197,10 @@ describe(`[${Parser.name}]`, () => {
       it('should parse one instruction with the given index reference when provided', () => {
         const expectedParsedInstruction = getExpectedParsedNonMethodInstruction();
 
-        expectedParsedInstruction.readFromIndex += globalIndexReference;
-        expectedParsedInstruction.readToIndex += globalIndexReference;
+        expectedParsedInstruction.readFromIndex += GLOBAL_INDEX_REFERENCE;
+        expectedParsedInstruction.readToIndex += GLOBAL_INDEX_REFERENCE;
 
-        const parsedInstruction = parser.parseOne(nonMethodInstruction, globalIndexReference);
+        const parsedInstruction = parser.parseOne(nonMethodInstruction, GLOBAL_INDEX_REFERENCE);
 
         expect(parsedInstruction).toEqual(expectedParsedInstruction);
       });
@@ -314,7 +337,7 @@ describe(`[${Parser.name}]`, () => {
       });
 
       it('should parse the targets of a method instruction as an empty array when not available', () => {
-        const targets: ParsedInstructionData[] = [];
+        const targets: ParsedInstruction[] = [];
         const instruction = 'instr';
 
         const parsedInstruction = parser.parseOne(instruction);
@@ -381,9 +404,9 @@ describe(`[${Parser.name}]`, () => {
         const instructions = '   ';
 
         parser.parseOne = jest.fn();
-        await parser.parseOneAsync(instructions, globalIndexReference);
+        await parser.parseOneAsync(instructions, GLOBAL_INDEX_REFERENCE);
 
-        expect(parser.parseOne).toHaveBeenCalledWith(instructions, globalIndexReference);
+        expect(parser.parseOne).toHaveBeenCalledWith(instructions, GLOBAL_INDEX_REFERENCE);
       });
 
       it('should reject if an error occurs while parsing the instruction', async () => {
@@ -403,31 +426,33 @@ describe(`[${Parser.name}]`, () => {
     const instruction2 = 'methodInstruction(arg1, arg2)';
     const instructions = ` ${instruction1} ${instruction2} `;
 
-    const getExpectedParsedInstruction1 = (): ParsedInstructionData => {
+    const getExpectedParsedInstruction1 = (): ParsedInstruction => {
       const instruction1StartIndexAtInstructions = instructions.indexOf(instruction1);
 
-      return {
+      return new ParsedInstructionResult({
         method: null,
         value: instruction1,
         readFromIndex: instruction1StartIndexAtInstructions,
         readToIndex: instruction1StartIndexAtInstructions + instruction1.length - 1,
-      };
+        instructionProvider: new NullInstructionProvider(),
+      });
     };
 
-    const getExpectedParsedInstruction2 = (): ParsedInstructionData => {
+    const getExpectedParsedInstruction2 = (): ParsedInstruction => {
       const instruction2StartIndexAtInstructions = instructions.indexOf(instruction2);
 
-      return {
-        method: {
+      return new ParsedInstructionResult({
+        method: new ParsedMethodInstructionResult({
           alias: 'methodInstruction',
           args: ['arg1', 'arg2'],
           identifier: null,
           targets: [],
-        } as ParsedMethodInstructionData,
+        }),
         value: instruction2,
         readFromIndex: instruction2StartIndexAtInstructions,
         readToIndex: instruction2StartIndexAtInstructions + instruction2.length - 1,
-      };
+        instructionProvider: new NullInstructionProvider(),
+      });
     };
 
     describe(`[parseAll]`, () => {
@@ -446,12 +471,12 @@ describe(`[${Parser.name}]`, () => {
         const expectedParsedInstruction1 = getExpectedParsedInstruction1();
         const expectedParsedInstruction2 = getExpectedParsedInstruction2();
 
-        expectedParsedInstruction1.readFromIndex += globalIndexReference;
-        expectedParsedInstruction1.readToIndex += globalIndexReference;
-        expectedParsedInstruction2.readFromIndex += globalIndexReference;
-        expectedParsedInstruction2.readToIndex += globalIndexReference;
+        expectedParsedInstruction1.readFromIndex += GLOBAL_INDEX_REFERENCE;
+        expectedParsedInstruction1.readToIndex += GLOBAL_INDEX_REFERENCE;
+        expectedParsedInstruction2.readFromIndex += GLOBAL_INDEX_REFERENCE;
+        expectedParsedInstruction2.readToIndex += GLOBAL_INDEX_REFERENCE;
 
-        const parsedInstructions = parser.parseAll(instructions, globalIndexReference);
+        const parsedInstructions = parser.parseAll(instructions, GLOBAL_INDEX_REFERENCE);
 
         expect(parsedInstructions.length).toBe(2);
 
@@ -470,9 +495,9 @@ describe(`[${Parser.name}]`, () => {
 
       it('should parse all instructions asynchronously with the given index reference when provided', async () => {
         parser.parseAll = jest.fn();
-        await parser.parseAllAsync(instructions, globalIndexReference);
+        await parser.parseAllAsync(instructions, GLOBAL_INDEX_REFERENCE);
 
-        expect(parser.parseAll).toHaveBeenCalledWith(instructions, globalIndexReference);
+        expect(parser.parseAll).toHaveBeenCalledWith(instructions, GLOBAL_INDEX_REFERENCE);
       });
 
       it('should reject if an error occurs while parsing the instructions', async () => {

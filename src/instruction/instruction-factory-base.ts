@@ -49,6 +49,19 @@ export interface InstructionData {
 }
 
 /**
+ * An instruction instance provider.
+ */
+export interface InstructionProvider {
+  /**
+   * Creates an instruction instance from the instruction data. The created
+   * instruction can be used to write the data to a tablature element.
+   * @param instructionData - The instruction data.
+   * @returns The instruction instance created.
+   */
+  getInstruction(instructionData: InstructionData): Instruction;
+}
+
+/**
  * The options to perform a validation for a minimum number of arguments
  * of a method instruction.
  */
@@ -223,7 +236,7 @@ export type MethodInstructionBuilder = (
   methodInstructionData: MethodInstructionData
 ) => Instruction;
 
-export abstract class InstructionFactoryBase {
+export abstract class InstructionFactoryBase implements InstructionProvider {
   private static _extractNoteFromInstruction(instruction: string): Note | null {
     const extractionRegex = /^(\d+)-(.*)/;
     const extractionResult = extractionRegex.exec(instruction);
