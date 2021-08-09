@@ -52,9 +52,6 @@ describe(`[${TabElement.name}]`, () => {
       expect(tabElement.sectionDivisionCharacter).toBe(
         TestTabElement.DEFAULT_SECTION_DIVISION_CHARACTER
       );
-      expect(tabElement.sectionSpacingCharacter).toBe(
-        TestTabElement.DEFAULT_SECTION_SPACING_CHARACTER
-      );
       expect(tabElement.spacing).toBe(TestTabElement.DEFAULT_SPACING);
       expect(tabElement.spacingCharacter).toBe(TestTabElement.DEFAULT_SPACING_CHARACTER);
     });
@@ -83,19 +80,6 @@ describe(`[${TabElement.name}]`, () => {
       const numberOfStrings = 0;
 
       expect(() => new TestTabElement({ numberOfStrings })).toThrow();
-    });
-
-    it('should set the section spacing character based on the given value', () => {
-      const sectionSpacingCharacter = '@';
-      const tabElement = new TestTabElement({ sectionSpacingCharacter });
-
-      expect(tabElement.sectionSpacingCharacter).toBe(sectionSpacingCharacter);
-    });
-
-    it('should throw if the given section spacing character is invalid', () => {
-      const sectionSpacingCharacter = 'Test';
-
-      expect(() => new TestTabElement({ sectionSpacingCharacter })).toThrow();
     });
 
     it('should set the section division character based on the given value', () => {
@@ -200,11 +184,13 @@ describe(`[${TabElement.name}]`, () => {
 
   describe('[getSectionSpacing]', () => {
     it(`should return a string with all characters equal to the tab element's section spacing character and with the given length`, () => {
-      const sectionSpacingCharacter = '+';
       const spacingLength = 5;
 
-      const expectedSpacingString = Array(spacingLength + 1).join(sectionSpacingCharacter);
-      const tabElement = new TestTabElement({ sectionSpacingCharacter });
+      const expectedSpacingString = Array(spacingLength + 1).join(
+        TabElement.DEFAULT_SECTION_SPACING_CHARACTER
+      );
+
+      const tabElement = new TestTabElement();
 
       expect(tabElement.testGetSectionSpacing(spacingLength)).toBe(expectedSpacingString);
     });

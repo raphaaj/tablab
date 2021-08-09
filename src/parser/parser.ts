@@ -18,13 +18,6 @@ export interface ParserOptions {
   instructionProvider?: InstructionProvider;
 
   /**
-   * The character to be considered as the separator of instructions.
-   * It must be a string with a single character.
-   * @defaultValue {@link Parser.DEFAULT_INSTRUCTIONS_SEPARATOR}
-   */
-  instructionsSeparator?: string;
-
-  /**
    * The map from a method alias to a method identifier to be used while parsing
    * method instructions. Whenever a method instruction is parsed the method
    * identifier will be determined from its method alias using this map.
@@ -68,23 +61,6 @@ export class Parser {
   static readonly DEFAULT_METHOD_INSTRUCTION_ARGS_ENCLOSURE = Enclosure.Parentheses;
   static readonly DEFAULT_METHOD_INSTRUCTION_ARGS_SEPARATOR = ',';
   static readonly DEFAULT_METHOD_INSTRUCTION_TARGETS_ENCLOSURE = Enclosure.CurlyBrackets;
-
-  /**
-   * The character used to separate instructions. It must be a single character string.
-   */
-  get instructionsSeparator(): string {
-    return this._instructionsSeparator;
-  }
-  set instructionsSeparator(value: string) {
-    if (value.length !== 1)
-      throw new Error(
-        'Invalid value for property "instructionsSeparator". ' +
-          'It must be a single character string. ' +
-          `Received value was "${value}"`
-      );
-
-    this._instructionsSeparator = value;
-  }
 
   /**
    * The enclosure type used to identify the method arguments while parsing method
@@ -159,8 +135,8 @@ export class Parser {
   private _methodInstructionTargetsEnclosure = Parser.DEFAULT_METHOD_INSTRUCTION_TARGETS_ENCLOSURE;
 
   /**
-   * The parser constructor creates a parser that reads instructions separated by one or
-   * more `instructionsSeparator` characters. It can parse two instruction types:
+   * The parser constructor creates a parser that reads instructions separated by whitespace
+   * characters. It can parse two instruction types:
    *  - Method instructions: these instructions are composed of up to 3 parts: an alias,
    *    arguments, and targets. The alias part must be the first part of a method instruction
    *    followed by its arguments and its targets, in any order.
@@ -180,15 +156,12 @@ export class Parser {
    */
   constructor(options: ParserOptions = {}) {
     const {
-      instructionsSeparator,
       instructionProvider,
       methodInstructionAlias2IdentifierMap,
       methodInstructionArgsSeparator,
       methodInstructionArgsEnclosure,
       methodInstructionTargetsEnclosure,
     } = options;
-
-    if (instructionsSeparator !== undefined) this.instructionsSeparator = instructionsSeparator;
 
     if (methodInstructionAlias2IdentifierMap !== undefined)
       this.methodInstructionAlias2IdentifierMap = methodInstructionAlias2IdentifierMap;
@@ -295,7 +268,7 @@ export class Parser {
 
     const nextInstrStartIndex = StringHelper.getIndexOfDifferent(
       instructions,
-      this.instructionsSeparator,
+      this._instructionsSeparator,
       instructionEndIndexCandidate + 1
     );
     const nextInstrStartChar = instructions[nextInstrStartIndex];
@@ -342,7 +315,7 @@ export class Parser {
 
   private _getIndexOfInstructionEnd(instructions: string, instructionStartIndex: number): number {
     const nextSeparatorIndex = instructions.indexOf(
-      this.instructionsSeparator,
+      this._instructionsSeparator,
       instructionStartIndex
     );
     if (nextSeparatorIndex < 0) return instructions.length - 1;
@@ -409,7 +382,7 @@ export class Parser {
 
     const instructionStartIndex = StringHelper.getIndexOfDifferent(
       instructions,
-      this.instructionsSeparator,
+      this._instructionsSeparator,
       fromIndex
     );
     if (instructionStartIndex < 0) return null;

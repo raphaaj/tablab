@@ -8,7 +8,6 @@ describe(`[${TabBlock.name}]`, () => {
 
       expect(tabBlock.numberOfStrings).toBe(TabBlock.DEFAULT_NUMBER_OF_STRINGS);
       expect(tabBlock.sectionDivisionCharacter).toBe(TabBlock.DEFAULT_SECTION_DIVISION_CHARACTER);
-      expect(tabBlock.sectionSpacingCharacter).toBe(TabBlock.DEFAULT_SECTION_SPACING_CHARACTER);
       expect(tabBlock.spacing).toBe(TabBlock.DEFAULT_SPACING);
       expect(tabBlock.spacingCharacter).toBe(TabBlock.DEFAULT_SPACING_CHARACTER);
     });
@@ -25,13 +24,6 @@ describe(`[${TabBlock.name}]`, () => {
       const tabBlock = new TabBlock({ sectionDivisionCharacter });
 
       expect(tabBlock.sectionDivisionCharacter).toBe(sectionDivisionCharacter);
-    });
-
-    it('should set the sectionSpacingCharacter if one is set at instantiation', () => {
-      const sectionSpacingCharacter = '$';
-      const tabBlock = new TabBlock({ sectionSpacingCharacter });
-
-      expect(tabBlock.sectionSpacingCharacter).toBe(sectionSpacingCharacter);
     });
 
     it('should set the spacing if one is set at instantiation', () => {
@@ -154,12 +146,10 @@ describe(`[${TabBlock.name}]`, () => {
 
     it(`should return 1 block with the given length if the block's length is smaller than the given one (strings)`, () => {
       const numberOfStrings = 2;
-      const sectionSpacingCharacter = ' ';
       const spacing = 7;
       const spacingCharacter = '-';
       const tabBlock = new TabBlock({
         numberOfStrings,
-        sectionSpacingCharacter,
         spacing,
         spacingCharacter,
       });
@@ -182,12 +172,10 @@ describe(`[${TabBlock.name}]`, () => {
 
     it(`should return 1 block with the given length if the block's length is smaller than the given one (header)`, () => {
       const numberOfStrings = 2;
-      const sectionSpacingCharacter = ' ';
       const spacing = 7;
       const spacingCharacter = '-';
       const tabBlock = new TabBlock({
         numberOfStrings,
-        sectionSpacingCharacter,
         spacing,
         spacingCharacter,
       });
@@ -210,12 +198,10 @@ describe(`[${TabBlock.name}]`, () => {
 
     it(`should return 1 block with the given length if the block's length is smaller than the given one (footer)`, () => {
       const numberOfStrings = 2;
-      const sectionSpacingCharacter = ' ';
       const spacing = 7;
       const spacingCharacter = '-';
       const tabBlock = new TabBlock({
         numberOfStrings,
-        sectionSpacingCharacter,
         spacing,
         spacingCharacter,
       });
@@ -238,12 +224,10 @@ describe(`[${TabBlock.name}]`, () => {
 
     it('should split the block in multiple blocks with the given block length if the block length is greater than the given block length', () => {
       const numberOfStrings = 2;
-      const sectionSpacingCharacter = ' ';
       const spacing = 15;
       const spacingCharacter = '-';
       const tabBlock = new TabBlock({
         numberOfStrings,
-        sectionSpacingCharacter,
         spacing,
         spacingCharacter,
       });
@@ -274,13 +258,11 @@ describe(`[${TabBlock.name}]`, () => {
     it('should not split the block in the middle of a header, when possible', () => {
       const numberOfStrings = 2;
       const sectionDivisionCharacter = '|';
-      const sectionSpacingCharacter = ' ';
       const spacingBeforeHeader = 10;
       const spacingCharacter = '-';
       const tabBlock = new TabBlock({
         numberOfStrings,
         sectionDivisionCharacter,
-        sectionSpacingCharacter,
         spacing: spacingBeforeHeader,
         spacingCharacter,
       });
@@ -311,13 +293,11 @@ describe(`[${TabBlock.name}]`, () => {
     it('should not split the block in the middle of a footer, when possible', () => {
       const numberOfStrings = 2;
       const sectionDivisionCharacter = '|';
-      const sectionSpacingCharacter = ' ';
       const spacingBeforeFooter = 10;
       const spacingCharacter = '-';
       const tabBlock = new TabBlock({
         numberOfStrings,
         sectionDivisionCharacter,
-        sectionSpacingCharacter,
         spacing: spacingBeforeFooter,
         spacingCharacter,
       });
@@ -349,12 +329,10 @@ describe(`[${TabBlock.name}]`, () => {
       const spacingCharacter = '-';
       const numberOfStrings = 2;
       const spacingBeforeNote = 15;
-      const sectionSpacingCharacter = ' ';
       const sectionDivisionCharacter = '|';
       const tabBlock = new TabBlock({
         numberOfStrings,
         sectionDivisionCharacter,
-        sectionSpacingCharacter,
         spacing: spacingBeforeNote,
         spacingCharacter,
       });
@@ -384,13 +362,11 @@ describe(`[${TabBlock.name}]`, () => {
     it('should split the block in the middle of a header when unable to split it without breaking the header', () => {
       const numberOfStrings = 2;
       const sectionDivisionCharacter = '|';
-      const sectionSpacingCharacter = ' ';
       const spacing = 1;
       const spacingCharacter = '-';
       const tabBlock = new TabBlock({
         numberOfStrings,
         sectionDivisionCharacter,
-        sectionSpacingCharacter,
         spacing,
         spacingCharacter,
       });
@@ -421,13 +397,11 @@ describe(`[${TabBlock.name}]`, () => {
     it('should split the block in the middle of a footer when unable to split it without breaking the footer', () => {
       const numberOfStrings = 2;
       const sectionDivisionCharacter = '|';
-      const sectionSpacingCharacter = ' ';
       const spacing = 1;
       const spacingCharacter = '-';
       const tabBlock = new TabBlock({
         numberOfStrings,
         sectionDivisionCharacter,
-        sectionSpacingCharacter,
         spacing,
         spacingCharacter,
       });
@@ -458,13 +432,11 @@ describe(`[${TabBlock.name}]`, () => {
     it('should split the block in the middle of a string fret instruction when unable to split it without breaking the instruction', () => {
       const numberOfStrings = 2;
       const sectionDivisionCharacter = '|';
-      const sectionSpacingCharacter = ' ';
       const spacing = 1;
       const spacingCharacter = '-';
       const tabBlock = new TabBlock({
         numberOfStrings,
         sectionDivisionCharacter,
-        sectionSpacingCharacter,
         spacing,
         spacingCharacter,
       });
@@ -655,13 +627,11 @@ describe(`[${TabBlock.name}]`, () => {
       const numberOfStrings = 2;
       const spacing = 2;
       const spacingCharacter = '-';
-      const sectionSpacingCharacter = ' ';
       const sectionDivisionCharacter = '$';
       const tabBlock = new TabBlock({
         numberOfStrings,
         spacing,
         spacingCharacter,
-        sectionSpacingCharacter,
         sectionDivisionCharacter,
       });
 
@@ -681,13 +651,11 @@ describe(`[${TabBlock.name}]`, () => {
       const numberOfStrings = 2;
       const spacing = 2;
       const spacingCharacter = '-';
-      const sectionSpacingCharacter = ' ';
       const sectionDivisionCharacter = '$';
       const tabBlock = new TabBlock({
         numberOfStrings,
         spacing,
         spacingCharacter,
-        sectionSpacingCharacter,
         sectionDivisionCharacter,
       });
 
@@ -716,13 +684,11 @@ describe(`[${TabBlock.name}]`, () => {
       const numberOfStrings = 2;
       const spacing = 2;
       const spacingCharacter = '-';
-      const sectionSpacingCharacter = ' ';
       const sectionDivisionCharacter = '$';
       const tabBlock = new TabBlock({
         numberOfStrings,
         spacing,
         spacingCharacter,
-        sectionSpacingCharacter,
         sectionDivisionCharacter,
       });
 
@@ -742,13 +708,11 @@ describe(`[${TabBlock.name}]`, () => {
       const numberOfStrings = 2;
       const spacing = 2;
       const spacingCharacter = '-';
-      const sectionSpacingCharacter = ' ';
       const sectionDivisionCharacter = '$';
       const tabBlock = new TabBlock({
         numberOfStrings,
         spacing,
         spacingCharacter,
-        sectionSpacingCharacter,
         sectionDivisionCharacter,
       });
 

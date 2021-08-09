@@ -8,7 +8,6 @@ describe(`[${Tab.name}]`, () => {
 
       expect(tab.numberOfStrings).toBe(Tab.DEFAULT_NUMBER_OF_STRINGS);
       expect(tab.sectionDivisionCharacter).toBe(Tab.DEFAULT_SECTION_DIVISION_CHARACTER);
-      expect(tab.sectionSpacingCharacter).toBe(Tab.DEFAULT_SECTION_SPACING_CHARACTER);
       expect(tab.spacing).toBe(Tab.DEFAULT_SPACING);
       expect(tab.spacingCharacter).toBe(Tab.DEFAULT_SPACING_CHARACTER);
     });
@@ -16,21 +15,18 @@ describe(`[${Tab.name}]`, () => {
     it('should create a tab with the given options when given', () => {
       const numberOfStrings = 2;
       const sectionDivisionCharacter = '#';
-      const sectionSpacingCharacter = '$';
       const spacing = 1;
       const spacingCharacter = '@';
 
       const tab = new Tab({
         numberOfStrings,
         sectionDivisionCharacter,
-        sectionSpacingCharacter,
         spacing,
         spacingCharacter,
       });
 
       expect(tab.numberOfStrings).toBe(numberOfStrings);
       expect(tab.sectionDivisionCharacter).toBe(sectionDivisionCharacter);
-      expect(tab.sectionSpacingCharacter).toBe(sectionSpacingCharacter);
       expect(tab.spacing).toBe(spacing);
       expect(tab.spacingCharacter).toBe(spacingCharacter);
     });
@@ -41,7 +37,6 @@ describe(`[${Tab.name}]`, () => {
       expect(tab.blocks.length).toBe(1);
       expect(tab.blocks[0].numberOfStrings).toBe(Tab.DEFAULT_NUMBER_OF_STRINGS);
       expect(tab.blocks[0].sectionDivisionCharacter).toBe(Tab.DEFAULT_SECTION_DIVISION_CHARACTER);
-      expect(tab.blocks[0].sectionSpacingCharacter).toBe(Tab.DEFAULT_SECTION_SPACING_CHARACTER);
       expect(tab.blocks[0].spacing).toBe(Tab.DEFAULT_SPACING);
       expect(tab.blocks[0].spacingCharacter).toBe(Tab.DEFAULT_SPACING_CHARACTER);
     });
@@ -49,14 +44,12 @@ describe(`[${Tab.name}]`, () => {
     it('should create an initial tab block with the given options', () => {
       const numberOfStrings = 2;
       const sectionDivisionCharacter = '#';
-      const sectionSpacingCharacter = '$';
       const spacing = 1;
       const spacingCharacter = '@';
 
       const tab = new Tab({
         numberOfStrings,
         sectionDivisionCharacter,
-        sectionSpacingCharacter,
         spacing,
         spacingCharacter,
       });
@@ -64,7 +57,6 @@ describe(`[${Tab.name}]`, () => {
       expect(tab.blocks.length).toBe(1);
       expect(tab.blocks[0].numberOfStrings).toBe(numberOfStrings);
       expect(tab.blocks[0].sectionDivisionCharacter).toBe(sectionDivisionCharacter);
-      expect(tab.blocks[0].sectionSpacingCharacter).toBe(sectionSpacingCharacter);
       expect(tab.blocks[0].spacing).toBe(spacing);
       expect(tab.blocks[0].spacingCharacter).toBe(spacingCharacter);
     });

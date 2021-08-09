@@ -27,7 +27,6 @@ describe(`[${Parser.name}]`, () => {
     it('should create a parser with the default parameters if no configuration is given', () => {
       const parser = new Parser();
 
-      expect(parser.instructionsSeparator).toBe(Parser.DEFAULT_INSTRUCTIONS_SEPARATOR);
       expect(parser.methodInstructionAlias2IdentifierMap).toBe(
         Parser.DEFAULT_METHOD_INSTRUCTION_ALIAS_2_IDENTIFIER_MAP
       );
@@ -41,13 +40,6 @@ describe(`[${Parser.name}]`, () => {
         Parser.DEFAULT_METHOD_INSTRUCTION_TARGETS_ENCLOSURE
       );
       expect(parser.instructionProvider).toBeInstanceOf(InstructionFactory);
-    });
-
-    it('should set the instructionsSeparator if one is set at instantiation', () => {
-      const instructionsSeparator = '@';
-      const parser = new Parser({ instructionsSeparator });
-
-      expect(parser.instructionsSeparator).toBe(instructionsSeparator);
     });
 
     it('should set the instructionProvider if one is set at instantiation', () => {
@@ -89,22 +81,6 @@ describe(`[${Parser.name}]`, () => {
   });
 
   describe('[properties]', () => {
-    describe('[instructionsSeparator]', () => {
-      it('should set the instructionsSeparator property', () => {
-        const instructionsSeparator = '@';
-
-        parser.instructionsSeparator = instructionsSeparator;
-
-        expect(parser.instructionsSeparator).toBe(instructionsSeparator);
-      });
-
-      it('should throw if the instructionsSeparator is set to a non single character string', () => {
-        const instructionsSeparator = '@@';
-
-        expect(() => (parser.instructionsSeparator = instructionsSeparator)).toThrow();
-      });
-    });
-
     describe('[methodInstructionArgsSeparator]', () => {
       it('should set the methodInstructionArgsSeparator property', () => {
         const methodInstructionArgsSeparator = '|';

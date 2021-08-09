@@ -80,9 +80,9 @@ export class TabBlock extends TabElement {
   }
 
   /**
-   * Adds spacing characters in the tablature block. It uses the `spacingCharacter` character
-   * as a spacing character for the strings section and the `sectionSpacingCharacter` character
-   * as a spacing character for the header and footer sections.
+   * Adds spacing characters to the tablature block. It uses the `spacingCharacter`
+   * character as a spacing character for the strings section and the whitespace
+   * character for the header and footer sections.
    * @param spacing - The number of spacing characters to add. If omitted, the
    * current `spacing` value of the tablature block will be used.
    * @returns The tablature block.
@@ -164,11 +164,11 @@ export class TabBlock extends TabElement {
 
   /**
    * Removes spacing characters from the tablature block. It considers the `spacingCharacter`
-   * character as a spacing character for the strings section and the `sectionSpacingCharacter`
-   * character as a spacing character for the header and footer sections.
-   * @param spacing - The number of spacing characters to remove. It must be an
-   * integer number greater than 0 and smaller than the maximum removable spacing.
-   * If omitted, the maximum removable spacing will be used.
+   * character as a spacing character for the strings section and the whitespace character
+   * for the header and footer sections.
+   * @param spacing - The number of spacing characters to remove. It must be an integer number
+   * greater than 0 and smaller than the maximum removable spacing. If omitted, the maximum
+   * removable spacing will be used.
    * @returns The tablature block.
    *
    * @see {@link TabBlock.getMaximumRemovableSpacing}
@@ -203,7 +203,7 @@ export class TabBlock extends TabElement {
    * @returns The tablature block.
    */
   writeFooter(footer: string): this {
-    if (footer.trim().length === 0) throw new Error('A footer must not be blank');
+    if (!(footer && footer.trim())) throw new Error('A footer must not be blank');
 
     this._setupForNewSection();
 
@@ -240,7 +240,7 @@ export class TabBlock extends TabElement {
    * @returns The tablature block.
    */
   writeHeader(header: string): this {
-    if (header.trim().length === 0) throw new Error('A header must not be blank');
+    if (!(header && header.trim())) throw new Error('A header must not be blank');
 
     this._setupForNewSection();
 

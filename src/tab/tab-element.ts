@@ -19,13 +19,6 @@ export interface TabElementOptions {
   sectionDivisionCharacter?: string;
 
   /**
-   * The character used to represent spaces between elements in the header and footer sections
-   * of the tablature element. It must be a single character string.
-   * @defaultValue {@link TabElement.DEFAULT_SECTION_SPACING_CHARACTER}
-   */
-  sectionSpacingCharacter?: string;
-
-  /**
    * The number of spacing characters to write between notes in the tablature element. It must
    * be an integer number greater than 0.
    * @defaultValue {@link TabElement.DEFAULT_SPACING}
@@ -62,6 +55,10 @@ export abstract class TabElement {
     this._spacing = value;
   }
 
+  protected get sectionSpacingCharacter(): string {
+    return this._sectionSpacingCharacter;
+  }
+
   /**
    * The total number of strings used in the tablature element.
    */
@@ -73,30 +70,20 @@ export abstract class TabElement {
   readonly sectionDivisionCharacter: string;
 
   /**
-   * The character used to represent spaces between elements in the header and footer sections
-   * of the tablature element.
-   */
-  readonly sectionSpacingCharacter: string;
-
-  /**
    * The character used to represent spaces between notes written in the tablature element.
    */
   readonly spacingCharacter: string;
 
-  private _spacing;
+  private _sectionSpacingCharacter = TabElement.DEFAULT_SECTION_SPACING_CHARACTER;
+
+  private _spacing: number;
 
   /**
    * Creates a tablature element.
    * @param options - The options used to create a tablature element.
    */
   constructor(options: TabElementOptions = {}) {
-    const {
-      numberOfStrings,
-      sectionDivisionCharacter,
-      sectionSpacingCharacter,
-      spacing,
-      spacingCharacter,
-    } = options;
+    const { numberOfStrings, sectionDivisionCharacter, spacing, spacingCharacter } = options;
 
     if (numberOfStrings === undefined) this.numberOfStrings = TabElement.DEFAULT_NUMBER_OF_STRINGS;
     else if (numberOfStrings < 1)
@@ -119,14 +106,6 @@ export abstract class TabElement {
         `The parameter sectionDivisionCharacter must be a single character string. Received value was "${sectionDivisionCharacter}"`
       );
     else this.sectionDivisionCharacter = sectionDivisionCharacter;
-
-    if (!sectionSpacingCharacter)
-      this.sectionSpacingCharacter = TabElement.DEFAULT_SECTION_SPACING_CHARACTER;
-    else if (sectionSpacingCharacter.length !== 1)
-      throw new Error(
-        `The parameter sectionSpacingCharacter must be a single character string. Received value was "${sectionSpacingCharacter}"`
-      );
-    else this.sectionSpacingCharacter = sectionSpacingCharacter;
 
     if (spacing === undefined) this._spacing = TabElement.DEFAULT_SPACING;
     else if (spacing < 1)
@@ -176,8 +155,7 @@ export abstract class TabElement {
   abstract writeParallelNotes(notes: Note[]): this;
 
   /**
-   * Creates a spacing string with the given length. All characters are equal to the
-   * `sectionSpacingCharacter` character of the tablature element.
+   * Creates a string composed of whitespace characters with the given length.
    * @param length - The desired length of the spacing string.
    * @returns The created spacing string.
    */
