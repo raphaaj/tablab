@@ -46,7 +46,7 @@
   },
   "homepage": "https://github.com/raphael-jorge/tablab#readme",
   "devDependencies": {
-    "@types/jest": "^26.0.20",
+    "@types/jest": "^27.0.1",
     "@typescript-eslint/eslint-plugin": "^4.15.2",
     "@typescript-eslint/parser": "^4.15.2",
     "commitizen": "^4.2.3",
