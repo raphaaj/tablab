@@ -30,7 +30,9 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "release": "standard-version --no-verify",
-    "release:dry-run": "npm run release -- --dry-run"
+    "release:dry-run": "npm run release -- --dry-run",
+    "prettier:check": "prettier --check ./src ./tests",
+    "prettier:write": "prettier --write ./src ./tests"
   },
   "repository": {
     "type": "git",
