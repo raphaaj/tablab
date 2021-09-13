@@ -9,7 +9,7 @@ import {
 import { Tab } from '../../src/tab/tab';
 
 class NullInstruction extends Instruction {
-  writeOnTab(): InstructionWriteResult {
+  protected internalWriteOnTab(): InstructionWriteResult {
     return new SuccessInstructionWriteResult();
   }
 }

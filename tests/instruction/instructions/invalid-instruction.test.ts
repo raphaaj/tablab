@@ -1,5 +1,6 @@
 import { InvalidInstruction } from '../../../src/instruction/instructions/invalid-instruction';
 import { MergeableInstruction } from '../../../src/instruction/instructions/mergeable-instruction';
+import { Tab } from '../../../src/tab/tab';
 
 describe(`[${InvalidInstruction.name}]`, () => {
   it('should not be a mergeable instruction', () => {
@@ -13,8 +14,9 @@ describe(`[${InvalidInstruction.name}]`, () => {
     it('should return a failed write result with the given reasonIdentifier', () => {
       const reasonIdentifier = 'TEST_REASON';
       const instruction = new InvalidInstruction(reasonIdentifier);
+      const tab = new Tab();
 
-      const writeResult = instruction.writeOnTab();
+      const writeResult = instruction.writeOnTab(tab);
 
       expect(writeResult.success).toBe(false);
       expect(writeResult.failureReasonIdentifier).toBe(reasonIdentifier);
@@ -25,8 +27,9 @@ describe(`[${InvalidInstruction.name}]`, () => {
       const reasonIdentifier = 'TEST_REASON';
       const message = 'Test Message';
       const instruction = new InvalidInstruction(reasonIdentifier, message);
+      const tab = new Tab();
 
-      const writeResult = instruction.writeOnTab();
+      const writeResult = instruction.writeOnTab(tab);
 
       expect(writeResult.success).toBe(false);
       expect(writeResult.failureReasonIdentifier).toBe(reasonIdentifier);

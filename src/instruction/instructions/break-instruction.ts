@@ -15,16 +15,9 @@ export class BreakInstruction extends Instruction {
    * @param tab - The tablature to add a block.
    * @returns The result of the writing operation.
    */
-  writeOnTab(tab: Tab): InstructionWriteResult {
-    let result: InstructionWriteResult;
+  protected internalWriteOnTab(tab: Tab): InstructionWriteResult {
+    tab.addBlock();
 
-    try {
-      tab.addBlock();
-      result = new SuccessInstructionWriteResult();
-    } catch (e) {
-      result = this.getFailureResultOnError(e);
-    }
-
-    return result;
+    return new SuccessInstructionWriteResult();
   }
 }

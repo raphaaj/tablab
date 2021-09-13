@@ -20,17 +20,9 @@ export class WriteHeaderInstruction extends Instruction {
    * @param tab - The tablature to write the header.
    * @returns The result of the writing operation.
    */
-  writeOnTab(tab: Tab): InstructionWriteResult {
-    let result: InstructionWriteResult;
+  protected internalWriteOnTab(tab: Tab): InstructionWriteResult {
+    tab.writeHeader(this.header);
 
-    try {
-      tab.writeHeader(this.header);
-
-      result = new SuccessInstructionWriteResult();
-    } catch (e) {
-      result = this.getFailureResultOnError(e);
-    }
-
-    return result;
+    return new SuccessInstructionWriteResult();
   }
 }

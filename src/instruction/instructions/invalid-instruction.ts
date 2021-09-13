@@ -24,7 +24,7 @@ export class InvalidInstruction extends Instruction {
    * as the `failureMessage`.
    * @returns A failed writing result.
    */
-  writeOnTab(): InstructionWriteResult {
+  protected internalWriteOnTab(): InstructionWriteResult {
     return new FailedInstructionWriteResult({
       failureMessage: this.description,
       failureReasonIdentifier: this.reasonIdentifier,

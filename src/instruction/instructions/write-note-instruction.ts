@@ -26,17 +26,13 @@ export class WriteNoteInstruction extends MergeableInstruction {
    * @param tab - The tablature to write the note.
    * @returns The result of the writing operation.
    */
-  writeOnTab(tab: Tab): InstructionWriteResult {
+  protected internalWriteOnTab(tab: Tab): InstructionWriteResult {
     let result: InstructionWriteResult;
 
     if (tab.isNoteWritable(this.note)) {
-      try {
-        tab.writeNote(this.note);
+      tab.writeNote(this.note);
 
-        result = new SuccessInstructionWriteResult();
-      } catch (e) {
-        result = this.getFailureResultOnError(e);
-      }
+      result = new SuccessInstructionWriteResult();
     } else {
       result = this._getNonWritableNoteFailureResult(tab.numberOfStrings);
     }

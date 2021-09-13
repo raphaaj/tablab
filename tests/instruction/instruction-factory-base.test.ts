@@ -15,7 +15,7 @@ const TEST_METHOD_ALIAS = 'testAlias';
 const TEST_METHOD_IDENTIFIER = 'testIdentifier';
 
 class TestInstruction extends Instruction {
-  writeOnTab(): InstructionWriteResult {
+  protected internalWriteOnTab(): InstructionWriteResult {
     throw new Error('Method not implemented.');
   }
 }
