@@ -31,21 +31,18 @@ export class MergeInstruction extends Instruction {
    * @param tab - The tablature to write the notes.
    * @returns The result of the writing operation.
    */
-  writeOnTab(tab: Tab): InstructionWriteResult {
+  protected internalWriteOnTab(tab: Tab): InstructionWriteResult {
     let result: InstructionWriteResult;
 
     const notes = this.instructions.map((instruction) => instruction.note);
     const nonWritableNotes = notes.filter((note) => !tab.isNoteWritable(note));
+
     if (nonWritableNotes.length > 0) {
       result = this._getNonWritableNotesFailureResult(tab.numberOfStrings);
     } else {
-      try {
-        tab.writeParallelNotes(notes);
+      tab.writeParallelNotes(notes);
 
-        result = new SuccessInstructionWriteResult();
-      } catch (e) {
-        result = this.getFailureResultOnError(e);
-      }
+      result = new SuccessInstructionWriteResult();
     }
 
     return result;

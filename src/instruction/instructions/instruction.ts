@@ -7,7 +7,26 @@ import {
 import { StringHelper } from '../../helpers/string-helper';
 
 export abstract class Instruction {
-  abstract writeOnTab(tab: Tab): InstructionWriteResult;
+  /**
+   * Writes the instruction to the given tablature.
+   * @param tab - The tablature to write the instruction.
+   * @returns The result of the writing operation.
+   */
+  writeOnTab(tab: Tab): InstructionWriteResult {
+    let result: InstructionWriteResult;
+
+    try {
+      result = this.internalWriteOnTab(tab);
+    } catch (e) {
+      if (e instanceof Error) {
+        result = this.getFailureResultOnError(e);
+      } else {
+        result = this.getFailureResultOnError(new Error('Unknown error'));
+      }
+    }
+
+    return result;
+  }
 
   /**
    * Creates a failed instruction write result based on a given error.
@@ -24,4 +43,6 @@ export abstract class Instruction {
       failureMessage,
     });
   }
+
+  protected abstract internalWriteOnTab(tab: Tab): InstructionWriteResult;
 }

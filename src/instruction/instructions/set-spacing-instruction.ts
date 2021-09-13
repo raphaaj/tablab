@@ -20,17 +20,9 @@ export class SetSpacingInstruction extends Instruction {
    * @param tab - The tablature to set the spacing.
    * @returns The result of the writing operation.
    */
-  writeOnTab(tab: Tab): InstructionWriteResult {
-    let result: InstructionWriteResult;
+  protected internalWriteOnTab(tab: Tab): InstructionWriteResult {
+    tab.setSpacing(this.spacing);
 
-    try {
-      tab.setSpacing(this.spacing);
-
-      result = new SuccessInstructionWriteResult();
-    } catch (e) {
-      result = this.getFailureResultOnError(e);
-    }
-
-    return result;
+    return new SuccessInstructionWriteResult();
   }
 }

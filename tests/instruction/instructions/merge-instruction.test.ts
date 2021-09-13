@@ -26,23 +26,6 @@ describe(`[${MergeInstruction.name}]`, () => {
       expect(writeResult.success).toBe(true);
     });
 
-    it('should return a failed write result on error', () => {
-      const errorMessage = 'merge: an unexpected error occurred';
-      const instructionsToMerge = [] as WriteNoteInstruction[];
-      const instruction = new MergeInstruction(instructionsToMerge);
-      const tab = new Tab();
-
-      tab.writeParallelNotes = jest.fn(() => {
-        throw new Error(errorMessage);
-      });
-      const writeResult = instruction.writeOnTab(tab);
-
-      expect(tab.writeParallelNotes).toHaveBeenCalled();
-      expect(writeResult.success).toBe(false);
-      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionReason.UnknownReason);
-      expect(writeResult.failureMessage).toContain(errorMessage);
-    });
-
     it('should return a failed write result when the instructions to merge have strings out of tab range', () => {
       const notesToWrite = [new Note(0, '0')];
       const instructionsToMerge = notesToWrite.map((note) => new WriteNoteInstruction(note));

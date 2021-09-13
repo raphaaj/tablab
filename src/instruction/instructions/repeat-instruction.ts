@@ -24,21 +24,17 @@ export class RepeatInstruction extends Instruction {
    * @param tab - The tablature to write the instructions.
    * @returns The result of the writing operation.
    */
-  writeOnTab(tab: Tab): InstructionWriteResult {
+  protected internalWriteOnTab(tab: Tab): InstructionWriteResult {
     let result: InstructionWriteResult = new SuccessInstructionWriteResult();
 
-    try {
-      for (let i = 0; i < this.repetitions; i++) {
-        for (let j = 0; j < this.instructions.length; j++) {
-          const instruction = this.instructions[j];
+    for (let i = 0; i < this.repetitions; i++) {
+      for (let j = 0; j < this.instructions.length; j++) {
+        const instruction = this.instructions[j];
 
-          result = instruction.writeOnTab(tab);
+        result = instruction.writeOnTab(tab);
 
-          if (i === 0 && !result.success) break;
-        }
+        if (i === 0 && !result.success) break;
       }
-    } catch (e) {
-      result = this.getFailureResultOnError(e);
     }
 
     return result;

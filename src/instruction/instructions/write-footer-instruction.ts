@@ -20,17 +20,9 @@ export class WriteFooterInstruction extends Instruction {
    * @param tab - The tablature to write the footer.
    * @returns The result of the writing operation.
    */
-  writeOnTab(tab: Tab): InstructionWriteResult {
-    let result: InstructionWriteResult;
+  protected internalWriteOnTab(tab: Tab): InstructionWriteResult {
+    tab.writeFooter(this.footer);
 
-    try {
-      tab.writeFooter(this.footer);
-
-      result = new SuccessInstructionWriteResult();
-    } catch (e) {
-      result = this.getFailureResultOnError(e);
-    }
-
-    return result;
+    return new SuccessInstructionWriteResult();
   }
 }

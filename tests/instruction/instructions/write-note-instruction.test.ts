@@ -24,22 +24,6 @@ describe(`[${WriteNoteInstruction.name}]`, () => {
       expect(writeResult.success).toBe(true);
     });
 
-    it('should return a failed write result on error', () => {
-      const errorMessage = 'note: an unexpected error occurred';
-      const instruction = new WriteNoteInstruction(new Note(1, '0'));
-      const tab = new Tab();
-
-      tab.writeNote = jest.fn(() => {
-        throw new Error(errorMessage);
-      });
-      const writeResult = instruction.writeOnTab(tab);
-
-      expect(tab.writeNote).toHaveBeenCalled();
-      expect(writeResult.success).toBe(false);
-      expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionReason.UnknownReason);
-      expect(writeResult.failureMessage).toContain(errorMessage);
-    });
-
     it(`should return a failed write result when the note's string is out of tab range`, () => {
       const noteToWrite = new Note(0, '1/2');
       const instruction = new WriteNoteInstruction(noteToWrite);
