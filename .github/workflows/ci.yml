@@ -34,7 +34,25 @@ jobs:
         run: npm run prettier:check
 
       - name: Run tests
-        run: npm run test
+        run: npm run test:coverage
+
+      - name: Coveralls parallel
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          flag-name: node-version-${{ matrix.node-version }}
+          parallel: true
 
       - name: Build project
         run: npm run build
+
+  finish:
+    needs: ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Coveralls finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
