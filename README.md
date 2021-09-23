@@ -4,6 +4,7 @@
 [![npm](https://img.shields.io/npm/v/tablab)](https://www.npmjs.com/package/tablab)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](https://commitizen.github.io/cz-cli/)
 [![npm](https://img.shields.io/npm/dt/tablab)](https://www.npmjs.com/package/tablab)
+[![Coverage Status](https://coveralls.io/repos/github/raphael-jorge/tablab/badge.svg?branch=main)](https://coveralls.io/github/raphael-jorge/tablab?branch=main)
 
 Tablab is a javascript library to write tablatures. It provides two different ways for writing them:
 
