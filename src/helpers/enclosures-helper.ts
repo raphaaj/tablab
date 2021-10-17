@@ -100,9 +100,8 @@ export class EnclosuresHelper {
     openingEnclosureIndex: number
   ): number {
     const openingEnclosure = str[openingEnclosureIndex];
-    const closingEnclosure = EnclosuresHelper.getClosingEnclosureFromOpeningEnclosure(
-      openingEnclosure
-    );
+    const closingEnclosure =
+      EnclosuresHelper.getClosingEnclosureFromOpeningEnclosure(openingEnclosure);
 
     let closingEnclosureIndex = -1;
     let pendingOpeningEnclosures = 0;
