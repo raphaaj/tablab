@@ -87,10 +87,8 @@ export class InstructionFactory extends InstructionFactoryBase {
 
     const methodsToUse = useMethods || InstructionFactory.DEFAULT_METHODS_TO_USE;
 
-    this.methodInstructionIdentifier2InstructionBuilderMap = InstructionFactory._getMethodInstructionBuilderMap(
-      this,
-      methodsToUse
-    );
+    this.methodInstructionIdentifier2InstructionBuilderMap =
+      InstructionFactory._getMethodInstructionBuilderMap(this, methodsToUse);
   }
 
   /**

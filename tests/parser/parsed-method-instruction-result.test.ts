@@ -70,13 +70,8 @@ const getNonIdentifiedTestParsedMethodInstruction = () => {
 describe(`[${ParsedMethodInstructionResult.name}]`, () => {
   describe('[constructor]', () => {
     it('should set the parsed method instruction properties when the identifier is given', () => {
-      const {
-        parsedMethodInstruction,
-        alias,
-        identifier,
-        args,
-        targets,
-      } = getIdentifiedTestParsedMethodInstruction();
+      const { parsedMethodInstruction, alias, identifier, args, targets } =
+        getIdentifiedTestParsedMethodInstruction();
 
       expect(parsedMethodInstruction.alias).toBe(alias);
       expect(parsedMethodInstruction.identifier).toBe(identifier);
@@ -85,12 +80,8 @@ describe(`[${ParsedMethodInstructionResult.name}]`, () => {
     });
 
     it('should set the parsed method instruction properties when no identifier is given', () => {
-      const {
-        parsedMethodInstruction,
-        alias,
-        args,
-        targets,
-      } = getNonIdentifiedTestParsedMethodInstruction();
+      const { parsedMethodInstruction, alias, args, targets } =
+        getNonIdentifiedTestParsedMethodInstruction();
 
       expect(parsedMethodInstruction.alias).toBe(alias);
       expect(parsedMethodInstruction.identifier).toBe(null);

@@ -65,11 +65,8 @@ describe(`[${ParsedInstructionResult.name}]`, () => {
     });
 
     it('should set the parsed instruction properties for a method instruction', () => {
-      const {
-        value,
-        parsedMethodInstruction,
-        parsedInstruction,
-      } = getParsedInstructionResultForMethodInstruction();
+      const { value, parsedMethodInstruction, parsedInstruction } =
+        getParsedInstructionResultForMethodInstruction();
 
       expect(parsedInstruction.value).toBe(value);
       expect(parsedInstruction.method).toEqual(parsedMethodInstruction);

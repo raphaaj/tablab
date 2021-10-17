@@ -405,9 +405,8 @@ export abstract class InstructionFactoryBase implements InstructionProvider {
         methodData
       );
 
-    const buildMethodInstruction = this.methodInstructionIdentifier2InstructionBuilderMap[
-      methodData.identifier
-    ];
+    const buildMethodInstruction =
+      this.methodInstructionIdentifier2InstructionBuilderMap[methodData.identifier];
 
     if (!buildMethodInstruction)
       return this._buildInvalidInstructionForMethodData(

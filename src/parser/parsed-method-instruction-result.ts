@@ -36,7 +36,8 @@ export interface ParsedMethodInstruction {
 }
 
 export class ParsedMethodInstructionResult
-  implements ParsedMethodInstruction, MethodInstructionData {
+  implements ParsedMethodInstruction, MethodInstructionData
+{
   static extractMethodAlias(instruction: string): string | null {
     const extractionRegexp = /^([a-z]+)(?!-)/i;
     const extractionResult = extractionRegexp.exec(instruction);
@@ -54,9 +55,8 @@ export class ParsedMethodInstructionResult
     argumentsEnclosure: Enclosure,
     argumentsSeparator: string
   ): string[] {
-    const openingEnclosureCharacter = EnclosuresHelper.getOpeningEnclosureFromEnclosureType(
-      argumentsEnclosure
-    );
+    const openingEnclosureCharacter =
+      EnclosuresHelper.getOpeningEnclosureFromEnclosureType(argumentsEnclosure);
 
     const indexOfArgumentsOpeningEnclosure = instruction.indexOf(openingEnclosureCharacter);
     if (indexOfArgumentsOpeningEnclosure < 0) return [];
@@ -75,9 +75,8 @@ export class ParsedMethodInstructionResult
     instruction: string,
     targetsEnclosure: Enclosure
   ): MethodTargetExtractionResult | null {
-    const openingEnclosureCharacter = EnclosuresHelper.getOpeningEnclosureFromEnclosureType(
-      targetsEnclosure
-    );
+    const openingEnclosureCharacter =
+      EnclosuresHelper.getOpeningEnclosureFromEnclosureType(targetsEnclosure);
 
     const indexOfTargetsOpeningEnclosure = instruction.indexOf(openingEnclosureCharacter);
     if (indexOfTargetsOpeningEnclosure < 0) return null;

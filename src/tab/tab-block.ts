@@ -207,11 +207,8 @@ export class TabBlock extends TabElement {
 
     this._setupForNewSection();
 
-    const {
-      footerToInsert,
-      footerInsertionStartIdx,
-      spacingToAdd,
-    } = this._getFooterInsertPreparation(footer);
+    const { footerToInsert, footerInsertionStartIdx, spacingToAdd } =
+      this._getFooterInsertPreparation(footer);
 
     if (spacingToAdd > 0) {
       this._header += this.getSectionSpacing(spacingToAdd);

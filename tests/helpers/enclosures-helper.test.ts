@@ -13,9 +13,8 @@ describe(`[${EnclosuresHelper.name}]`, () => {
     it('should return ) as the closing enclosure for (', () => {
       const openingEnclosure = '(';
 
-      const closingEnclosure = EnclosuresHelper.getClosingEnclosureFromOpeningEnclosure(
-        openingEnclosure
-      );
+      const closingEnclosure =
+        EnclosuresHelper.getClosingEnclosureFromOpeningEnclosure(openingEnclosure);
 
       expect(closingEnclosure).toBe(')');
     });
@@ -23,9 +22,8 @@ describe(`[${EnclosuresHelper.name}]`, () => {
     it('should return ] as the closing enclosure for [', () => {
       const openingEnclosure = '[';
 
-      const closingEnclosure = EnclosuresHelper.getClosingEnclosureFromOpeningEnclosure(
-        openingEnclosure
-      );
+      const closingEnclosure =
+        EnclosuresHelper.getClosingEnclosureFromOpeningEnclosure(openingEnclosure);
 
       expect(closingEnclosure).toBe(']');
     });
@@ -33,9 +31,8 @@ describe(`[${EnclosuresHelper.name}]`, () => {
     it('should return } as the closing enclosure for {', () => {
       const openingEnclosure = '{';
 
-      const closingEnclosure = EnclosuresHelper.getClosingEnclosureFromOpeningEnclosure(
-        openingEnclosure
-      );
+      const closingEnclosure =
+        EnclosuresHelper.getClosingEnclosureFromOpeningEnclosure(openingEnclosure);
 
       expect(closingEnclosure).toBe('}');
     });
@@ -43,9 +40,8 @@ describe(`[${EnclosuresHelper.name}]`, () => {
     it('should return > as the closing enclosure for <', () => {
       const openingEnclosure = '<';
 
-      const closingEnclosure = EnclosuresHelper.getClosingEnclosureFromOpeningEnclosure(
-        openingEnclosure
-      );
+      const closingEnclosure =
+        EnclosuresHelper.getClosingEnclosureFromOpeningEnclosure(openingEnclosure);
 
       expect(closingEnclosure).toBe('>');
     });
