@@ -58,18 +58,36 @@ describe(`[${RepeatInstruction.name}]`, () => {
       });
     });
 
-    it('should return a failed write result when the instruction to repeat fails to be written on tab', () => {
-      const writeFailReason = 'TEST_REASON';
-      const instructionToRepeat = new FailedWriteTestInstruction(writeFailReason);
-      const instruction = new RepeatInstruction([instructionToRepeat], 1);
+    it('should return a failed write result when all the instructions to repeat fails to be written on tab', () => {
+      const repetitions = 3;
+      const failedWriteReasonIdentifier = 'TEST_REASON';
+      const instructionsToRepeat = [
+        new FailedWriteTestInstruction(failedWriteReasonIdentifier),
+        new FailedWriteTestInstruction(failedWriteReasonIdentifier),
+      ];
+      const instruction = new RepeatInstruction(instructionsToRepeat, repetitions);
       const tab = new Tab();
-
-      instructionToRepeat.writeOnTab = jest.fn(instructionToRepeat.writeOnTab);
       const writeResult = instruction.writeOnTab(tab);
 
-      expect(instructionToRepeat.writeOnTab).toHaveBeenCalled();
       expect(writeResult.success).toBe(false);
-      expect(writeResult.failureReasonIdentifier).toBe(writeFailReason);
+      expect(writeResult.failureReasonIdentifier).toBe(failedWriteReasonIdentifier);
+    });
+
+    it('should return a failed write result when any of the instructions to repeat fails to be written on tab', () => {
+      const repetitions = 3;
+      const failedWriteReasonIdentifier = 'TEST_REASON';
+      const instructionsToRepeat = [
+        new SuccessWriteTestInstruction(),
+        new FailedWriteTestInstruction(failedWriteReasonIdentifier),
+        new SuccessWriteTestInstruction(),
+      ];
+      const instruction = new RepeatInstruction(instructionsToRepeat, repetitions);
+      const tab = new Tab();
+
+      const writeResult = instruction.writeOnTab(tab);
+
+      expect(writeResult.success).toBe(false);
+      expect(writeResult.failureReasonIdentifier).toBe(failedWriteReasonIdentifier);
     });
   });
 });
