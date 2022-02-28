@@ -31,35 +31,11 @@ describe(`[${Instruction.name}]`, () => {
       internalWriteOnTabSpy.mockRestore();
     });
 
-    it('should return a failed instruction write result with the error message on error', () => {
-      const testInstruction = new TestInstruction();
-      const error = new Error('Test error');
-      const tab = new Tab();
-
-      const internalWriteOnTabSpy = jest
-        .spyOn(testInstruction, 'internalWriteOnTab')
-        .mockImplementation(() => {
-          throw error;
-        });
-
-      const writeOnTabWriteResult = testInstruction.writeOnTab(tab);
-
-      expect(internalWriteOnTabSpy).toHaveBeenCalled();
-      expect(writeOnTabWriteResult).toBeInstanceOf(FailedInstructionWriteResult);
-      expect(writeOnTabWriteResult.failureMessage).toContain(error.message);
-
-      internalWriteOnTabSpy.mockRestore();
-    });
-
-    it('should return a failed instruction write result with a default message when an unexpected error occurs', () => {
+    it('should return a failed instruction write result on error', () => {
       const testInstruction = new TestInstruction();
       const tab = new Tab();
 
-      const internalWriteOnTabSpy = jest
-        .spyOn(testInstruction, 'internalWriteOnTab')
-        .mockImplementation(() => {
-          throw 'Unexpected error';
-        });
+      const internalWriteOnTabSpy = jest.spyOn(testInstruction, 'internalWriteOnTab');
 
       const writeOnTabWriteResult = testInstruction.writeOnTab(tab);
 

@@ -1,23 +1,21 @@
+import { InvalidInstructionReason } from '../enums/invalid-instruction-reason';
+import { MethodInstructionIdentifier } from '../enums/method-instruction-identifier';
+import { BreakInstruction } from '../instructions/break-instruction';
+import { Instruction } from '../instructions/instruction';
+import { InvalidInstruction } from '../instructions/invalid-instruction';
+import { MergeInstruction } from '../instructions/merge-instruction';
+import { MergeableInstruction } from '../instructions/mergeable-instruction';
+import { RepeatInstruction } from '../instructions/repeat-instruction';
+import { SetSpacingInstruction } from '../instructions/set-spacing-instruction';
+import { WriteFooterInstruction } from '../instructions/write-footer-instruction';
+import { WriteHeaderInstruction } from '../instructions/write-header-instruction';
 import {
+  InstructionData,
   InstructionFactoryBase,
   MethodInstructionBuilder,
   MethodInstructionData,
-  InstructionData,
 } from './instruction-factory-base';
-import {
-  InvalidInstructionReason,
-  InvalidInstructionReasonDescription,
-} from './enums/invalid-instruction-reason';
-import { MethodInstructionIdentifier } from './enums/method-instruction-identifier';
-import { Instruction } from './instructions/instruction';
-import { MergeableInstruction } from './instructions/mergeable-instruction';
-import { InvalidInstruction } from './instructions/invalid-instruction';
-import { BreakInstruction } from './instructions/break-instruction';
-import { MergeInstruction } from './instructions/merge-instruction';
-import { RepeatInstruction } from './instructions/repeat-instruction';
-import { SetSpacingInstruction } from './instructions/set-spacing-instruction';
-import { WriteFooterInstruction } from './instructions/write-footer-instruction';
-import { WriteHeaderInstruction } from './instructions/write-header-instruction';
+import { InvalidInstructionDescriptionFactory } from './invalid-instruction-description-factory';
 
 /**
  * The options to create an instruction factory.
@@ -206,7 +204,9 @@ export class InstructionFactory extends InstructionFactoryBase {
   }
 
   private _buildInvalidInstruction(reasonIdentifier: InvalidInstructionReason): InvalidInstruction {
-    const description = InvalidInstructionReasonDescription[reasonIdentifier];
+    const description = InvalidInstructionDescriptionFactory.getDescription({
+      invalidInstructionReason: reasonIdentifier,
+    });
 
     return new InvalidInstruction(reasonIdentifier, description);
   }

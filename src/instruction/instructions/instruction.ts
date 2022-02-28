@@ -1,10 +1,7 @@
 import { Tab } from '../../tab/tab';
+import { InvalidInstructionReason } from '../enums/invalid-instruction-reason';
+import { InvalidInstructionDescriptionFactory } from '../factories/invalid-instruction-description-factory';
 import { FailedInstructionWriteResult, InstructionWriteResult } from '../instruction-write-result';
-import {
-  InvalidInstructionReason,
-  InvalidInstructionReasonDescription,
-} from '../enums/invalid-instruction-reason';
-import { StringHelper } from '../../helpers/string-helper';
 
 export abstract class Instruction {
   /**
@@ -18,29 +15,27 @@ export abstract class Instruction {
     try {
       result = this.internalWriteOnTab(tab);
     } catch (e) {
-      if (e instanceof Error) {
-        result = this.getFailureResultOnError(e);
-      } else {
-        result = this.getFailureResultOnError(new Error('Unknown error'));
-      }
+      result = this.getFailureResultOnError(tab);
     }
 
     return result;
   }
 
   /**
-   * Creates a failed instruction write result based on a given error.
-   * @param error - The error to be used to create the writing result.
+   * Creates a failed instruction write result.
+   * @param tab - The tablature over which the write attempt was performed.
    * @returns The created failed instruction writing result.
    */
-  protected getFailureResultOnError(error: Error): FailedInstructionWriteResult {
+  protected getFailureResultOnError(tab: Tab): FailedInstructionWriteResult {
     const failureReason = InvalidInstructionReason.UnknownReason;
-    const failureDescription = InvalidInstructionReasonDescription[failureReason];
-    const failureMessage = StringHelper.format(failureDescription, [error.message]);
+    const failureDescription = InvalidInstructionDescriptionFactory.getDescription({
+      invalidInstructionReason: failureReason,
+      tab,
+    });
 
     return new FailedInstructionWriteResult({
       failureReasonIdentifier: failureReason,
-      failureMessage,
+      failureMessage: failureDescription,
     });
   }
 

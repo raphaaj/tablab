@@ -1,12 +1,10 @@
-import { StringHelper } from '../helpers/string-helper';
-import { Instruction } from './instructions/instruction';
-import { InvalidInstruction } from './instructions/invalid-instruction';
-import { WriteNoteInstruction } from './instructions/write-note-instruction';
-import {
-  InvalidInstructionReason,
-  InvalidInstructionReasonDescription,
-} from './enums/invalid-instruction-reason';
-import { Note } from '../tab/note';
+import { StringHelper } from '../../helpers/string-helper';
+import { Note } from '../../tab/note';
+import { InvalidInstructionReason } from '../enums/invalid-instruction-reason';
+import { Instruction } from '../instructions/instruction';
+import { InvalidInstruction } from '../instructions/invalid-instruction';
+import { WriteNoteInstruction } from '../instructions/write-note-instruction';
+import { InvalidInstructionDescriptionFactory } from './invalid-instruction-description-factory';
 
 /**
  * The method data of a method instruction.
@@ -369,22 +367,20 @@ export abstract class InstructionFactoryBase implements InstructionProvider {
     reasonIdentifier: InvalidInstructionReason,
     methodData: MethodInstructionData
   ): InvalidInstruction {
-    const reasonDescription = InvalidInstructionReasonDescription[reasonIdentifier];
-
-    let description = null;
-    if (reasonIdentifier === InvalidInstructionReason.UnidentifiedMethodInstruction) {
-      description = StringHelper.format(reasonDescription, [methodData.alias]);
-    } else {
-      description = reasonDescription;
-    }
+    const description = InvalidInstructionDescriptionFactory.getDescription({
+      invalidInstructionReason: reasonIdentifier,
+      methodInstructionData: methodData,
+    });
 
     return new InvalidInstruction(reasonIdentifier, description);
   }
 
   private _buildInvalidInstructionForValue(reasonIdentifier: InvalidInstructionReason) {
-    const reasonDescription = InvalidInstructionReasonDescription[reasonIdentifier];
+    const description = InvalidInstructionDescriptionFactory.getDescription({
+      invalidInstructionReason: reasonIdentifier,
+    });
 
-    return new InvalidInstruction(reasonIdentifier, reasonDescription);
+    return new InvalidInstruction(reasonIdentifier, description);
   }
 
   private _buildWriteNoteInstruction(instructionValue: string): Instruction {

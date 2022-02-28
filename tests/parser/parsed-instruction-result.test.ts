@@ -1,7 +1,7 @@
 import { ParsedInstructionResult } from '../../src/parser/parsed-instruction-result';
 import { ParsedMethodInstructionResult } from '../../src/parser/parsed-method-instruction-result';
 import { Instruction } from '../../src/instruction/instructions/instruction';
-import { InstructionProvider } from '../../src/instruction/instruction-factory-base';
+import { InstructionProvider } from '../../src/instruction/factories/instruction-factory-base';
 import {
   InstructionWriteResult,
   SuccessInstructionWriteResult,

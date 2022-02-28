@@ -6,8 +6,8 @@ import {
 import { ParsedMethodInstructionResult } from '../../src/parser/parsed-method-instruction-result';
 import { Enclosure } from '../../src/helpers/enclosures-helper';
 import { Instruction } from '../../src/instruction/instructions/instruction';
-import { InstructionProvider } from '../../src/instruction/instruction-factory-base';
-import { InstructionFactory } from '../../src/instruction/instruction-factory';
+import { InstructionProvider } from '../../src/instruction/factories/instruction-factory-base';
+import { InstructionFactory } from '../../src/instruction/factories/instruction-factory';
 
 const GLOBAL_INDEX_REFERENCE = 5;
 

@@ -1,16 +1,13 @@
-import { MergeableInstruction } from './mergeable-instruction';
 import { Note } from '../../tab/note';
 import { Tab } from '../../tab/tab';
+import { InvalidInstructionReason } from '../enums/invalid-instruction-reason';
+import { InvalidInstructionDescriptionFactory } from '../factories/invalid-instruction-description-factory';
 import {
   FailedInstructionWriteResult,
   InstructionWriteResult,
   SuccessInstructionWriteResult,
 } from '../instruction-write-result';
-import { StringHelper } from '../../helpers/string-helper';
-import {
-  InvalidInstructionReason,
-  InvalidInstructionReasonDescription,
-} from '../enums/invalid-instruction-reason';
+import { MergeableInstruction } from './mergeable-instruction';
 
 export class WriteNoteInstruction extends MergeableInstruction {
   /**
@@ -34,22 +31,22 @@ export class WriteNoteInstruction extends MergeableInstruction {
 
       result = new SuccessInstructionWriteResult();
     } else {
-      result = this._getNonWritableNoteFailureResult(tab.numberOfStrings);
+      result = this._getNonWritableNoteFailureResult(tab);
     }
 
     return result;
   }
 
-  private _getNonWritableNoteFailureResult(
-    maxTabStringValue: number
-  ): FailedInstructionWriteResult {
+  private _getNonWritableNoteFailureResult(tab: Tab): FailedInstructionWriteResult {
     const failureReason = InvalidInstructionReason.BasicInstructionWithNonWritableNote;
-    const description = InvalidInstructionReasonDescription[failureReason];
-    const failureMessage = StringHelper.format(description, [maxTabStringValue.toString()]);
+    const failureDescription = InvalidInstructionDescriptionFactory.getDescription({
+      invalidInstructionReason: failureReason,
+      tab,
+    });
 
     return new FailedInstructionWriteResult({
       failureReasonIdentifier: failureReason,
-      failureMessage,
+      failureMessage: failureDescription,
     });
   }
 }

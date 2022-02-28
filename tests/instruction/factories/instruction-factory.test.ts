@@ -1,13 +1,13 @@
-import { InstructionFactory } from '../../src/instruction/instruction-factory';
-import { MethodInstructionIdentifier } from '../../src/instruction/enums/method-instruction-identifier';
-import { InvalidInstructionReason } from '../../src/instruction/enums/invalid-instruction-reason';
-import { InvalidInstruction } from '../../src/instruction/instructions/invalid-instruction';
-import { BreakInstruction } from '../../src/instruction/instructions/break-instruction';
-import { MergeInstruction } from '../../src/instruction/instructions/merge-instruction';
-import { RepeatInstruction } from '../../src/instruction/instructions/repeat-instruction';
-import { SetSpacingInstruction } from '../../src/instruction/instructions/set-spacing-instruction';
-import { WriteFooterInstruction } from '../../src/instruction/instructions/write-footer-instruction';
-import { WriteHeaderInstruction } from '../../src/instruction/instructions/write-header-instruction';
+import { InstructionFactory } from '../../../src/instruction/factories/instruction-factory';
+import { MethodInstructionIdentifier } from '../../../src/instruction/enums/method-instruction-identifier';
+import { InvalidInstructionReason } from '../../../src/instruction/enums/invalid-instruction-reason';
+import { InvalidInstruction } from '../../../src/instruction/instructions/invalid-instruction';
+import { BreakInstruction } from '../../../src/instruction/instructions/break-instruction';
+import { MergeInstruction } from '../../../src/instruction/instructions/merge-instruction';
+import { RepeatInstruction } from '../../../src/instruction/instructions/repeat-instruction';
+import { SetSpacingInstruction } from '../../../src/instruction/instructions/set-spacing-instruction';
+import { WriteFooterInstruction } from '../../../src/instruction/instructions/write-footer-instruction';
+import { WriteHeaderInstruction } from '../../../src/instruction/instructions/write-header-instruction';
 
 const TEST_METHOD_ALIAS = 'testAlias';
 

@@ -1,6 +1,6 @@
 import { Enclosure, EnclosuresHelper } from '../helpers/enclosures-helper';
+import { MethodInstructionData } from '../instruction/factories/instruction-factory-base';
 import { ParsedInstruction } from './parsed-instruction-result';
-import { MethodInstructionData } from '../instruction/instruction-factory-base';
 
 export type MethodTargetExtractionResult = {
   readFromIndex: number;

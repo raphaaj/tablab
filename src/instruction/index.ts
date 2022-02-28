@@ -1,3 +1,6 @@
+export { MethodInstructionIdentifier } from './enums/method-instruction-identifier';
+export { InvalidInstructionReason } from './enums/invalid-instruction-reason';
+
 export {
   InstructionData,
   InstructionProvider,
@@ -13,19 +16,12 @@ export {
   TargetsMinNumberValidation,
   TargetsMaxNumberValidation,
   TargetsValidation,
-} from './instruction-factory-base';
-
-export { InstructionFactoryOptions, InstructionFactory } from './instruction-factory';
-
+} from './factories/instruction-factory-base';
+export { InstructionFactoryOptions, InstructionFactory } from './factories/instruction-factory';
 export {
-  InstructionWriteResultData,
-  InstructionWriteResult,
-  SuccessInstructionWriteResult,
-  FailedInstructionWriteResult,
-} from './instruction-write-result';
-
-export { MethodInstructionIdentifier } from './enums/method-instruction-identifier';
-export { InvalidInstructionReason } from './enums/invalid-instruction-reason';
+  InvalidInstructionDescriptionFactory,
+  GetInvalidInstructionDescriptionData,
+} from './factories/invalid-instruction-description-factory';
 
 export { Instruction } from './instructions/instruction';
 export { MergeableInstruction } from './instructions/mergeable-instruction';
@@ -37,3 +33,17 @@ export { RepeatInstruction } from './instructions/repeat-instruction';
 export { SetSpacingInstruction } from './instructions/set-spacing-instruction';
 export { WriteFooterInstruction } from './instructions/write-footer-instruction';
 export { WriteHeaderInstruction } from './instructions/write-header-instruction';
+
+export {
+  InvalidInstructionDescriptionTemplateProvider,
+  InvalidInstructionDescriptionTemplate,
+  InvalidInstructionDescriptionFunctionTemplateParams,
+} from './providers/invalid-instruction-description-template-provider';
+export { InternalInvalidInstructionDescriptionTemplateProvider } from './providers/internal-invalid-instruction-description-template-provider';
+
+export {
+  InstructionWriteResultData,
+  InstructionWriteResult,
+  SuccessInstructionWriteResult,
+  FailedInstructionWriteResult,
+} from './instruction-write-result';

@@ -2,7 +2,7 @@ import { ParsedMethodInstructionResult } from '../../src/parser/parsed-method-in
 import { ParsedInstructionResult } from '../../src/parser/parsed-instruction-result';
 import { Enclosure } from '../../src/helpers/enclosures-helper';
 import { Instruction } from '../../src/instruction/instructions/instruction';
-import { InstructionProvider } from '../../src/instruction/instruction-factory-base';
+import { InstructionProvider } from '../../src/instruction/factories/instruction-factory-base';
 import {
   InstructionWriteResult,
   SuccessInstructionWriteResult,

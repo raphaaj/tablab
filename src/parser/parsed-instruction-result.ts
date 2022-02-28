@@ -1,7 +1,10 @@
-import { ParsedMethodInstruction } from './parsed-method-instruction-result';
-import { InstructionData, InstructionProvider } from '../instruction/instruction-factory-base';
-import { Tab } from '../tab';
 import { InstructionWriteResult } from '../instruction';
+import {
+  InstructionData,
+  InstructionProvider,
+} from '../instruction/factories/instruction-factory-base';
+import { Tab } from '../tab';
+import { ParsedMethodInstruction } from './parsed-method-instruction-result';
 
 /**
  * The data of an instruction extracted from a string of instructions.

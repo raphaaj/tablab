@@ -4,12 +4,12 @@ import {
   MethodInstructionBuilder,
   InstructionFactoryBase,
   TargetsValidation,
-} from '../../src/instruction/instruction-factory-base';
-import { InstructionWriteResult } from '../../src/instruction/instruction-write-result';
-import { InvalidInstructionReason } from '../../src/instruction/enums/invalid-instruction-reason';
-import { Instruction } from '../../src/instruction/instructions/instruction';
-import { InvalidInstruction } from '../../src/instruction/instructions/invalid-instruction';
-import { WriteNoteInstruction } from '../../src/instruction/instructions/write-note-instruction';
+} from '../../../src/instruction/factories/instruction-factory-base';
+import { InstructionWriteResult } from '../../../src/instruction/instruction-write-result';
+import { InvalidInstructionReason } from '../../../src/instruction/enums/invalid-instruction-reason';
+import { Instruction } from '../../../src/instruction/instructions/instruction';
+import { InvalidInstruction } from '../../../src/instruction/instructions/invalid-instruction';
+import { WriteNoteInstruction } from '../../../src/instruction/instructions/write-note-instruction';
 
 const TEST_METHOD_ALIAS = 'testAlias';
 const TEST_METHOD_IDENTIFIER = 'testIdentifier';

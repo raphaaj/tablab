@@ -1,16 +1,13 @@
-import { Instruction } from './instruction';
-import { MergeableInstruction } from './mergeable-instruction';
 import { Tab } from '../../tab/tab';
+import { InvalidInstructionReason } from '../enums/invalid-instruction-reason';
+import { InvalidInstructionDescriptionFactory } from '../factories/invalid-instruction-description-factory';
 import {
   FailedInstructionWriteResult,
   InstructionWriteResult,
   SuccessInstructionWriteResult,
 } from '../instruction-write-result';
-import {
-  InvalidInstructionReason,
-  InvalidInstructionReasonDescription,
-} from '../enums/invalid-instruction-reason';
-import { StringHelper } from '../../helpers/string-helper';
+import { Instruction } from './instruction';
+import { MergeableInstruction } from './mergeable-instruction';
 
 export class MergeInstruction extends Instruction {
   readonly instructions: MergeableInstruction[];
@@ -38,7 +35,7 @@ export class MergeInstruction extends Instruction {
     const nonWritableNotes = notes.filter((note) => !tab.isNoteWritable(note));
 
     if (nonWritableNotes.length > 0) {
-      result = this._getNonWritableNotesFailureResult(tab.numberOfStrings);
+      result = this._getNonWritableNotesFailureResult(tab);
     } else {
       tab.writeParallelNotes(notes);
 
@@ -48,16 +45,16 @@ export class MergeInstruction extends Instruction {
     return result;
   }
 
-  private _getNonWritableNotesFailureResult(
-    maxTabStringValue: number
-  ): FailedInstructionWriteResult {
+  private _getNonWritableNotesFailureResult(tab: Tab): FailedInstructionWriteResult {
     const failureReason = InvalidInstructionReason.MergeInstructionTargetsWithNonWritableNotes;
-    const description = InvalidInstructionReasonDescription[failureReason];
-    const failureMessage = StringHelper.format(description, [maxTabStringValue.toString()]);
+    const failureDescription = InvalidInstructionDescriptionFactory.getDescription({
+      invalidInstructionReason: failureReason,
+      tab,
+    });
 
     return new FailedInstructionWriteResult({
       failureReasonIdentifier: failureReason,
-      failureMessage,
+      failureMessage: failureDescription,
     });
   }
 }

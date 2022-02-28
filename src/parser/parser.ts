@@ -1,9 +1,9 @@
 import { Enclosure, EnclosuresHelper } from '../helpers/enclosures-helper';
 import { StringHelper } from '../helpers/string-helper';
-import { InstructionProvider } from '../instruction/instruction-factory-base';
-import { InstructionFactory } from '../instruction/instruction-factory';
 import { MethodInstructionIdentifier } from '../instruction/enums/method-instruction-identifier';
-import { ParsedInstructionResult, ParsedInstruction } from './parsed-instruction-result';
+import { InstructionFactory } from '../instruction/factories/instruction-factory';
+import { InstructionProvider } from '../instruction/factories/instruction-factory-base';
+import { ParsedInstruction, ParsedInstructionResult } from './parsed-instruction-result';
 import { ParsedMethodInstructionResult } from './parsed-method-instruction-result';
 
 /**
