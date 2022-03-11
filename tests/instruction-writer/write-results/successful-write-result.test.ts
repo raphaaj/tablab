@@ -23,21 +23,46 @@ function getTestParsedInstruction(): ParsedInstructionData {
 
 describe(`[${SuccessfulWriteResult.name}]`, () => {
   describe('[constructor]', () => {
-    it('should create a success write result', () => {
+    it('should create a success write result without child results', () => {
       const tab = new Tab();
       const parsedInstruction = getTestParsedInstruction();
       const instructionWriter = new NullInstructionWriter({ parsedInstruction });
 
-      const baseWriteResult = new SuccessfulWriteResult({
+      const writeResult = new SuccessfulWriteResult({
         instructionWriter,
         tab,
       });
 
-      expect(baseWriteResult.failureMessage).toBe(null);
-      expect(baseWriteResult.failureReasonIdentifier).toBe(null);
-      expect(baseWriteResult.instructionWriter).toBe(instructionWriter);
-      expect(baseWriteResult.success).toBe(true);
-      expect(baseWriteResult.tab).toBe(tab);
+      expect(writeResult.childResults).toBe(null);
+      expect(writeResult.failureMessage).toBe(null);
+      expect(writeResult.failureReasonIdentifier).toBe(null);
+      expect(writeResult.instructionWriter).toBe(instructionWriter);
+      expect(writeResult.success).toBe(true);
+      expect(writeResult.tab).toBe(tab);
+    });
+
+    it('should create a success write result with child results', () => {
+      const tab = new Tab();
+      const parsedInstruction = getTestParsedInstruction();
+      const instructionWriter = new NullInstructionWriter({ parsedInstruction });
+
+      const childResult = new SuccessfulWriteResult({
+        instructionWriter,
+        tab,
+      });
+
+      const writeResult = new SuccessfulWriteResult({
+        childResults: [childResult],
+        instructionWriter,
+        tab,
+      });
+
+      expect(writeResult.childResults).toEqual([childResult]);
+      expect(writeResult.failureMessage).toBe(null);
+      expect(writeResult.failureReasonIdentifier).toBe(null);
+      expect(writeResult.instructionWriter).toBe(instructionWriter);
+      expect(writeResult.success).toBe(true);
+      expect(writeResult.tab).toBe(tab);
     });
   });
 });

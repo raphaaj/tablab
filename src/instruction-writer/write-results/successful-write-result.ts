@@ -7,6 +7,13 @@ import { BaseWriteResult } from './base-write-result';
  */
 export type SuccessfulWriteResultOptions = {
   /**
+   * A collection of child write results related to the current write result.
+   * Useful to store the results of the write steps of an instruction writer
+   * with multiple write operations.
+   */
+  childResults?: BaseWriteResult[] | null;
+
+  /**
    * The instruction writer that executed the write attempt.
    */
   instructionWriter: BaseInstructionWriter;

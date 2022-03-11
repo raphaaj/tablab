@@ -23,25 +23,56 @@ function getTestParsedInstruction(): ParsedInstructionData {
 
 describe(`[${FailedWriteResult.name}]`, () => {
   describe('[constructor]', () => {
-    it('should create a failed write result', () => {
+    it('should create a failed write result without child results', () => {
       const tab = new Tab();
       const parsedInstruction = getTestParsedInstruction();
       const instructionWriter = new NullInstructionWriter({ parsedInstruction });
       const failureReasonIdentifier = 'TEST_FAILURE_REASON';
       const failureMessage = 'test failure message';
 
-      const baseWriteResult = new FailedWriteResult({
+      const writeResult = new FailedWriteResult({
         failureMessage,
         failureReasonIdentifier,
         instructionWriter,
         tab,
       });
 
-      expect(baseWriteResult.failureMessage).toBe(failureMessage);
-      expect(baseWriteResult.failureReasonIdentifier).toBe(failureReasonIdentifier);
-      expect(baseWriteResult.instructionWriter).toBe(instructionWriter);
-      expect(baseWriteResult.success).toBe(false);
-      expect(baseWriteResult.tab).toBe(tab);
+      expect(writeResult.childResults).toBe(null);
+      expect(writeResult.failureMessage).toBe(failureMessage);
+      expect(writeResult.failureReasonIdentifier).toBe(failureReasonIdentifier);
+      expect(writeResult.instructionWriter).toBe(instructionWriter);
+      expect(writeResult.success).toBe(false);
+      expect(writeResult.tab).toBe(tab);
+    });
+
+    it('should create a failed write result with child results', () => {
+      const tab = new Tab();
+      const parsedInstruction = getTestParsedInstruction();
+      const instructionWriter = new NullInstructionWriter({ parsedInstruction });
+      const failureReasonIdentifier = 'TEST_FAILURE_REASON';
+      const failureMessage = 'test failure message';
+
+      const childResult = new FailedWriteResult({
+        failureMessage,
+        failureReasonIdentifier,
+        instructionWriter,
+        tab,
+      });
+
+      const writeResult = new FailedWriteResult({
+        childResults: [childResult],
+        failureMessage,
+        failureReasonIdentifier,
+        instructionWriter,
+        tab,
+      });
+
+      expect(writeResult.childResults).toEqual([childResult]);
+      expect(writeResult.failureMessage).toBe(failureMessage);
+      expect(writeResult.failureReasonIdentifier).toBe(failureReasonIdentifier);
+      expect(writeResult.instructionWriter).toBe(instructionWriter);
+      expect(writeResult.success).toBe(false);
+      expect(writeResult.tab).toBe(tab);
     });
   });
 });
