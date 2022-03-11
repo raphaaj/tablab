@@ -32,12 +32,12 @@ npm install tablab
 
 ### Writing a tablature step by step
 
-The `Tab` class provides the functionalities to write a tablature step by step. With it, you can write [notes](src/tab/README.md#write-note), [header messages](src/tab/README.md#write-header), [footer messages](src/tab/README.md#write-footer), [change its spacing](src/tab/README.md#set-spacing) and [add new blocks](src/tab/README.md#add-block) to your tablature. Once done writing your tablature, you can [format](src/tab/README.md#format) it as intended.
+The `Tab` class provides the functionalities to write a tablature step by step. With it, you can write [notes](docs/tab/tab-api.md#write-note), [header messages](docs/tab/tab-api.md#write-header), [footer messages](docs/tab/tab-api.md#write-footer), [change its spacing](docs/tab/tab-api.md#set-spacing) and [add new blocks](docs/tab/tab-api.md#add-block) to your tablature. Once done writing your tablature, you can [format](docs/tab/tab-api.md#format) it as intended.
 
-Check out the `Tab` class [usage documentation](src/tab/README.md) for more information about:
+Check out the `Tab` class [usage documentation](docs/tab/tab-api.md) for more information about:
 
-- The available [options](src/tab/README.md#tablature-options) to customize your tablature;
-- The available [methods](src/tab/README.md#tablature-methods) to perform the writing operations.
+- The available [options](docs/tab/tab-api.md#tablature-options) to customize your tablature;
+- The available [methods](docs/tab/tab-api.md#tablature-methods) to perform the writing operations.
 
 Below, an example of how the `Tab` class can be used to write a tablature:
 
@@ -134,12 +134,12 @@ As in the strategy [step by step](#writing-a-tablature-step-by-step), the `Tab` 
 
 `Tablab` provides the `Parser` class to read the given text input of instructions and determine the writing operation to be performed over the tablature for each parsed instruction.
 
-Check out the `Parser` class [usage documentation](src/parser/README.md) for more information about:
+Check out the `Parser` class [usage documentation](docs/parser/parser-api.md) for more information about:
 
-- The [accepted instructions](src/parser/README.md#accepted-instructions);
-- How to [write a tablature with the parsed instructions](src/parser/README.md#writing-a-tablature-with-the-parsed-instructions);
-- The available [options](src/parser/README.md#parser-options) to customize the parser;
-- The available [methods](src/parser/README.md#parser-methods) to parse instructions.
+- The [accepted instructions](docs/parser/parser-api.md#accepted-instructions);
+- How to [write a tablature with the parsed instructions](docs/parser/parser-api.md#writing-a-tablature-with-the-parsed-instructions);
+- The available [options](docs/parser/parser-api.md#parser-options) to customize the parser;
+- The available [methods](docs/parser/parser-api.md#parser-methods) to parse instructions.
 
 Below, an example of how the `Parser` class can be used with the `Tab` class to write a tablature:
 

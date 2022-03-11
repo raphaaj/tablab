@@ -10,7 +10,7 @@ Failure reasons regarding instructions in general:
 
 ## Basic Instructions
 
-Failure reasons regarding [basic instructions](../parser/README.md#basic-instructions):
+Failure reasons regarding [basic instructions](parser-api.md#basic-instructions):
 
 |         Failure Reason Identifier          |                                   Description                                    |
 | :----------------------------------------: | :------------------------------------------------------------------------------: |
@@ -21,7 +21,7 @@ Failure reasons regarding [basic instructions](../parser/README.md#basic-instruc
 
 ### General
 
-Failure reasons regarding [method instructions](../parser/README.md#method-instructions) in general:
+Failure reasons regarding [method instructions](parser-api.md#method-instructions) in general:
 
 |     Failure Reason Identifier     |                                  Description                                   |
 | :-------------------------------: | :----------------------------------------------------------------------------: |
@@ -30,7 +30,7 @@ Failure reasons regarding [method instructions](../parser/README.md#method-instr
 
 ### Footer
 
-Failure reasons regarding the [footer instruction](../parser/README.md#method-instruction-footer):
+Failure reasons regarding the [footer instruction](parser-api.md#method-instruction-footer):
 
 |          Failure Reason Identifier           |                                Description                                 |
 | :------------------------------------------: | :------------------------------------------------------------------------: |
@@ -40,7 +40,7 @@ Failure reasons regarding the [footer instruction](../parser/README.md#method-in
 
 ### Header
 
-Failure reasons regarding the [header instruction](../parser/README.md#method-instruction-header):
+Failure reasons regarding the [header instruction](parser-api.md#method-instruction-header):
 
 |          Failure Reason Identifier           |                                Description                                 |
 | :------------------------------------------: | :------------------------------------------------------------------------: |
@@ -50,7 +50,7 @@ Failure reasons regarding the [header instruction](../parser/README.md#method-in
 
 ### Merge
 
-Failure reasons regarding the [merge instruction](../parser/README.md#method-instruction-merge):
+Failure reasons regarding the [merge instruction](parser-api.md#method-instruction-merge):
 
 |              Failure Reason Identifier              |                                                       Description                                                       |
 | :-------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------: |
@@ -61,7 +61,7 @@ Failure reasons regarding the [merge instruction](../parser/README.md#method-ins
 
 ### Repeat
 
-Failure reasons regarding the [repeat instruction](../parser/README.md#method-instruction-repeat):
+Failure reasons regarding the [repeat instruction](parser-api.md#method-instruction-repeat):
 
 |                Failure Reason Identifier                 |                                                                 Description                                                                  |
 | :------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------: |
@@ -73,7 +73,7 @@ Failure reasons regarding the [repeat instruction](../parser/README.md#method-in
 
 ### Spacing
 
-Failure reasons regarding the [spacing instruction](../parser/README.md#method-instruction-spacing):
+Failure reasons regarding the [spacing instruction](parser-api.md#method-instruction-spacing):
 
 |               Failure Reason Identifier               |                                                                Description                                                                |
 | :---------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------: |

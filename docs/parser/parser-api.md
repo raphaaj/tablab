@@ -45,7 +45,7 @@ A basic instruction has the format `{string}-{fret}` where the `fret` represents
 - `4-5h7`: Fifth fret of the fourth string followed by a _hammer-on_ at the seventh fret;
 - `3-5b6`: Fifth fret of the third string followed by a half bend.
 
-Once written to a tablature, these instructions will be [written as notes](../tab/README.md#write-note) to the tablature.
+Once written to a tablature, these instructions will be [written as notes](../tab/tab-api.md#write-note) to the tablature.
 
 ### Method instructions
 
@@ -57,21 +57,21 @@ A method instruction is composed of up to 3 parts:
 
 #### Available method instructions
 
-- <a id="method-instruction-break">`break`</a>: Once written to a tablature, this instruction will [add a tablature block](../tab/README.md#add-block) to it.
+- <a id="method-instruction-break">`break`</a>: Once written to a tablature, this instruction will [add a tablature block](../tab/tab-api.md#add-block) to it.
   - **Alias**: `break`.
   - **Arguments**: None.
   - **Targets**: None.
-- <a id="method-instruction-footer">`footer ( footerMessage )`</a>: Once written to a tablature, this instruction will [write a footer](../tab/README.md#write-footer) to it.
+- <a id="method-instruction-footer">`footer ( footerMessage )`</a>: Once written to a tablature, this instruction will [write a footer](../tab/tab-api.md#write-footer) to it.
   - **Alias**: `footer`.
   - **Arguments**:
     - `footerMessage`: The message to be written at the footer section of the tablature.
   - **Targets**: None.
-- <a id="method-instruction-header">`header ( headerMessage )`</a>: Once written to a tablature, this instruction will [write a header](../tab/README.md#write-header) to it.
+- <a id="method-instruction-header">`header ( headerMessage )`</a>: Once written to a tablature, this instruction will [write a header](../tab/tab-api.md#write-header) to it.
   - **Alias**: `header`.
   - **Arguments**:
     - `headerMessage`: The message to be written at the header section of the tablature.
   - **Targets**: None.
-- <a id="method-instruction-merge">`merge { instructionsToMerge }`</a>: Once written to a tablature, this instruction will [write in parallel](../tab/README.md#write-parallel-notes) the given target instructions to the tablature.
+- <a id="method-instruction-merge">`merge { instructionsToMerge }`</a>: Once written to a tablature, this instruction will [write in parallel](../tab/tab-api.md#write-parallel-notes) the given target instructions to the tablature.
   - **Alias**: `merge`.
   - **Arguments**: None.
   - **Targets**: The instructions to be written to the tablature in parallel. Only [basic instructions](#basic-instructions) are acceptted.
@@ -80,7 +80,7 @@ A method instruction is composed of up to 3 parts:
   - **Arguments**:
     - `numberOfRepetitions`: The number of repetitions.
   - **Targets**: The instructions to be written to the tablature.
-- <a id="method-instruction-spacing">`spacing (spacingValue)`</a>: Once written to a tablature, this instruction will [set its spacing](../tab/README.md#spacing) property to the given spacing value.
+- <a id="method-instruction-spacing">`spacing (spacingValue)`</a>: Once written to a tablature, this instruction will [set its spacing](../tab/tab-api.md#spacing) property to the given spacing value.
   - **Alias**: `spacing`.
   - **Arguments**:
     - `spacingValue`: The new spacing value to be set at the tablature.
@@ -169,15 +169,15 @@ Below are the properties available on a write result object, returned by the `wr
 
 ```ts
 interface WriteResult {
-  failureMessage: string | null; // The message that describes the reason for the writing operation to have failed.
-  failureReasonIdentifier: string | null; // The token that uniquely identifies the reason for the writing operation to have failed.
-  success: boolean; // The indication of whether the writing operation has succeeded or not.
+  failureMessage: string | null;
+  failureReasonIdentifier: string | null;
+  success: boolean;
 }
 ```
 
 The field `success` indicates whether the instruction was successfully written to the tablature (`true`) or not (`false`). The fields `failureReasonIdentifier` and `failureMessage` can be used to identify the failure reason. The former uniquely identifies a failure reason.
 
-The list with all possible failure reasons can be verified [here](../instruction/failure-reasons.md).
+The list with all possible failure reasons can be verified [here](failure-reasons.md).
 
 ## Parser options
 
