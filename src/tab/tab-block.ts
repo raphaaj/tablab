@@ -13,6 +13,9 @@ type BlockSplitResult = {
   right?: string[];
 };
 
+/**
+ * A tablature block.
+ */
 export class TabBlock extends TabElement {
   static readonly MINIMUM_BLOCK_END_SPACING_LENGTH = 1;
   static readonly MINIMUM_BLOCK_LENGTH = 15;
@@ -60,8 +63,8 @@ export class TabBlock extends TabElement {
   }
 
   /**
-   * Creates a tablature block.
-   * @param options - The options used to create a tablature block.
+   * Creates a tablature block instance.
+   * @param options - The options to create a tablature block instance.
    */
   constructor(options?: TabElementOptions) {
     super(options);

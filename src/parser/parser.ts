@@ -1,70 +1,82 @@
 import { Enclosure, EnclosuresHelper } from '../helpers/enclosures-helper';
 import { StringHelper } from '../helpers/string-helper';
-import { MethodInstructionIdentifier } from '../instruction/enums/method-instruction-identifier';
-import { InstructionFactory } from '../instruction/factories/instruction-factory';
-import { InstructionProvider } from '../instruction/factories/instruction-factory-base';
-import { ParsedInstruction, ParsedInstructionResult } from './parsed-instruction-result';
-import { ParsedMethodInstructionResult } from './parsed-method-instruction-result';
+import { MethodInstruction } from '../instruction-writer/enums/method-instruction';
+import { InstructionWriterProvider } from '../instruction-writer/factories/base-instruction-writer-factory';
+import { InternalInstructionWriterFactory } from '../instruction-writer/factories/internal-instruction-writer-factory';
+import { ParsedInstruction } from './parsed-instruction';
+import { ParsedMethodInstruction } from './parsed-method-instruction';
 
 /**
  * The options to create a parser.
  */
 export interface ParserOptions {
   /**
-   * The instruction provider to be used to create instruction instances.
-   * @defaultValue
-   * The default value is a new instance of the {@link InstructionFactory} class.
+   * The instruction writer provider to be used to create instruction writer
+   * instances.
+   *
+   * @defaultValue The default value is a new instance of the class
+   * {@link InternalInstructionWriterFactory}.
    */
-  instructionProvider?: InstructionProvider;
+  instructionWriterProvider?: InstructionWriterProvider;
 
   /**
-   * The map from a method alias to a method identifier to be used while parsing
-   * method instructions. Whenever a method instruction is parsed the method
-   * identifier will be determined from its method alias using this map.
+   * The map from a method instruction alias to a method instruction identifier
+   * to be used while parsing method instructions. Whenever a method instruction
+   * is parsed the method identifier will be determined from its method alias
+   * using this map.
+   *
    * @defaultValue {@link Parser.DEFAULT_METHOD_INSTRUCTION_ALIAS_2_IDENTIFIER_MAP}
    */
   methodInstructionAlias2IdentifierMap?: Record<string, string>;
 
   /**
-   * The enclosure type to be used to identify the method arguments while parsing
-   * method instructions. It must be different from the value of `methodInstructionTargetsEnclosure`.
+   * The enclosure type to be used to identify the method instruction arguments
+   * while parsing method instructions. It must be different from the value of
+   * `methodInstructionTargetsEnclosure`.
+   *
    * @defaultValue {@link Parser.DEFAULT_METHOD_INSTRUCTION_ARGS_ENCLOSURE}
    */
   methodInstructionArgsEnclosure?: Enclosure;
 
   /**
-   * The character to be considered as the separator of the arguments of a
-   * method instruction.
-   * It must be a string with a single character.
+   * The character to be considered as the separator of the arguments of a method
+   * instruction. It must be a string with a single character.
+   *
    * @defaultValue {@link Parser.DEFAULT_METHOD_INSTRUCTION_ARGS_SEPARATOR}
    */
   methodInstructionArgsSeparator?: string;
 
   /**
-   * The enclosure type to be used to identify the method targets while parsing
-   * method instructions. It must be different from the value of `methodInstructionArgsEnclosure`.
+   * The enclosure type to be used to identify the method instruction targets
+   * while parsing method instructions. It must be different from the value of
+   * `methodInstructionArgsEnclosure`.
+   *
    * @defaultValue {@link Parser.DEFAULT_METHOD_INSTRUCTION_TARGETS_ENCLOSURE}
    */
   methodInstructionTargetsEnclosure?: Enclosure;
 }
 
+/**
+ * An instructions parser.
+ */
 export class Parser {
   static readonly DEFAULT_INSTRUCTIONS_SEPARATOR = ' ';
   static readonly DEFAULT_METHOD_INSTRUCTION_ALIAS_2_IDENTIFIER_MAP: Record<string, string> = {
-    break: MethodInstructionIdentifier.Break,
-    footer: MethodInstructionIdentifier.Footer,
-    header: MethodInstructionIdentifier.Header,
-    merge: MethodInstructionIdentifier.Merge,
-    repeat: MethodInstructionIdentifier.Repeat,
-    spacing: MethodInstructionIdentifier.Spacing,
+    break: MethodInstruction.Break,
+    footer: MethodInstruction.Footer,
+    header: MethodInstruction.Header,
+    merge: MethodInstruction.Merge,
+    repeat: MethodInstruction.Repeat,
+    spacing: MethodInstruction.SetSpacing,
   };
   static readonly DEFAULT_METHOD_INSTRUCTION_ARGS_ENCLOSURE = Enclosure.Parentheses;
   static readonly DEFAULT_METHOD_INSTRUCTION_ARGS_SEPARATOR = ',';
   static readonly DEFAULT_METHOD_INSTRUCTION_TARGETS_ENCLOSURE = Enclosure.CurlyBrackets;
 
   /**
-   * The enclosure type used to identify the method arguments while parsing method
-   * instructions. It must be different from the value of `methodInstructionTargetsEnclosure`.
+   * The enclosure type used to identify the method instruction arguments while
+   * parsing method instructions. It must be different from the value of
+   * `methodInstructionTargetsEnclosure`.
    */
   get methodInstructionArgsEnclosure(): Enclosure {
     return this._methodInstructionArgsEnclosure;
@@ -99,8 +111,9 @@ export class Parser {
   }
 
   /**
-   * The enclosure type used to identify the method targets while parsing method
-   * instructions. It must be different from the value of `methodInstructionArgsEnclosure`.
+   * The enclosure type used to identify the method instruction targets while
+   * parsing method instructions. It must be different from the value of
+   * `methodInstructionArgsEnclosure`.
    */
   get methodInstructionTargetsEnclosure(): Enclosure {
     return this._methodInstructionTargetsEnclosure;
@@ -118,14 +131,14 @@ export class Parser {
   }
 
   /**
-   * The instruction provider used to create instruction instances.
+   * The instruction writer provider used to create instruction writer instances.
    */
-  instructionProvider: InstructionProvider;
+  instructionWriterProvider: InstructionWriterProvider;
 
   /**
-   * The map from a method alias to a method identifier used while parsing method instructions.
-   * Whenever the parser reads a method instruction, it determines its identifier from its alias
-   * using this map.
+   * The map from a method instruction alias to a method instruction identifier
+   * used while parsing method instructions. Whenever the parser reads a method
+   * instruction, it determines its identifier from its alias using this map.
    */
   methodInstructionAlias2IdentifierMap = Parser.DEFAULT_METHOD_INSTRUCTION_ALIAS_2_IDENTIFIER_MAP;
 
@@ -135,8 +148,8 @@ export class Parser {
   private _methodInstructionTargetsEnclosure = Parser.DEFAULT_METHOD_INSTRUCTION_TARGETS_ENCLOSURE;
 
   /**
-   * The parser constructor creates a parser that reads instructions separated by whitespace
-   * characters. It can parse two instruction types:
+   * Creates a parser instance that reads instructions separated by whitespace characters.
+   * It can parse two instruction types:
    *  - Method instructions: these instructions are composed of up to 3 parts: an alias,
    *    arguments, and targets. The alias part must be the first part of a method instruction
    *    followed by its arguments and its targets, in any order.
@@ -152,11 +165,11 @@ export class Parser {
    *  - Basic instructions: Any instruction that does not have a method alias will be considered a
    *    basic instruction. These instructions will be read as is.
    *
-   * @param options - The options used to create a parser.
+   * @param options - The options used to create a parser instance.
    */
   constructor(options: ParserOptions = {}) {
     const {
-      instructionProvider,
+      instructionWriterProvider,
       methodInstructionAlias2IdentifierMap,
       methodInstructionArgsSeparator,
       methodInstructionArgsEnclosure,
@@ -175,8 +188,8 @@ export class Parser {
     if (methodInstructionTargetsEnclosure !== undefined)
       this.methodInstructionTargetsEnclosure = methodInstructionTargetsEnclosure;
 
-    if (instructionProvider) this.instructionProvider = instructionProvider;
-    else this.instructionProvider = new InstructionFactory();
+    if (instructionWriterProvider) this.instructionWriterProvider = instructionWriterProvider;
+    else this.instructionWriterProvider = new InternalInstructionWriterFactory();
   }
 
   /**
@@ -184,13 +197,13 @@ export class Parser {
    * @param instructions - The instructions text input.
    * @param startIndexReference - The index reference used to determine
    * the initial and final read indexes for each parsed instruction.
-   * @returns The data of the parsed instructions.
+   * @returns The parsed instructions.
    */
   parseAll(instructions: string, startIndexReference = 0): ParsedInstruction[] {
-    const parsedInstructions: ParsedInstructionResult[] = [];
+    const parsedInstructions: ParsedInstruction[] = [];
 
     let startIndex = 0;
-    let parsedInstruction: ParsedInstructionResult | null = null;
+    let parsedInstruction: ParsedInstruction | null = null;
     do {
       parsedInstruction = this._parseNextInstruction(instructions, startIndex, startIndexReference);
 
@@ -208,7 +221,7 @@ export class Parser {
    * @param instructions - The instructions text input.
    * @param startIndexReference - The index reference used to determine the initial
    * and final read indexes for each parsed instruction.
-   * @returns The data of the parsed instructions, once resolved.
+   * @returns The parsed instructions, once resolved.
    *
    * @see {@link Parser.parseAll}
    */
@@ -230,7 +243,7 @@ export class Parser {
    * @param instruction - The instruction text input.
    * @param startIndexReference - The index reference used to determine the
    * initial and final read indexes for the parsed instruction.
-   * @returns The data of the parsed instruction.
+   * @returns The parsed instruction.
    */
   parseOne(instruction: string, startIndexReference = 0): ParsedInstruction | null {
     return this._parseNextInstruction(instruction, 0, startIndexReference);
@@ -241,7 +254,7 @@ export class Parser {
    * @param instruction - The instruction text input.
    * @param startIndexReference - The index reference used to determine the
    * initial and final read indexes for the parsed instruction.
-   * @returns The data of the parsed instruction, once resolved.
+   * @returns The parsed instruction, once resolved.
    *
    * @see {@link Parser.parseOne}
    */
@@ -338,18 +351,18 @@ export class Parser {
   private _getMethodInstruction(
     instruction: string,
     instructionStartIndex: number
-  ): ParsedMethodInstructionResult | null {
+  ): ParsedMethodInstruction | null {
     let result = null;
 
-    const methodAlias = ParsedMethodInstructionResult.extractMethodAlias(instruction);
+    const methodAlias = ParsedMethodInstruction.extractMethodAlias(instruction);
     if (methodAlias) {
-      const methodArguments = ParsedMethodInstructionResult.extractMethodArguments(
+      const methodArguments = ParsedMethodInstruction.extractMethodArguments(
         instruction,
         this.methodInstructionArgsEnclosure,
         this.methodInstructionArgsSeparator
       );
 
-      const methodTargetData = ParsedMethodInstructionResult.extractMethodTarget(
+      const methodTargetData = ParsedMethodInstruction.extractMethodTarget(
         instruction,
         this.methodInstructionTargetsEnclosure
       );
@@ -362,7 +375,7 @@ export class Parser {
         );
       }
 
-      result = new ParsedMethodInstructionResult({
+      result = new ParsedMethodInstruction({
         alias: methodAlias,
         args: methodArguments,
         identifier: this.methodInstructionAlias2IdentifierMap[methodAlias],
@@ -377,7 +390,7 @@ export class Parser {
     instructions: string,
     fromIndex: number,
     fromIndexReference: number
-  ): ParsedInstructionResult | null {
+  ): ParsedInstruction | null {
     if (fromIndex > instructions.length - 1) return null;
 
     const instructionStartIndex = StringHelper.getIndexOfDifferent(
@@ -396,12 +409,12 @@ export class Parser {
 
     const method = this._getMethodInstruction(instruction, instructionGlobalStartIndex);
 
-    return new ParsedInstructionResult({
-      value: instruction,
+    return new ParsedInstruction({
+      instructionWriterProvider: this.instructionWriterProvider,
+      method,
       readFromIndex: instructionGlobalStartIndex,
       readToIndex: instructionGlobalEndIndex,
-      instructionProvider: this.instructionProvider,
-      method,
+      value: instruction,
     });
   }
 }

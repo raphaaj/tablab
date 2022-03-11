@@ -107,7 +107,7 @@ Check out the [other](#parser-methods) strategies available for parsing instruct
 
 ## Writing a tablature with the parsed instructions
 
-With your text input of instructions [parsed](#parsing-instructions), use the `writeOnTab` method of the result to write each instruction to the tableture. Check out the example below:
+With your text input of instructions [parsed](#parsing-instructions), use the `writeOnTab` method of the parsed instructions to write each instruction a tablature instance. Check out the example below:
 
 ```js
 const { Tab } = require('tablab');
@@ -120,7 +120,7 @@ parsedInstructions.forEach((parsedInstruction) => {
     console.log(
       `Failed to write instruction < ${parsedInstruction.value} > at position ` +
         `${parsedInstruction.readFromIndex}. ${writeResult.failureMessage} ` +
-        `(${writeResult.failureReasonIdentifier})`
+        `(${writeResult.failureReasonIdentifier})\n`
     );
   }
 });
@@ -157,59 +157,21 @@ outputs
 
 ## Handling invalid instructions
 
-There are a few scenarios that could lead to an instruction not being written to your tablature, among which:
+There are a few scenarios that could cause a parsed instruction not to be written to your tablature, among which:
 
-- The given instruction was not in a valid syntax;
-- It was a method instruction with an invalid alias, parameters, or targets;
-- It was not possible to be written to the given tablature.
+- An instruction that is in an invalid syntax;
+- A method instruction with an invalid alias, arguments, or targets;
+- An instruction that cannot be written to the given tablature.
 
-Because of that, you should check the result of the `writeOnTab` method call to determine whether it was a successfully written instruction or a failed one.
+Because of that, you should always check the result of the `writeOnTab` method call to determine whether it was a successfully written instruction or a failed one.
 
-Below, an example of the result for a **successfully** written instruction:
+Below are the properties available on a write result object, returned by the `writeOnTab` method call:
 
-```js
-const { Parser, Tab } = require('tablab');
-
-const tab = new Tab();
-const parser = new Parser();
-
-const parsedInstruction = parser.parseOne('1-0');
-const writeResult = parsedInstruction.writeOnTab(tab);
-
-console.log(writeResult);
-```
-
-outputs
-
-```
-{
-  failureReasonIdentifier: null,
-  failureMessage: null
-  success: true,
-}
-```
-
-Below, an example of the result for a **failed** written one:
-
-```js
-const { Parser, Tab } = require('tablab');
-
-const tab = new Tab();
-const parser = new Parser();
-
-const parsedInstruction = parser.parseOne('1'); // Basic instruction without the fret indication
-const writeResult = parsedInstruction.writeOnTab(tab);
-
-console.log(writeResult);
-```
-
-outputs
-
-```
-{
-  failureReasonIdentifier: "BASIC_INSTRUCTION_INVALID",
-  failureMessage: "Invalid basic instruction",
-  success: false
+```ts
+interface WriteResult {
+  failureMessage: string | null; // The message that describes the reason for the writing operation to have failed.
+  failureReasonIdentifier: string | null; // The token that uniquely identifies the reason for the writing operation to have failed.
+  success: boolean; // The indication of whether the writing operation has succeeded or not.
 }
 ```
 
@@ -233,34 +195,34 @@ The `methodInstructionAlias2IdentifierMap` option is used to perform these custo
 
 Its default value, indicated below, results in the mapping described in the [available method instructions section](#available-method-instructions).
 
-```
+```js
 {
-  break: MethodInstructionIdentifier.Break,
-  footer: MethodInstructionIdentifier.Footer,
-  header: MethodInstructionIdentifier.Header,
-  merge: MethodInstructionIdentifier.Merge,
-  repeat: MethodInstructionIdentifier.Repeat,
-  spacing: MethodInstructionIdentifier.Spacing
+  break: MethodInstruction.Break,
+  footer: MethodInstruction.Footer,
+  header: MethodInstruction.Header,
+  merge: MethodInstruction.Merge,
+  repeat: MethodInstruction.Repeat,
+  spacing: MethodInstruction.SetSpacing
 }
 ```
 
 #### Method instructions identifiers
 
-Each one of the method instructions described in the [available method instructions section](#available-method-instructions) has a unique string identifier. The `MethodInstructionIdentifier` enumerator can be used for easy access to the method instructions identifiers. Below, the identifier of each method instruction and the corresponding member value of the `MethodInstructionIdentifier` enumerator:
+Each one of the method instructions described in the [available method instructions section](#available-method-instructions) has a unique string identifier. The `MethodInstruction` enumerator can be used for easy access to the method instructions identifiers. Below, the identifier of each method instruction and the corresponding member value of the `MethodInstruction` enumerator:
 
-|           Method Instruction           | Method Instruction Identifier | `MethodInstructionIdentifier` Member |
-| :------------------------------------: | :---------------------------: | :----------------------------------: |
-|   [Break](#method-instruction-break)   |            `Break`            |               `Break`                |
-|  [Footer](#method-instruction-footer)  |           `Footer`            |               `Footer`               |
-|  [Header](#method-instruction-header)  |           `Header`            |               `Header`               |
-|   [Merge](#method-instruction-merge)   |            `Merge`            |               `Merge`                |
-|  [Repeat](#method-instruction-repeat)  |           `Repeat`            |               `Repeat`               |
-| [Spacing](#method-instruction-spacing) |           `Spacing`           |              `Spacing`               |
+|           Method Instruction           | Method Instruction Identifier | `MethodInstruction` Member |
+| :------------------------------------: | :---------------------------: | :------------------------: |
+|   [Break](#method-instruction-break)   |            `Break`            |          `Break`           |
+|  [Footer](#method-instruction-footer)  |           `Footer`            |          `Footer`          |
+|  [Header](#method-instruction-header)  |           `Header`            |          `Header`          |
+|   [Merge](#method-instruction-merge)   |            `Merge`            |          `Merge`           |
+|  [Repeat](#method-instruction-repeat)  |           `Repeat`            |          `Repeat`          |
+| [Spacing](#method-instruction-spacing) |         `SetSpacing`          |        `SetSpacing`        |
 
-The `MethodInstructionIdentifier` enumerator is available to be required, as indicated below:
+The `MethodInstruction` enumerator is available to be required, as indicated below:
 
 ```js
-const { MethodInstructionIdentifier } = require('tablab');
+const { MethodInstruction } = require('tablab');
 ```
 
 #### Disabling method instructions
@@ -270,12 +232,12 @@ One of the use cases of the `methodInstructionAlias2IdentifierMap` option is to 
 In the following example, the parser is set to read the [repeat instruction](#method-instruction-repeat) only, under the alias `repeat`. The other aliases described in the [available method instructions section](#available-method-instructions) are disabled, resulting in unidentified method instructions.
 
 ```js
-const { Parser, Tab, MethodInstructionIdentifier } = require('tablab');
+const { Parser, Tab, MethodInstruction } = require('tablab');
 
 const tab = new Tab();
 const parser = new Parser({
   methodInstructionAlias2IdentifierMap: {
-    repeat: MethodInstructionIdentifier.Repeat, // maps only the repeat instruction under the alias "repeat"
+    repeat: MethodInstruction.Repeat, // maps only the repeat instruction under the alias "repeat"
   },
 });
 
@@ -288,7 +250,7 @@ parser.parseAll(instructions).forEach((parsedInstruction) => {
     console.log(
       `Failed to write instruction < ${parsedInstruction.value} > at position ` +
         `${parsedInstruction.readFromIndex}. ${writeResult.failureMessage} ` +
-        `(${writeResult.failureReasonIdentifier})`
+        `(${writeResult.failureReasonIdentifier})\n`
     );
   }
 });
@@ -299,8 +261,10 @@ console.log(tab.format(50));
 outputs
 
 ```
-Failed to write instruction < header(Example) > at position 0. Unidentified method instruction for alias "header" (UNIDENTIFIED_METHOD_INSTRUCTION)
-Failed to write instruction < merge { 1-0 2-0 } > at position 37. Unidentified method instruction for alias "merge" (UNIDENTIFIED_METHOD_INSTRUCTION)
+Failed to write instruction < header(Example) > at position 0. No method instruction identified for alias "header" (UNIDENTIFIED_METHOD_INSTRUCTION)
+
+Failed to write instruction < merge { 1-0 2-0 } > at position 37. No method instruction identified for alias "merge" (UNIDENTIFIED_METHOD_INSTRUCTION)
+
 [
   [
     '                                                  ',
@@ -322,7 +286,7 @@ The `methodInstructionAlias2IdentifierMap` option can also be used to change the
 In the following example, the parser is set to read the [repeat instruction](#method-instruction-repeat) under the alias `r` instead of the default `repeat` alias.
 
 ```js
-const { Parser, Tab, MethodInstructionIdentifier } = require('tablab');
+const { Parser, Tab, MethodInstruction } = require('tablab');
 
 const tab = new Tab();
 
@@ -333,7 +297,7 @@ const customAlias2IdentifierMap = Object.assign(
 );
 
 delete customAlias2IdentifierMap.repeat; // removes the mapping for the alias "repeat"
-customAlias2IdentifierMap.r = MethodInstructionIdentifier.Repeat; // maps the repeat instruction under the alias "r"
+customAlias2IdentifierMap.r = MethodInstruction.Repeat; // maps the repeat instruction under the alias "r"
 
 const parser = new Parser({
   methodInstructionAlias2IdentifierMap: customAlias2IdentifierMap,
@@ -348,7 +312,7 @@ parser.parseAll(instructions).forEach((parsedInstruction) => {
     console.log(
       `Failed to write instruction < ${parsedInstruction.value} > at position ` +
         `${parsedInstruction.readFromIndex}. ${writeResult.failureMessage} ` +
-        `(${writeResult.failureReasonIdentifier})`
+        `(${writeResult.failureReasonIdentifier})\n`
     );
   }
 });
@@ -359,7 +323,8 @@ console.log(tab.format(50));
 outputs
 
 ```
-Failed to write instruction < repeat(2){ 1-0 2-0 } > at position 0. Unidentified method instruction for alias "repeat" (UNIDENTIFIED_METHOD_INSTRUCTION)
+Failed to write instruction < repeat(2){ 1-0 2-0 } > at position 0. No method instruction identified for alias "repeat" (UNIDENTIFIED_METHOD_INSTRUCTION)
+
 [
   [
     '                                                  ',
@@ -381,13 +346,13 @@ Another use case of the `methodInstructionAlias2IdentifierMap` option is to add 
 In the following example, the parser is set to read all the predefined aliases as described in the [available method instructions section](#available-method-instructions) but with one difference: It can also read the [repeat instruction](#method-instruction-repeat) under the alias `r`, besides the default `repeat` alias.
 
 ```js
-const { Parser, Tab, MethodInstructionIdentifier } = require('tablab');
+const { Parser, Tab, MethodInstruction } = require('tablab');
 
 const tab = new Tab();
 const parser = new Parser({
   methodInstructionAlias2IdentifierMap: {
     ...Parser.DEFAULT_METHOD_INSTRUCTION_ALIAS_2_IDENTIFIER_MAP, // extends the default mapping
-    r: MethodInstructionIdentifier.Repeat, // maps the repeat instruction under the alias "r"
+    r: MethodInstruction.Repeat, // maps the repeat instruction under the alias "r"
   },
 });
 
@@ -400,7 +365,7 @@ parser.parseAll(instructions).forEach((parsedInstruction) => {
     console.log(
       `Failed to write instruction < ${parsedInstruction.value} > at position ` +
         `${parsedInstruction.readFromIndex}. ${writeResult.failureMessage} ` +
-        `(${writeResult.failureReasonIdentifier})`
+        `(${writeResult.failureReasonIdentifier})\n`
     );
   }
 });

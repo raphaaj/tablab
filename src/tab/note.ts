@@ -1,3 +1,6 @@
+/**
+ * A tablature note.
+ */
 export class Note {
   /**
    * The fret that should be pressed in order to play the note.
@@ -9,7 +12,7 @@ export class Note {
   string: number;
 
   /**
-   * Creates a note to be written to a tablature element.
+   * Creates a note instance to be written to a tablature element.
    * @param string - The string number of the tablature element to write the note.
    * @param fret - The fret that should be pressed in order to play the note.
    *

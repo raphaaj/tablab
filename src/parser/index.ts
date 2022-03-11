@@ -1,3 +1,12 @@
 export { Parser, ParserOptions } from './parser';
-export { ParsedInstruction } from './parsed-instruction-result';
-export { ParsedMethodInstruction } from './parsed-method-instruction-result';
+export {
+  ParsedInstruction,
+  ParsedInstructionOptions,
+  ParsedInstructionData,
+} from './parsed-instruction';
+export {
+  ParsedMethodInstruction,
+  ParsedMethodInstructionOptions,
+  ParsedMethodInstructionData,
+  MethodTargetExtractionResult,
+} from './parsed-method-instruction';

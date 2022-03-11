@@ -1,25 +1,22 @@
-import { Parser } from '../../src/parser/parser';
-import {
-  ParsedInstruction,
-  ParsedInstructionResult,
-} from '../../src/parser/parsed-instruction-result';
-import { ParsedMethodInstructionResult } from '../../src/parser/parsed-method-instruction-result';
 import { Enclosure } from '../../src/helpers/enclosures-helper';
-import { Instruction } from '../../src/instruction/instructions/instruction';
-import { InstructionProvider } from '../../src/instruction/factories/instruction-factory-base';
-import { InstructionFactory } from '../../src/instruction/factories/instruction-factory';
+import { InstructionWriterProvider } from '../../src/instruction-writer/factories/base-instruction-writer-factory';
+import { InternalInstructionWriterFactory } from '../../src/instruction-writer/factories/internal-instruction-writer-factory';
+import { BaseInstructionWriter } from '../../src/instruction-writer/instruction-writers/base-instruction-writer';
+import { ParsedInstruction } from '../../src/parser/parsed-instruction';
+import { ParsedMethodInstruction } from '../../src/parser/parsed-method-instruction';
+import { Parser } from '../../src/parser/parser';
 
 const GLOBAL_INDEX_REFERENCE = 5;
 
-class NullInstructionProvider implements InstructionProvider {
-  getInstruction(): Instruction {
-    throw new Error('Method not implemented');
+class NullInstructionWriterProvider implements InstructionWriterProvider {
+  getInstructionWriter(): BaseInstructionWriter {
+    throw new Error('Method not implemented.');
   }
 }
 
 let parser: Parser;
 beforeEach(() => {
-  parser = new Parser({ instructionProvider: new NullInstructionProvider() });
+  parser = new Parser({ instructionWriterProvider: new NullInstructionWriterProvider() });
 });
 
 describe(`[${Parser.name}]`, () => {
@@ -39,21 +36,23 @@ describe(`[${Parser.name}]`, () => {
       expect(parser.methodInstructionTargetsEnclosure).toBe(
         Parser.DEFAULT_METHOD_INSTRUCTION_TARGETS_ENCLOSURE
       );
-      expect(parser.instructionProvider).toBeInstanceOf(InstructionFactory);
+      expect(parser.instructionWriterProvider).toBeInstanceOf(InternalInstructionWriterFactory);
     });
 
-    it('should set the instructionProvider if one is set at instantiation', () => {
-      const instructionProvider = new NullInstructionProvider();
-      const parser = new Parser({ instructionProvider });
+    it('should set the instructionWriterProvider if one is set at instantiation', () => {
+      const instructionWriterProvider = new NullInstructionWriterProvider();
+      const parser = new Parser({ instructionWriterProvider });
 
-      expect(parser.instructionProvider).toBe(instructionProvider);
+      expect(parser.instructionWriterProvider).toBe(instructionWriterProvider);
     });
 
     it('should set the methodInstructionAlias2IdentifierMap if one is set at instantiation', () => {
-      const alias2IdentifierMap: Record<string, string> = {};
-      const parser = new Parser({ methodInstructionAlias2IdentifierMap: alias2IdentifierMap });
+      const methodInstructionAlias2IdentifierMap: Record<string, string> = {};
+      const parser = new Parser({ methodInstructionAlias2IdentifierMap });
 
-      expect(parser.methodInstructionAlias2IdentifierMap).toBe(alias2IdentifierMap);
+      expect(parser.methodInstructionAlias2IdentifierMap).toBe(
+        methodInstructionAlias2IdentifierMap
+      );
     });
 
     it('should set the methodInstructionArgsSeparator if one is set at instantiation', () => {
@@ -144,12 +143,12 @@ describe(`[${Parser.name}]`, () => {
     const nonMethodInstruction = '1-0';
 
     const getExpectedParsedNonMethodInstruction = (): ParsedInstruction => {
-      return new ParsedInstructionResult({
+      return new ParsedInstruction({
         method: null,
         value: nonMethodInstruction,
         readFromIndex: 0,
         readToIndex: nonMethodInstruction.length - 1,
-        instructionProvider: new NullInstructionProvider(),
+        instructionWriterProvider: new NullInstructionWriterProvider(),
       });
     };
 
@@ -405,20 +404,20 @@ describe(`[${Parser.name}]`, () => {
     const getExpectedParsedInstruction1 = (): ParsedInstruction => {
       const instruction1StartIndexAtInstructions = instructions.indexOf(instruction1);
 
-      return new ParsedInstructionResult({
+      return new ParsedInstruction({
         method: null,
         value: instruction1,
         readFromIndex: instruction1StartIndexAtInstructions,
         readToIndex: instruction1StartIndexAtInstructions + instruction1.length - 1,
-        instructionProvider: new NullInstructionProvider(),
+        instructionWriterProvider: new NullInstructionWriterProvider(),
       });
     };
 
     const getExpectedParsedInstruction2 = (): ParsedInstruction => {
       const instruction2StartIndexAtInstructions = instructions.indexOf(instruction2);
 
-      return new ParsedInstructionResult({
-        method: new ParsedMethodInstructionResult({
+      return new ParsedInstruction({
+        method: new ParsedMethodInstruction({
           alias: 'methodInstruction',
           args: ['arg1', 'arg2'],
           identifier: null,
@@ -427,7 +426,7 @@ describe(`[${Parser.name}]`, () => {
         value: instruction2,
         readFromIndex: instruction2StartIndexAtInstructions,
         readToIndex: instruction2StartIndexAtInstructions + instruction2.length - 1,
-        instructionProvider: new NullInstructionProvider(),
+        instructionWriterProvider: new NullInstructionWriterProvider(),
       });
     };
 

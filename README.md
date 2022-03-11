@@ -9,7 +9,7 @@
 Tablab is a javascript library to write tablatures. It provides two different ways for writing them:
 
 - **[Step by step](#writing-a-tablature-step-by-step)**: With this strategy, you must create a tablature instance and specify each operation to write the desired tablature;
-- **[From a text input of instructions](#writing-a-tablature-from-a-text-input-of-instructions)**: In this case, you must create a parser instance to read these instructions. Once read, the resulting data can be used with an instruction factory to determine and perform the corresponding writing operations to a tablature instance.
+- **[From a text input of instructions](#writing-a-tablature-from-a-text-input-of-instructions)**: In this case, you must create a parser instance to read these instructions. Once read, the resulting parsed instructions can be used with an instruction writer factory to determine and perform the corresponding writing operations to a tablature instance.
 
 ## Table of Content <!-- omit in toc -->
 
@@ -25,7 +25,7 @@ Tablab is a javascript library to write tablatures. It provides two different wa
 With [node](https://nodejs.org/en/) installed, run
 
 ```shell
-npm install tablab --save
+npm install tablab
 ```
 
 ## Usage

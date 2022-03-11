@@ -7,6 +7,7 @@ export interface TabElementOptions {
   /**
    * The total number of strings used in the tablature element. It must be an integer number
    * greater than 0.
+   *
    * @defaultValue {@link TabElement.DEFAULT_NUMBER_OF_STRINGS}
    */
   numberOfStrings?: number;
@@ -14,6 +15,7 @@ export interface TabElementOptions {
   /**
    * The character used to mark section divisions in the tablature element. It must be a single
    * character string.
+   *
    * @defaultValue {@link TabElement.DEFAULT_SECTION_DIVISION_CHARACTER}
    */
   sectionDivisionCharacter?: string;
@@ -21,6 +23,7 @@ export interface TabElementOptions {
   /**
    * The number of spacing characters to write between notes in the tablature element. It must
    * be an integer number greater than 0.
+   *
    * @defaultValue {@link TabElement.DEFAULT_SPACING}
    */
   spacing?: number;
@@ -28,11 +31,15 @@ export interface TabElementOptions {
   /**
    * The character used to represent spaces between notes written in the tablature element.
    * It must be a single character string.
+   *
    * @defaultValue {@link TabElement.DEFAULT_SPACING_CHARACTER}
    */
   spacingCharacter?: string;
 }
 
+/**
+ * A tablature element.
+ */
 export abstract class TabElement {
   static readonly DEFAULT_NUMBER_OF_STRINGS = 6;
   static readonly DEFAULT_SECTION_DIVISION_CHARACTER = '|';
@@ -79,8 +86,8 @@ export abstract class TabElement {
   private _spacing: number;
 
   /**
-   * Creates a tablature element.
-   * @param options - The options used to create a tablature element.
+   * Creates a tablature element instance.
+   * @param options - The options to create a tablature element instance.
    */
   constructor(options: TabElementOptions = {}) {
     const { numberOfStrings, sectionDivisionCharacter, spacing, spacingCharacter } = options;

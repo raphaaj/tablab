@@ -2,6 +2,9 @@ import { TabElement, TabElementOptions } from './tab-element';
 import { TabBlock } from './tab-block';
 import { Note } from './note';
 
+/**
+ * A tablature.
+ */
 export class Tab extends TabElement {
   /**
    * A tablature is composed of tablature blocks, where each block is a tablature element
@@ -28,8 +31,8 @@ export class Tab extends TabElement {
   }
 
   /**
-   * Creates a tablature with one initial block.
-   * @param options - The options used to create a tablature.
+   * Creates a tablature instance with one initial block.
+   * @param options - The options to create a tablature instance.
    *
    * @see {@link Tab.blocks}
    */
