@@ -1,6 +1,6 @@
 import { InstructionWriterProvider } from '../instruction-writer/factories/base-instruction-writer-factory';
 import { BaseWriteResult } from '../instruction-writer/write-results/base-write-result';
-import { Tab } from '../tab';
+import { Tab } from '../tab/tab';
 import { ParsedMethodInstruction } from './parsed-method-instruction';
 
 /**
