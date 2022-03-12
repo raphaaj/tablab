@@ -579,6 +579,33 @@ describe(`[${InternalInstructionWriterFactory.name}]`, () => {
       );
     });
 
+    it('should return an invalid instruction writer when the given argument value is not an integer', () => {
+      const factory = new InternalInstructionWriterFactory();
+
+      const alias = 'testAlias';
+      const args = ['3.14'];
+      const instruction = `${alias} ( ${args.join(', ')} )`;
+
+      const parsedInstruction: ParsedInstructionData = {
+        method: {
+          alias,
+          identifier: MethodInstruction.Repeat,
+          args,
+          targets: [],
+        },
+        readFromIndex: 0,
+        readToIndex: instruction.length,
+        value: instruction,
+      };
+
+      const instructionWriter = factory.getInstructionWriter(parsedInstruction);
+
+      expect(instructionWriter).toBeInstanceOf(BaseInvalidInstructionWriter);
+      expect((instructionWriter as BaseInvalidInstructionWriter).reasonIdentifier).toBe(
+        InvalidInstructionReason.RepeatInstructionWithInvalidRepetitionsValueType
+      );
+    });
+
     it('should return an invalid instruction writer when no targets are given', () => {
       const factory = new InternalInstructionWriterFactory();
 

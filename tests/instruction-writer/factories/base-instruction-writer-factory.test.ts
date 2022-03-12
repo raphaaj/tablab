@@ -1,3 +1,4 @@
+import { NumberType } from '../../../src/helpers/number-helper';
 import { InvalidInstructionReason } from '../../../src/instruction-writer/enums/invalid-instruction-reason';
 import {
   ArgumentNumberValidationOptions,
@@ -287,6 +288,52 @@ describe(`[${BaseInstructionWriterFactory.name}]`, () => {
         maxValueValidation: {
           maxValue: 200,
           invalidInstructionWriterIfGreater,
+        },
+      });
+
+      expect(invalidArgumentInstructionWriter).toBe(null);
+    });
+
+    it('should return the given invalid instruction writer if the given argument value number type is not listed among the accepted number types', () => {
+      const invalidInstructionWriterIfNaN = new BaseInvalidInstructionWriter({
+        reasonIdentifier: 'TEST_REASON_NOT_A_NUMBER',
+        description: 'test description',
+      });
+      const invalidInstructionWriterIfTypeNotAllowed = new BaseInvalidInstructionWriter({
+        reasonIdentifier: 'TEST_REASON_TYPE_NOT_ALLOWED',
+        description: 'test description',
+      });
+      const factory = new TestInstructionWriterFactoryBase();
+
+      const invalidArgumentInstructionWriter = factory.testMethodArgumentForNumberValueValidation({
+        arg: '3.14',
+        invalidInstructionWriterIfNaN,
+        numberTypeValidation: {
+          allowedTypes: [NumberType.Integer],
+          invalidInstructionWriterIfTypeNotAllowed,
+        },
+      });
+
+      expect(invalidArgumentInstructionWriter).toBe(invalidInstructionWriterIfTypeNotAllowed);
+    });
+
+    it('should return null if the given argument value number type is listed among the accepted number types', () => {
+      const invalidInstructionWriterIfNaN = new BaseInvalidInstructionWriter({
+        reasonIdentifier: 'TEST_REASON_NOT_A_NUMBER',
+        description: 'test description',
+      });
+      const invalidInstructionWriterIfTypeNotAllowed = new BaseInvalidInstructionWriter({
+        reasonIdentifier: 'TEST_REASON_TYPE_NOT_ALLOWED',
+        description: 'test description',
+      });
+      const factory = new TestInstructionWriterFactoryBase();
+
+      const invalidArgumentInstructionWriter = factory.testMethodArgumentForNumberValueValidation({
+        arg: '3',
+        invalidInstructionWriterIfNaN,
+        numberTypeValidation: {
+          allowedTypes: [NumberType.Integer],
+          invalidInstructionWriterIfTypeNotAllowed,
         },
       });
 

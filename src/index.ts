@@ -1,10 +1,12 @@
 export { Enclosure } from './helpers/enclosures-helper';
+export { NumberType } from './helpers/number-helper';
 
 export { InvalidInstructionReason } from './instruction-writer/enums/invalid-instruction-reason';
 export { MethodInstruction } from './instruction-writer/enums/method-instruction';
 export {
   ArgumentNumberMaxValueValidationOptions,
   ArgumentNumberMinValueValidationOptions,
+  ArgumentNumberTypeValidationOptions,
   ArgumentNumberValidationOptions,
   ArgumentsMaxNumberValidationOptions,
   ArgumentsMinNumberValidationOptions,

@@ -1,3 +1,4 @@
+import { NumberType } from '../../helpers/number-helper';
 import { ParsedInstructionData } from '../../parser/parsed-instruction';
 import { InvalidInstructionReason } from '../enums/invalid-instruction-reason';
 import { MethodInstruction } from '../enums/method-instruction';
@@ -487,6 +488,14 @@ export class InternalInstructionWriterFactory extends BaseInstructionWriterFacto
         reasonIdentifier: InvalidInstructionReason.RepeatInstructionWithInvalidRepetitionsValueType,
         parsedInstruction,
       }),
+      numberTypeValidation: {
+        allowedTypes: [NumberType.Integer],
+        invalidInstructionWriterIfTypeNotAllowed: new InternalInvalidInstructionWriter({
+          reasonIdentifier:
+            InvalidInstructionReason.RepeatInstructionWithInvalidRepetitionsValueType,
+          parsedInstruction,
+        }),
+      },
       minValueValidation: {
         minValue: 1,
         invalidInstructionWriterIfSmaller: new InternalInvalidInstructionWriter({

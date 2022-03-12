@@ -1,3 +1,4 @@
+import { NumberHelper, NumberType } from '../../helpers/number-helper';
 import { StringHelper } from '../../helpers/string-helper';
 import { ParsedInstructionData } from '../../parser/parsed-instruction';
 import { Note } from '../../tab/note';
@@ -112,6 +113,23 @@ export type ArgumentNumberMaxValueValidationOptions = {
 
 /**
  * The options to perform a validation of a method instruction single
+ * argument for a number value type (integer, decimal).
+ */
+export type ArgumentNumberTypeValidationOptions = {
+  /**
+   * The allowed number types.
+   */
+  allowedTypes: NumberType[];
+
+  /**
+   * The invalid instruction writer to be returned if the given argument
+   * is of a number type that is not allowed.
+   */
+  invalidInstructionWriterIfTypeNotAllowed: BaseInvalidInstructionWriter;
+};
+
+/**
+ * The options to perform a validation of a method instruction single
  * argument for a number value.
  */
 export type ArgumentNumberValidationOptions = {
@@ -122,7 +140,7 @@ export type ArgumentNumberValidationOptions = {
 
   /**
    * The invalid instruction writer to be returned if the given argument
-   * is not a valid number.
+   * value is not a valid number.
    */
   invalidInstructionWriterIfNaN: BaseInvalidInstructionWriter;
 
@@ -135,6 +153,11 @@ export type ArgumentNumberValidationOptions = {
    * The options to validate for a minimum value.
    */
   minValueValidation?: ArgumentNumberMinValueValidationOptions;
+
+  /**
+   * The options to validate the value's number type.
+   */
+  numberTypeValidation?: ArgumentNumberTypeValidationOptions;
 };
 
 /**
@@ -260,19 +283,29 @@ export abstract class BaseInstructionWriterFactory implements InstructionWriterP
       return argumentValidationOptions.invalidInstructionWriterIfNaN;
     }
 
-    const argumentAsNumber = Number(argumentValidationOptions.arg);
+    const argumentNumber = Number(argumentValidationOptions.arg);
+    const argumentNumberType = NumberHelper.getNumberType(argumentNumber);
+
     if (
-      argumentValidationOptions.minValueValidation !== undefined &&
-      argumentAsNumber < argumentValidationOptions.minValueValidation.minValue
+      argumentValidationOptions.minValueValidation &&
+      argumentNumber < argumentValidationOptions.minValueValidation.minValue
     ) {
       return argumentValidationOptions.minValueValidation.invalidInstructionWriterIfSmaller;
     }
 
     if (
-      argumentValidationOptions.maxValueValidation !== undefined &&
-      argumentAsNumber > argumentValidationOptions.maxValueValidation.maxValue
+      argumentValidationOptions.maxValueValidation &&
+      argumentNumber > argumentValidationOptions.maxValueValidation.maxValue
     ) {
       return argumentValidationOptions.maxValueValidation.invalidInstructionWriterIfGreater;
+    }
+
+    if (
+      argumentValidationOptions.numberTypeValidation &&
+      !argumentValidationOptions.numberTypeValidation.allowedTypes.includes(argumentNumberType)
+    ) {
+      return argumentValidationOptions.numberTypeValidation
+        .invalidInstructionWriterIfTypeNotAllowed;
     }
 
     return null;
