@@ -68,12 +68,14 @@ export class ParsedMethodInstruction implements ParsedMethodInstructionData {
     const indexOfArgumentsOpeningEnclosure = instruction.indexOf(openingEnclosureCharacter);
     if (indexOfArgumentsOpeningEnclosure < 0) return [];
 
-    const methodArguments = EnclosuresHelper.getValueInsideEnclosure(
+    let methodArguments = EnclosuresHelper.getValueInsideEnclosure(
       instruction,
       indexOfArgumentsOpeningEnclosure
     )
       .split(argumentsSeparator)
       .map((argument) => argument.trim());
+
+    if (methodArguments.length === 1 && methodArguments[0] === '') methodArguments = [];
 
     return methodArguments;
   }

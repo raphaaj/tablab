@@ -80,6 +80,32 @@ describe(`[${InternalInstructionWriterFactory.name}]`, () => {
       );
     });
 
+    it('should return an invalid instruction writer when no arguments are given but there are the arguments enclosure', () => {
+      const factory = new InternalInstructionWriterFactory();
+
+      const alias = 'testAlias';
+      const instruction = `${alias} ()`;
+
+      const parsedInstruction: ParsedInstructionData = {
+        method: {
+          alias,
+          identifier: MethodInstruction.Footer,
+          args: [],
+          targets: [],
+        },
+        readFromIndex: 0,
+        readToIndex: instruction.length,
+        value: instruction,
+      };
+
+      const instructionWriter = factory.getInstructionWriter(parsedInstruction);
+
+      expect(instructionWriter).toBeInstanceOf(BaseInvalidInstructionWriter);
+      expect((instructionWriter as BaseInvalidInstructionWriter).reasonIdentifier).toBe(
+        InvalidInstructionReason.FooterInstructionWithoutArguments
+      );
+    });
+
     it('should return an invalid instruction writer when more than 1 argument is given', () => {
       const factory = new InternalInstructionWriterFactory();
 
@@ -168,6 +194,32 @@ describe(`[${InternalInstructionWriterFactory.name}]`, () => {
 
       const alias = 'testAlias';
       const instruction = alias;
+
+      const parsedInstruction: ParsedInstructionData = {
+        method: {
+          alias,
+          identifier: MethodInstruction.Header,
+          args: [],
+          targets: [],
+        },
+        readFromIndex: 0,
+        readToIndex: instruction.length,
+        value: instruction,
+      };
+
+      const instructionWriter = factory.getInstructionWriter(parsedInstruction);
+
+      expect(instructionWriter).toBeInstanceOf(BaseInvalidInstructionWriter);
+      expect((instructionWriter as BaseInvalidInstructionWriter).reasonIdentifier).toBe(
+        InvalidInstructionReason.HeaderInstructionWithoutArguments
+      );
+    });
+
+    it('should return an invalid instruction writer when no arguments are given but there are the arguments enclosure', () => {
+      const factory = new InternalInstructionWriterFactory();
+
+      const alias = 'testAlias';
+      const instruction = `${alias} ()`;
 
       const parsedInstruction: ParsedInstructionData = {
         method: {
@@ -498,6 +550,32 @@ describe(`[${InternalInstructionWriterFactory.name}]`, () => {
       );
     });
 
+    it('should return an invalid instruction writer when no arguments are given but there are the arguments enclosure', () => {
+      const factory = new InternalInstructionWriterFactory();
+
+      const alias = 'testAlias';
+      const instruction = `${alias} ()`;
+
+      const parsedInstruction: ParsedInstructionData = {
+        method: {
+          alias,
+          identifier: MethodInstruction.Repeat,
+          args: [],
+          targets: [],
+        },
+        readFromIndex: 0,
+        readToIndex: instruction.length,
+        value: instruction,
+      };
+
+      const instructionWriter = factory.getInstructionWriter(parsedInstruction);
+
+      expect(instructionWriter).toBeInstanceOf(BaseInvalidInstructionWriter);
+      expect((instructionWriter as BaseInvalidInstructionWriter).reasonIdentifier).toBe(
+        InvalidInstructionReason.RepeatInstructionWithoutArguments
+      );
+    });
+
     it('should return an invalid instruction writer when more than 1 argument is given', () => {
       const factory = new InternalInstructionWriterFactory();
 
@@ -688,6 +766,32 @@ describe(`[${InternalInstructionWriterFactory.name}]`, () => {
 
       const alias = 'testAlias';
       const instruction = alias;
+
+      const parsedInstruction: ParsedInstructionData = {
+        method: {
+          alias,
+          identifier: MethodInstruction.SetSpacing,
+          args: [],
+          targets: [],
+        },
+        readFromIndex: 0,
+        readToIndex: instruction.length,
+        value: instruction,
+      };
+
+      const instructionWriter = factory.getInstructionWriter(parsedInstruction);
+
+      expect(instructionWriter).toBeInstanceOf(BaseInvalidInstructionWriter);
+      expect((instructionWriter as BaseInvalidInstructionWriter).reasonIdentifier).toBe(
+        InvalidInstructionReason.SpacingInstructionWithoutArguments
+      );
+    });
+
+    it('should return an invalid instruction writer when no arguments are given but there are the arguments enclosure', () => {
+      const factory = new InternalInstructionWriterFactory();
+
+      const alias = 'testAlias';
+      const instruction = `${alias} ()`;
 
       const parsedInstruction: ParsedInstructionData = {
         method: {

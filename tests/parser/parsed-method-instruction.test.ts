@@ -113,6 +113,19 @@ describe(`[${ParsedMethodInstruction.name}]`, () => {
       expect(extractedMethodArguments).toEqual(args);
     });
 
+    it('should return an empty array if the instruction is a method instruction without arguments, but with the arguments enclosure', () => {
+      const alias = 'testAlias';
+      const instruction = `${alias} ()`;
+
+      const extractedMethodArguments = ParsedMethodInstruction.extractMethodArguments(
+        instruction,
+        Enclosure.Parentheses,
+        ','
+      );
+
+      expect(extractedMethodArguments.length).toBe(0);
+    });
+
     it('should return an empty array if the instruction is a method instruction without arguments', () => {
       const instruction = 'testAlias';
 
