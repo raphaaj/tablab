@@ -32,7 +32,7 @@ export const internalFailedWriteResultDescriptionTemplateProvider: FailedWriteRe
     [InvalidInstructionReason.HeaderInstructionWithoutArguments]:
       'The header method requires one argument: the header message',
     [InvalidInstructionReason.MergeInstructionWithoutTargets]:
-      'The merge method requires at least two target instructions to merge',
+      'The merge method requires at least one target instruction to merge',
     [InvalidInstructionReason.MergeInstructionWithUnmergeableTargets]:
       'The targets of the merge method must not be method instructions',
     [InvalidInstructionReason.MergeInstructionTargetsWithNonWritableNotes]: (data = {}) => {
