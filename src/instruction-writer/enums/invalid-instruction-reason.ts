@@ -19,6 +19,7 @@ export enum InvalidInstructionReason {
   RepeatInstructionWithInvalidRepetitionsValueType = 'REPEAT_INSTRUCTION_WITH_INVALID_REPETITIONS_VALUE_TYPE',
   RepeatInstructionWithInvalidRepetitionsValue = 'REPEAT_INSTRUCTION_WITH_INVALID_REPETITIONS_VALUE',
   RepeatInstructionWithoutTargets = 'REPEAT_INSTRUCTION_WITHOUT_TARGETS',
+  RepeatInstructionWithInvalidTargets = 'REPEAT_INSTRUCTION_WITH_INVALID_TARGETS',
   SpacingInstructionWithoutArguments = 'SPACING_INSTRUCTION_WITHOUT_ARGUMENTS',
   SpacingInstructionWithUnmappedArguments = 'SPACING_INSTRUCTION_WITH_UNMAPPED_ARGUMENTS',
   SpacingInstructionWithInvalidSpacingValueType = 'SPACING_INSTRUCTION_WITH_INVALID_SPACING_VALUE_TYPE',

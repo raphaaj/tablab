@@ -70,6 +70,7 @@ Failure reasons regarding the [repeat instruction](parser-api.md#method-instruct
 | `REPEAT_INSTRUCTION_WITH_INVALID_REPETITIONS_VALUE_TYPE` |          The method instruction `repeat` was called with an invalid value type for the number of repetitions. It must be a number.           |
 |   `REPEAT_INSTRUCTION_WITH_INVALID_REPETITIONS_VALUE`    | The method instruction `repeat` was called with an invalid number value for the number of repetitions. It must be an integer greater than 0. |
 |           `REPEAT_INSTRUCTION_WITHOUT_TARGETS`           |                             The method instruction `repeat` was called with no instructions to repeat (targets).                             |
+|        `REPEAT_INSTRUCTION_WITH_INVALID_TARGETS`         |                     It was not possible to write all targets of the method instruction `repeat` to the given tablature.                      |
 
 ### Spacing
 

@@ -110,9 +110,17 @@ Check out the [other](#parser-methods) strategies available for parsing instruct
 With your text input of instructions [parsed](#parsing-instructions), use the `writeOnTab` method of the parsed instructions to write each instruction a tablature instance. Check out the example below:
 
 ```js
-const { Tab } = require('tablab');
+const { Parser, Tab } = require('tablab');
+
+const instructions =
+  '1-0 2-0 3-5 1-3 4-5h7 3-5b6 break header(Example Header) ' +
+  'footer(Example Footer) merge{ 1-0 2-0 } repeat(2){ 1-0 2-3h5 } ' +
+  'spacing(2)';
 
 const tab = new Tab();
+const parser = new Parser();
+
+const parsedInstructions = parser.parseAll(instructions);
 parsedInstructions.forEach((parsedInstruction) => {
   const writeResult = parsedInstruction.writeOnTab(tab);
 
@@ -169,13 +177,82 @@ Below are the properties available on a write result object, returned by the `wr
 
 ```ts
 interface WriteResult {
+  childResults: WriteResult[] | null;
   failureMessage: string | null;
   failureReasonIdentifier: string | null;
   success: boolean;
 }
 ```
 
-The field `success` indicates whether the instruction was successfully written to the tablature (`true`) or not (`false`). The fields `failureReasonIdentifier` and `failureMessage` can be used to identify the failure reason. The former uniquely identifies a failure reason.
+The field `success` indicates whether the instruction was successfully written to the tablature (`true`) or not (`false`).
+
+The fields `failureReasonIdentifier` and `failureMessage` can be used to identify the failure reason. The former uniquely identifies a failure reason, and the latter provides some descriptive information regarding the failure.
+
+The field `childResults` contains the results of each target instruction specifically. It is configured for [method instructions](#method-instructions) that use target instructions and sequentially write them to a tablature. In that sense, it is currently only configured for the [repeat instruction](#method-instruction-repeat). The parsed target instruction related to each child write result can be obtained as shown below:
+
+```js
+const { Parser, Tab } = require('tablab');
+
+const instructions = 'repeat (3) { 0-1 1-1 3 2-1 }';
+
+const tab = new Tab();
+const parser = new Parser();
+
+const parsedInstructions = parser.parseAll(instructions);
+
+parsedInstructions.forEach((parsedInstruction) => {
+  const writeResult = parsedInstruction.writeOnTab(tab);
+
+  if (!writeResult.success) {
+    console.log(
+      `Failed to write instruction < ${parsedInstruction.value} > at position ` +
+        `${parsedInstruction.readFromIndex}. ${writeResult.failureMessage} ` +
+        `(${writeResult.failureReasonIdentifier})`
+    );
+
+    if (writeResult.childResults) {
+      writeResult.childResults.forEach((childResult) => {
+        // gets the parsed instruction related to the child result
+        const childParsedInstruction = childResult.instructionWriter.parsedInstruction;
+
+        if (!childResult.success) {
+          console.log(
+            `\tFailed to write instruction < ${childParsedInstruction.value} > at position ` +
+              `${childParsedInstruction.readFromIndex}. ${childResult.failureMessage} ` +
+              `(${childResult.failureReasonIdentifier})`
+          );
+        }
+      });
+    }
+
+    console.log('\n');
+  }
+});
+
+console.log(tab.format(50));
+```
+
+outputs
+
+```
+Failed to write instruction < repeat (3) { 0-1 1-1 3 2-1 } > at position 0. Failed to write the given target instructions to the tab (REPEAT_INSTRUCTION_WITH_INVALID_TARGETS)
+        Failed to write instruction < 0-1 > at position 13. String value must be between 1 and 6 (BASIC_INSTRUCTION_WITH_NON_WRITABLE_NOTE)
+        Failed to write instruction < 3 > at position 21. Invalid basic instruction (BASIC_INSTRUCTION_INVALID)
+
+
+[
+  [
+    '                                                  ',
+    '---1-------1-------1------------------------------',
+    '-------1-------1-------1--------------------------',
+    '--------------------------------------------------',
+    '--------------------------------------------------',
+    '--------------------------------------------------',
+    '--------------------------------------------------',
+    '                                                  '
+  ]
+]
+```
 
 The list with all possible failure reasons can be verified [here](failure-reasons.md).
 

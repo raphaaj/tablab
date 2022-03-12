@@ -1,4 +1,6 @@
 import { Tab } from '../../tab/tab';
+import { InvalidInstructionReason } from '../enums/invalid-instruction-reason';
+import { InternalFailedWriteResultDescriptionFactory } from '../factories/internal-failed-write-result-description-factory';
 import { BaseWriteResult } from '../write-results/base-write-result';
 import { FailedWriteResult } from '../write-results/failed-write-result';
 import { SuccessfulWriteResult } from '../write-results/successful-write-result';
@@ -52,33 +54,51 @@ export class RepeatInstructionWriter extends BaseInstructionWriter {
    * @returns The result of the writing operation.
    */
   protected internalWriteOnTab(tab: Tab): BaseWriteResult {
-    let failedWriteResult: BaseWriteResult | null = null;
+    const childResults: BaseWriteResult[] = [];
 
+    let allInstructionWritersSuccessfullyWrittenToTab = true;
     for (let i = 0; i < this.numberOfRepetitions; i++) {
       for (let j = 0; j < this.instructionWritersToRepeat.length; j++) {
-        const instructionWriteResult = this.instructionWritersToRepeat[j].writeOnTab(tab);
+        const currentInstructionWriter = this.instructionWritersToRepeat[j];
+        const currentWriteResult = currentInstructionWriter.writeOnTab(tab);
 
-        if (i === 0 && !instructionWriteResult.success && !failedWriteResult) {
-          failedWriteResult = instructionWriteResult;
-          break;
+        if (i === 0) {
+          childResults.push(currentWriteResult);
+
+          allInstructionWritersSuccessfullyWrittenToTab =
+            allInstructionWritersSuccessfullyWrittenToTab && currentWriteResult.success;
         }
       }
-
-      if (failedWriteResult) break;
     }
 
     let writeResult: BaseWriteResult;
-    if (failedWriteResult) {
-      writeResult = new FailedWriteResult({
-        failureMessage: failedWriteResult.failureMessage as string,
-        failureReasonIdentifier: failedWriteResult.failureReasonIdentifier as string,
-        instructionWriter: this,
-        tab,
-      });
+    if (allInstructionWritersSuccessfullyWrittenToTab) {
+      writeResult = new SuccessfulWriteResult({ childResults, instructionWriter: this, tab });
     } else {
-      writeResult = new SuccessfulWriteResult({ instructionWriter: this, tab });
+      writeResult = this._getWriteResultForFailedWrites(tab, childResults);
     }
 
     return writeResult;
+  }
+
+  private _getWriteResultForFailedWrites(
+    tab: Tab,
+    childResults: BaseWriteResult[]
+  ): BaseWriteResult {
+    const failureReasonIdentifier = InvalidInstructionReason.RepeatInstructionWithInvalidTargets;
+
+    const descriptionFactory = new InternalFailedWriteResultDescriptionFactory();
+    const failureMessage = descriptionFactory.getDescription(failureReasonIdentifier, {
+      parsedInstruction: this.parsedInstruction,
+      tab,
+    });
+
+    return new FailedWriteResult({
+      childResults,
+      failureMessage,
+      failureReasonIdentifier,
+      instructionWriter: this,
+      tab,
+    });
   }
 }
