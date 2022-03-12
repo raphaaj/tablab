@@ -790,6 +790,33 @@ describe(`[${InternalInstructionWriterFactory.name}]`, () => {
       );
     });
 
+    it('should return an invalid instruction writer when the given argument value is not an integer', () => {
+      const factory = new InternalInstructionWriterFactory();
+
+      const alias = 'testAlias';
+      const args = ['3.14'];
+      const instruction = `${alias} ( ${args.join(', ')} )`;
+
+      const parsedInstruction: ParsedInstructionData = {
+        method: {
+          alias,
+          identifier: MethodInstruction.SetSpacing,
+          args,
+          targets: [],
+        },
+        readFromIndex: 0,
+        readToIndex: instruction.length,
+        value: instruction,
+      };
+
+      const instructionWriter = factory.getInstructionWriter(parsedInstruction);
+
+      expect(instructionWriter).toBeInstanceOf(BaseInvalidInstructionWriter);
+      expect((instructionWriter as BaseInvalidInstructionWriter).reasonIdentifier).toBe(
+        InvalidInstructionReason.SpacingInstructionWithInvalidSpacingValueType
+      );
+    });
+
     it('should return a set spacing instruction writer when the spacing value is valid', () => {
       const factory = new InternalInstructionWriterFactory();
 

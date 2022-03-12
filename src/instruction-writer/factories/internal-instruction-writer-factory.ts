@@ -567,6 +567,13 @@ export class InternalInstructionWriterFactory extends BaseInstructionWriterFacto
         reasonIdentifier: InvalidInstructionReason.SpacingInstructionWithInvalidSpacingValueType,
         parsedInstruction,
       }),
+      numberTypeValidation: {
+        allowedTypes: [NumberType.Integer],
+        invalidInstructionWriterIfTypeNotAllowed: new InternalInvalidInstructionWriter({
+          reasonIdentifier: InvalidInstructionReason.SpacingInstructionWithInvalidSpacingValueType,
+          parsedInstruction,
+        }),
+      },
       minValueValidation: {
         minValue: 1,
         invalidInstructionWriterIfSmaller: new InternalInvalidInstructionWriter({
