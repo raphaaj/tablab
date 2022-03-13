@@ -2,6 +2,71 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0-alpha.4](https://github.com/raphael-jorge/tablab/compare/v1.0.0-alpha.3...v1.0.0-alpha.4) (2022-03-13)
+
+
+### Features
+
+* allow the descriptions of invalid instructions to be regenerated ([291320b](https://github.com/raphael-jorge/tablab/commit/291320b61290e966672234025a86ea5b3506f488))
+* **instructions:** setup i18n on descriptions of invalid instructions ([de140b1](https://github.com/raphael-jorge/tablab/commit/de140b1720752fcde0fc5336f59fb91b257137f2))
+* store the write results of the repeat instruction targets as child results ([12add83](https://github.com/raphael-jorge/tablab/commit/12add83f21e3fb6b2f02173fec858866c03f44d8))
+* **write-results:** allow the write results to have child results ([3fef686](https://github.com/raphael-jorge/tablab/commit/3fef686747a47e2332907a5668ffee77b89b3b2d))
+
+
+### Bug Fixes
+
+* consider a method instruction with no arguments between the enclosures to be without arguments ([457fbd9](https://github.com/raphael-jorge/tablab/commit/457fbd981eda8f2c930f903dd4eabca026b7ff11))
+* correct the description for invalid merge instructions without targets ([9a8426b](https://github.com/raphael-jorge/tablab/commit/9a8426b2223140a02453fbd70298bb8bba1aa61c))
+* set repeat instructions with a decimal number of repetitions to be invalid ([316082c](https://github.com/raphael-jorge/tablab/commit/316082cefcb3bfeee4068f609db2ba831a326ee7))
+* set spacing instructions with a decimal number of spacing to be invalid ([869e7bc](https://github.com/raphael-jorge/tablab/commit/869e7bc6b2df4b1dc09d63a4dd2148c4dcca3943))
+
+
+### Build Operations
+
+* **deps-dev:** bump @types/jest from 27.4.0 to 27.4.1 ([#108](https://github.com/raphael-jorge/tablab/issues/108)) ([03efda2](https://github.com/raphael-jorge/tablab/commit/03efda2723edfd907d113afae1885afd7eb88550))
+* **deps-dev:** bump @typescript-eslint/eslint-plugin ([#102](https://github.com/raphael-jorge/tablab/issues/102)) ([5ce7abb](https://github.com/raphael-jorge/tablab/commit/5ce7abbd41bb05d0cd31190d428f4bee7052145c))
+* **deps-dev:** bump @typescript-eslint/eslint-plugin ([#106](https://github.com/raphael-jorge/tablab/issues/106)) ([fac903e](https://github.com/raphael-jorge/tablab/commit/fac903e4a11cdd4be8b887085395631305cd2436))
+* **deps-dev:** bump @typescript-eslint/eslint-plugin ([#110](https://github.com/raphael-jorge/tablab/issues/110)) ([781f8f7](https://github.com/raphael-jorge/tablab/commit/781f8f797d4dd774b58e0b2c91415e8b5ac0070a))
+* **deps-dev:** bump @typescript-eslint/eslint-plugin ([#121](https://github.com/raphael-jorge/tablab/issues/121)) ([91e39ab](https://github.com/raphael-jorge/tablab/commit/91e39ab33bb0434b636ba7e48a580f3dea684811))
+* **deps-dev:** bump @typescript-eslint/eslint-plugin ([#85](https://github.com/raphael-jorge/tablab/issues/85)) ([7bbe219](https://github.com/raphael-jorge/tablab/commit/7bbe219954735e37aa67c59d2a89651450e921ce))
+* **deps-dev:** bump @typescript-eslint/eslint-plugin ([#89](https://github.com/raphael-jorge/tablab/issues/89)) ([9e1d0c1](https://github.com/raphael-jorge/tablab/commit/9e1d0c154e25e0c39057e3699fb8103e4d8b9be8))
+* **deps-dev:** bump @typescript-eslint/eslint-plugin ([#97](https://github.com/raphael-jorge/tablab/issues/97)) ([f6a7368](https://github.com/raphael-jorge/tablab/commit/f6a73681c5c3e4c9833d9e88df55240737502cf0))
+* **deps-dev:** bump @typescript-eslint/parser from 5.10.0 to 5.10.1 ([#86](https://github.com/raphael-jorge/tablab/issues/86)) ([10fa534](https://github.com/raphael-jorge/tablab/commit/10fa534c5f4f6c7f337d8ef468350f68e4819e34))
+* **deps-dev:** bump @typescript-eslint/parser from 5.10.1 to 5.10.2 ([#90](https://github.com/raphael-jorge/tablab/issues/90)) ([a163636](https://github.com/raphael-jorge/tablab/commit/a163636592286d84b12eab5cfa88b6c10f3fa403))
+* **deps-dev:** bump @typescript-eslint/parser from 5.10.2 to 5.11.0 ([#96](https://github.com/raphael-jorge/tablab/issues/96)) ([4f033d9](https://github.com/raphael-jorge/tablab/commit/4f033d98a97461b018c7a716f0beeb3b50b1a265))
+* **deps-dev:** bump @typescript-eslint/parser from 5.11.0 to 5.12.0 ([#101](https://github.com/raphael-jorge/tablab/issues/101)) ([9fe8e57](https://github.com/raphael-jorge/tablab/commit/9fe8e57e4a3d631dd9d0c6767d0b81990bf4319e))
+* **deps-dev:** bump @typescript-eslint/parser from 5.12.0 to 5.12.1 ([#105](https://github.com/raphael-jorge/tablab/issues/105)) ([853c1ca](https://github.com/raphael-jorge/tablab/commit/853c1ca8fe4d27560894aed2f74f58897563a6aa))
+* **deps-dev:** bump @typescript-eslint/parser from 5.12.1 to 5.13.0 ([#111](https://github.com/raphael-jorge/tablab/issues/111)) ([750b9a5](https://github.com/raphael-jorge/tablab/commit/750b9a5d4868f59c355e1cdff0ecfe8aa076fc95))
+* **deps-dev:** bump @typescript-eslint/parser from 5.13.0 to 5.14.0 ([#119](https://github.com/raphael-jorge/tablab/issues/119)) ([0be80df](https://github.com/raphael-jorge/tablab/commit/0be80dfee77a6a48873b3e511434c07799afae47))
+* **deps-dev:** bump eslint from 8.7.0 to 8.8.0 ([#88](https://github.com/raphael-jorge/tablab/issues/88)) ([f2cc7d1](https://github.com/raphael-jorge/tablab/commit/f2cc7d1dc22e21860257cf851613c27caf7c661d))
+* **deps-dev:** bump eslint from 8.8.0 to 8.9.0 ([#100](https://github.com/raphael-jorge/tablab/issues/100)) ([e6fe99a](https://github.com/raphael-jorge/tablab/commit/e6fe99ad4cd14affa0a0ac7fdb59fdb1936452d6))
+* **deps-dev:** bump eslint from 8.9.0 to 8.10.0 ([#109](https://github.com/raphael-jorge/tablab/issues/109)) ([fcfb0dc](https://github.com/raphael-jorge/tablab/commit/fcfb0dc8a28965c8743d8b0bdcbddfcc27866522))
+* **deps-dev:** bump eslint-config-prettier from 8.3.0 to 8.4.0 ([#103](https://github.com/raphael-jorge/tablab/issues/103)) ([686c8a5](https://github.com/raphael-jorge/tablab/commit/686c8a509efb46decbe803eec98925a86861932a))
+* **deps-dev:** bump eslint-config-prettier from 8.4.0 to 8.5.0 ([#115](https://github.com/raphael-jorge/tablab/issues/115)) ([1e84f68](https://github.com/raphael-jorge/tablab/commit/1e84f686c4f6f1d5c1c47b2260db17a0772988cb))
+* **deps-dev:** bump jest from 27.4.7 to 27.5.0 ([#93](https://github.com/raphael-jorge/tablab/issues/93)) ([54b4f48](https://github.com/raphael-jorge/tablab/commit/54b4f4825be65a58b5c1dbcd4690462405551c20))
+* **deps-dev:** bump jest from 27.5.0 to 27.5.1 ([#98](https://github.com/raphael-jorge/tablab/issues/98)) ([b7773f5](https://github.com/raphael-jorge/tablab/commit/b7773f5851609d54308291918831209abc7d4ba2))
+* **deps-dev:** bump rollup from 2.64.0 to 2.66.0 ([#84](https://github.com/raphael-jorge/tablab/issues/84)) ([5a57b8f](https://github.com/raphael-jorge/tablab/commit/5a57b8f434ea53b6c64748f4209baba5fe2b26bd))
+* **deps-dev:** bump rollup from 2.66.0 to 2.66.1 ([#87](https://github.com/raphael-jorge/tablab/issues/87)) ([12ffe24](https://github.com/raphael-jorge/tablab/commit/12ffe24c5aef810376e20561d8524434c5b361ef))
+* **deps-dev:** bump rollup from 2.66.1 to 2.67.0 ([#92](https://github.com/raphael-jorge/tablab/issues/92)) ([3a592ab](https://github.com/raphael-jorge/tablab/commit/3a592ab7d42f03d3fa89f821846b935279d0bdf4))
+* **deps-dev:** bump rollup from 2.67.0 to 2.67.1 ([#95](https://github.com/raphael-jorge/tablab/issues/95)) ([2040be5](https://github.com/raphael-jorge/tablab/commit/2040be57f7c1bbe988df91e2f2f02b5a5dcc19c8))
+* **deps-dev:** bump rollup from 2.67.1 to 2.67.2 ([#99](https://github.com/raphael-jorge/tablab/issues/99)) ([3d4a6e1](https://github.com/raphael-jorge/tablab/commit/3d4a6e1d8ab3d5d714171d6c2f9c1e3316178b25))
+* **deps-dev:** bump rollup from 2.67.2 to 2.67.3 ([#104](https://github.com/raphael-jorge/tablab/issues/104)) ([51f79e4](https://github.com/raphael-jorge/tablab/commit/51f79e4313addb1d02bf0dec8ed96892cb88b6c0))
+* **deps-dev:** bump rollup from 2.67.3 to 2.68.0 ([#107](https://github.com/raphael-jorge/tablab/issues/107)) ([9cc73a2](https://github.com/raphael-jorge/tablab/commit/9cc73a2b5885780f83eba44e3655dd8c9dc1d7b3))
+* **deps-dev:** bump rollup from 2.68.0 to 2.69.0 ([#114](https://github.com/raphael-jorge/tablab/issues/114)) ([2e156f1](https://github.com/raphael-jorge/tablab/commit/2e156f1199bbd0683c00aa894e83722f6fc33caf))
+* **deps-dev:** bump rollup from 2.69.0 to 2.69.2 ([#118](https://github.com/raphael-jorge/tablab/issues/118)) ([7d3752e](https://github.com/raphael-jorge/tablab/commit/7d3752ef69bd2ae5aa75eb48e6100a087625cbcf))
+* **deps-dev:** bump rollup from 2.69.2 to 2.70.0 ([#120](https://github.com/raphael-jorge/tablab/issues/120)) ([430394e](https://github.com/raphael-jorge/tablab/commit/430394e079d095255b8b8de25347bc0f69eaa77e))
+* **deps-dev:** bump rollup-plugin-dts from 4.1.0 to 4.2.0 ([#116](https://github.com/raphael-jorge/tablab/issues/116)) ([138e8c9](https://github.com/raphael-jorge/tablab/commit/138e8c97a260c7a070f607e89171bd7f1061385f))
+* **deps-dev:** bump rollup-plugin-typescript2 from 0.31.1 to 0.31.2 ([#91](https://github.com/raphael-jorge/tablab/issues/91)) ([aaa435a](https://github.com/raphael-jorge/tablab/commit/aaa435acab3044123d1ed84b81bb47795c524f4e))
+* **deps-dev:** bump ts-node from 10.4.0 to 10.5.0 ([#94](https://github.com/raphael-jorge/tablab/issues/94)) ([5a5054c](https://github.com/raphael-jorge/tablab/commit/5a5054cecc29d2b644ce99d1bc39b043bd8a5465))
+* **deps-dev:** bump ts-node from 10.5.0 to 10.6.0 ([#113](https://github.com/raphael-jorge/tablab/issues/113)) ([db808bf](https://github.com/raphael-jorge/tablab/commit/db808bfead3166519d8b87ceaa8acfc9723a16f4))
+* **deps-dev:** bump ts-node from 10.6.0 to 10.7.0 ([#117](https://github.com/raphael-jorge/tablab/issues/117)) ([82049cd](https://github.com/raphael-jorge/tablab/commit/82049cd947f90bbc67eb50c06b1da914ee69290d))
+* **deps-dev:** bump typescript from 4.5.5 to 4.6.2 ([#112](https://github.com/raphael-jorge/tablab/issues/112)) ([b5606a0](https://github.com/raphael-jorge/tablab/commit/b5606a07d15c5aa87a0d7ad8fd30573331cc5bfa))
+
+
+### Code Refactoring
+
+* move all exports to the root index.ts ([178c7f6](https://github.com/raphael-jorge/tablab/commit/178c7f6d64e5c110bf19551af712b5d53a8d2bd6))
+
 ## [1.0.0-alpha.3](https://github.com/raphael-jorge/tablab/compare/v1.0.0-alpha.2...v1.0.0-alpha.3) (2022-01-23)
 
 
