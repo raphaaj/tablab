@@ -29,10 +29,11 @@
     "test:clean": "rimraf coverage",
     "lint": "eslint ./src ./tests --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint ./src ./tests --ext .js,.jsx,.ts,.tsx --fix",
-    "release": "standard-version --no-verify",
-    "release:dry-run": "npm run release -- --dry-run",
     "prettier:check": "prettier --check ./src ./tests",
-    "prettier:write": "prettier --write ./src ./tests"
+    "prettier:write": "prettier --write ./src ./tests",
+    "release": "standard-version",
+    "release:dry-run": "npm run release -- --dry-run",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -72,11 +73,6 @@
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
-  "standard-version": {
-    "scripts": {
-      "prerelease": "npm run test"
     }
   }
 }
