@@ -1,19 +1,75 @@
 import { InvalidInstructionReason } from '../../../src/instruction-writer/enums/invalid-instruction-reason';
+import { MethodInstruction } from '../../../src/instruction-writer/enums/method-instruction';
 import { BaseInstructionWriter } from '../../../src/instruction-writer/instruction-writers/base-instruction-writer';
 import { MergeableInstructionWriter } from '../../../src/instruction-writer/instruction-writers/mergeable-instruction-writer';
 import { RepeatInstructionWriter } from '../../../src/instruction-writer/instruction-writers/repeat-instruction-writer';
 import { BaseWriteResult } from '../../../src/instruction-writer/write-results/base-write-result';
 import { FailedWriteResult } from '../../../src/instruction-writer/write-results/failed-write-result';
 import { SuccessfulWriteResult } from '../../../src/instruction-writer/write-results/successful-write-result';
+import { ParsedInstructionData } from '../../../src/parser/parsed-instruction';
 import { Tab } from '../../../src/tab/tab';
 
+function getTestUnrepeatableParsedInstruction(): ParsedInstructionData {
+  const instruction = `0-0`;
+
+  return {
+    method: null,
+    readFromIndex: 0,
+    readToIndex: instruction.length,
+    value: instruction,
+  };
+}
+
+function getTestRepeatableParsedInstruction(): ParsedInstructionData {
+  const instruction = `1-0`;
+
+  return {
+    method: null,
+    readFromIndex: 0,
+    readToIndex: instruction.length,
+    value: instruction,
+  };
+}
+
+function getTestRepeatParsedInstruction(
+  instructionWritersToRepeat: BaseInstructionWriter[]
+): ParsedInstructionData {
+  const parsedTargets = instructionWritersToRepeat.map(
+    (instructionWriterToRepeat) => instructionWriterToRepeat.parsedInstruction
+  );
+
+  const alias = 'repeat';
+  const targets = parsedTargets.map((parsedTarget) => parsedTarget.value);
+  const instruction = `${alias} {${targets.join(' ')}}`;
+
+  return {
+    method: {
+      alias,
+      identifier: MethodInstruction.Repeat,
+      args: [],
+      targets: parsedTargets,
+    },
+    readFromIndex: 0,
+    readToIndex: instruction.length,
+    value: instruction,
+  };
+}
+
 class SuccessfulWriteTestInstructionWriter extends BaseInstructionWriter {
+  constructor() {
+    super({ parsedInstruction: getTestRepeatableParsedInstruction() });
+  }
+
   protected internalWriteOnTab(tab: Tab): BaseWriteResult {
     return new SuccessfulWriteResult({ instructionWriter: this, tab });
   }
 }
 
 class FailedWriteTestInstructionWriter extends BaseInstructionWriter {
+  constructor() {
+    super({ parsedInstruction: getTestUnrepeatableParsedInstruction() });
+  }
+
   protected internalWriteOnTab(tab: Tab): BaseWriteResult {
     return new FailedWriteResult({
       failureMessage: 'test failure message',
@@ -25,13 +81,36 @@ class FailedWriteTestInstructionWriter extends BaseInstructionWriter {
 }
 
 describe(`[${RepeatInstructionWriter.name}]`, () => {
-  it('should not be a mergeable instruction writer', () => {
-    const instructionWriter = new RepeatInstructionWriter({
-      instructionWritersToRepeat: [],
-      numberOfRepetitions: 2,
+  describe('[constructor]', () => {
+    it('should create a repeat instruction writer as expected', () => {
+      const numberOfRepetitions = 2;
+      const instructionWritersToRepeat: BaseInstructionWriter[] = [];
+      const parsedInstruction = getTestRepeatParsedInstruction(instructionWritersToRepeat);
+
+      const instructionWriter = new RepeatInstructionWriter({
+        parsedInstruction,
+        instructionWritersToRepeat,
+        numberOfRepetitions,
+      });
+
+      expect(instructionWriter.parsedInstruction).toBe(parsedInstruction);
+      expect(instructionWriter.instructionWritersToRepeat).toBe(instructionWritersToRepeat);
+      expect(instructionWriter.numberOfRepetitions).toBe(numberOfRepetitions);
     });
 
-    expect(instructionWriter).not.toBeInstanceOf(MergeableInstructionWriter);
+    it('should not be a mergeable instruction writer', () => {
+      const numberOfRepetitions = 2;
+      const instructionWritersToRepeat: BaseInstructionWriter[] = [];
+      const parsedInstruction = getTestRepeatParsedInstruction(instructionWritersToRepeat);
+
+      const instructionWriter = new RepeatInstructionWriter({
+        parsedInstruction,
+        instructionWritersToRepeat,
+        numberOfRepetitions,
+      });
+
+      expect(instructionWriter).not.toBeInstanceOf(MergeableInstructionWriter);
+    });
   });
 
   describe('[writeOnTab]', () => {
@@ -41,7 +120,10 @@ describe(`[${RepeatInstructionWriter.name}]`, () => {
         new SuccessfulWriteTestInstructionWriter(),
         new SuccessfulWriteTestInstructionWriter(),
       ];
+      const parsedInstruction = getTestRepeatParsedInstruction(instructionWritersToRepeat);
+
       const instructionWriter = new RepeatInstructionWriter({
+        parsedInstruction,
         instructionWritersToRepeat,
         numberOfRepetitions,
       });
@@ -79,7 +161,10 @@ describe(`[${RepeatInstructionWriter.name}]`, () => {
         new FailedWriteTestInstructionWriter(),
         new FailedWriteTestInstructionWriter(),
       ];
+      const parsedInstruction = getTestRepeatParsedInstruction(instructionWritersToRepeat);
+
       const instructionWriter = new RepeatInstructionWriter({
+        parsedInstruction,
         instructionWritersToRepeat,
         numberOfRepetitions,
       });
@@ -120,7 +205,10 @@ describe(`[${RepeatInstructionWriter.name}]`, () => {
         new FailedWriteTestInstructionWriter(),
         new SuccessfulWriteTestInstructionWriter(),
       ];
+      const parsedInstruction = getTestRepeatParsedInstruction(instructionWritersToRepeat);
+
       const instructionWriter = new RepeatInstructionWriter({
+        parsedInstruction,
         instructionWritersToRepeat,
         numberOfRepetitions,
       });

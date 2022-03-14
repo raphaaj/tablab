@@ -17,7 +17,7 @@ export class BreakInstructionWriter extends BaseInstructionWriter {
    * Creates a break instruction writer instance.
    * @param options - The options to create a break instruction writer instance.
    */
-  constructor(options: BreakInstructionWriterOptions = {}) {
+  constructor(options: BreakInstructionWriterOptions) {
     super(options);
   }
 
