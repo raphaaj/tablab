@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
-    "target": "ES5",
-    "module": "commonjs",
+    "target": "ES6",
+    "moduleResolution": "Node",
     "declaration": true,
-    "outDir": "./lib",
+    "outDir": "lib",
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true
-  }
+  },
+  "include": ["src/**/*", "tests/**/*"]
 }
