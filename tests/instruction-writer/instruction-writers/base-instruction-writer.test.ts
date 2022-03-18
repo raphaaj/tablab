@@ -4,6 +4,17 @@ import { BaseWriteResult } from '../../../src/instruction-writer/write-results/b
 import { ParsedInstructionData } from '../../../src/parser/parsed-instruction';
 import { Tab } from '../../../src/tab/tab';
 
+function getTestParsedInstruction(): ParsedInstructionData {
+  const instruction = 'testInstruction';
+
+  return {
+    method: null,
+    readFromIndex: 0,
+    readToIndex: instruction.length,
+    value: instruction,
+  };
+}
+
 class TestInstructionWriter extends BaseInstructionWriter {
   internalWriteOnTab(): BaseWriteResult {
     throw new Error('Method not implemented.');
@@ -12,20 +23,8 @@ class TestInstructionWriter extends BaseInstructionWriter {
 
 describe(`[${BaseInstructionWriter.name}]`, () => {
   describe('[constructor]', () => {
-    it('should allow the creation of an instruction writer without the parsed instruction data ', () => {
-      const instructionWriter = new TestInstructionWriter();
-
-      expect(instructionWriter.parsedInstruction).toBe(null);
-    });
-
-    it('should allow the creation of an instruction writer with the parsed instruction data ', () => {
-      const instruction = '1-0';
-      const parsedInstruction: ParsedInstructionData = {
-        method: null,
-        readFromIndex: 0,
-        readToIndex: instruction.length,
-        value: instruction,
-      };
+    it('should set the parsedInstruction field with the given parsedInstruction value', () => {
+      const parsedInstruction = getTestParsedInstruction();
 
       const instructionWriter = new TestInstructionWriter({ parsedInstruction });
 
@@ -35,7 +34,9 @@ describe(`[${BaseInstructionWriter.name}]`, () => {
 
   describe('[writeOnTab]', () => {
     it('should return the result of internalWriteOnTab on success', () => {
-      const instructionWriter = new TestInstructionWriter();
+      const parsedInstruction = getTestParsedInstruction();
+
+      const instructionWriter = new TestInstructionWriter({ parsedInstruction });
       const tab = new Tab();
 
       const expectedResult = new BaseWriteResult({
@@ -57,7 +58,9 @@ describe(`[${BaseInstructionWriter.name}]`, () => {
     });
 
     it('should return a failed write result on error', () => {
-      const instructionWriter = new TestInstructionWriter();
+      const parsedInstruction = getTestParsedInstruction();
+
+      const instructionWriter = new TestInstructionWriter({ parsedInstruction });
       const tab = new Tab();
 
       const internalWriteOnTabSpy = jest
@@ -69,6 +72,7 @@ describe(`[${BaseInstructionWriter.name}]`, () => {
       const writeResult = instructionWriter.writeOnTab(tab);
 
       expect(internalWriteOnTabSpy).toHaveBeenCalled();
+      expect(writeResult.childResults).toBe(null);
       expect(writeResult.failureMessage).toBeDefined();
       expect(writeResult.failureReasonIdentifier).toBe(InvalidInstructionReason.UnknownReason);
       expect(writeResult.instructionWriter).toBe(instructionWriter);

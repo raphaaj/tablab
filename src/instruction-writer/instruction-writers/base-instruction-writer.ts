@@ -13,7 +13,7 @@ export type BaseInstructionWriterOptions = {
    * The parsed instruction data that led to the creation of the instruction
    * writer.
    */
-  parsedInstruction?: ParsedInstructionData | null;
+  parsedInstruction: ParsedInstructionData;
 };
 
 /**
@@ -24,10 +24,10 @@ export abstract class BaseInstructionWriter {
    * The parsed instruction data that led to the creation of the instruction
    * writer.
    */
-  readonly parsedInstruction: ParsedInstructionData | null;
+  readonly parsedInstruction: ParsedInstructionData;
 
-  constructor(options: BaseInstructionWriterOptions = {}) {
-    this.parsedInstruction = options.parsedInstruction || null;
+  constructor(options: BaseInstructionWriterOptions) {
+    this.parsedInstruction = options.parsedInstruction;
   }
 
   /**
