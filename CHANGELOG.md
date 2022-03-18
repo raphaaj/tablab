@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0-alpha.5](https://github.com/raphael-jorge/tablab/compare/v1.0.0-alpha.4...v1.0.0-alpha.5) (2022-03-18)
+
+
+### Features
+
+* **instruction-writers:** set the parsedInstruction field to be required ([#127](https://github.com/raphael-jorge/tablab/issues/127)) ([7217898](https://github.com/raphael-jorge/tablab/commit/7217898a30ce02ba499ea0efadf04060db97a8b8))
+
+
+### Docs
+
+* add ci status badge on README ([1975d51](https://github.com/raphael-jorge/tablab/commit/1975d51f4fdaa57f1b6d17ee8d0dc29b02436953))
+
 ## [1.0.0-alpha.4](https://github.com/raphael-jorge/tablab/compare/v1.0.0-alpha.3...v1.0.0-alpha.4) (2022-03-13)
 
 
