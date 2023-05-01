@@ -1,0 +1,57 @@
+{
+  "root": true,
+  "env": {
+    "node": true,
+    "jest": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "eslint-plugin-tsdoc"],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
+  "rules": {
+    "tsdoc/syntax": "warn",
+    "@typescript-eslint/explicit-member-accessibility": ["error", { "accessibility": "no-public" }],
+    "@typescript-eslint/member-ordering": [
+      "warn",
+      {
+        "default": {
+          "memberTypes": [
+            // Static Fields
+            "public-static-field",
+            "protected-static-field",
+            "private-static-field",
+
+            // Static Methods
+            "public-static-method",
+            "protected-static-method",
+            "private-static-method",
+
+            // Instance Fields
+            "public-instance-field",
+            "public-abstract-field",
+            "protected-instance-field",
+            "protected-abstract-field",
+            "private-instance-field",
+
+            "constructor",
+
+            // Instance Methods
+            "public-instance-method",
+            "public-abstract-method",
+            "protected-instance-method",
+            "protected-abstract-method",
+            "private-instance-method"
+          ],
+          "order": "alphabetically"
+        },
+        "interfaces": {
+          "memberTypes": ["signature", "field", "constructor", "method"],
+          "order": "alphabetically"
+        },
+        "typeLiterals": {
+          "memberTypes": ["signature", "field", "constructor", "method"],
+          "order": "alphabetically"
+        }
+      }
+    ]
+  }
+}
