@@ -1,6 +1,6 @@
+import terser from '@rollup/plugin-terser';
+import typescript from '@rollup/plugin-typescript';
 import dts from 'rollup-plugin-dts';
-import { terser } from 'rollup-plugin-terser';
-import typescript from 'rollup-plugin-typescript2';
 
 const terserPlugin = terser({
   format: {
@@ -13,20 +13,20 @@ export default [
     input: 'src/index.ts',
     output: [
       {
-        file: 'lib/index.cjs.js',
+        file: 'lib/index.cjs.cjs',
         format: 'cjs',
       },
       {
-        file: 'lib/index.cjs.min.js',
+        file: 'lib/index.cjs.min.cjs',
         format: 'cjs',
         plugins: [terserPlugin],
       },
       {
-        file: 'lib/index.es.js',
+        file: 'lib/index.es.mjs',
         format: 'es',
       },
       {
-        file: 'lib/index.es.min.js',
+        file: 'lib/index.es.min.mjs',
         format: 'es',
         plugins: [terserPlugin],
       },
