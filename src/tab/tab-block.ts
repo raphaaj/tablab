@@ -398,10 +398,13 @@ export class TabBlock extends TabElement {
   }
 
   private _getStringsWithConcurrentNotes(notes: Note[]): number[] {
-    const string2NotesCountMap = notes.reduce((store, note) => {
-      store[note.string] ? store[note.string]++ : (store[note.string] = 1);
-      return store;
-    }, {} as Record<number, number>);
+    const string2NotesCountMap = notes.reduce(
+      (store, note) => {
+        store[note.string] ? store[note.string]++ : (store[note.string] = 1);
+        return store;
+      },
+      {} as Record<number, number>
+    );
 
     const concurrentNotes = Object.keys(string2NotesCountMap)
       .map((stringStr) => Number(stringStr))
