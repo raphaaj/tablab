@@ -20,16 +20,19 @@ const enclosure2ClosingCharacterMap: Record<Enclosure, string> = {
   [Enclosure.SquareBrackets]: ']',
 };
 
-const openingCharacter2ClosingCharacterMap = Object.keys(Enclosure).reduce((map, enclosureKey) => {
-  const enclosure = Enclosure[enclosureKey as keyof typeof Enclosure];
+const openingCharacter2ClosingCharacterMap = Object.keys(Enclosure).reduce(
+  (map, enclosureKey) => {
+    const enclosure = Enclosure[enclosureKey as keyof typeof Enclosure];
 
-  const openingCharacter = enclsoure2OpeningCharacterMap[enclosure];
-  const closingCharacter = enclosure2ClosingCharacterMap[enclosure];
+    const openingCharacter = enclsoure2OpeningCharacterMap[enclosure];
+    const closingCharacter = enclosure2ClosingCharacterMap[enclosure];
 
-  map[openingCharacter] = closingCharacter;
+    map[openingCharacter] = closingCharacter;
 
-  return map;
-}, {} as Record<string, string>);
+    return map;
+  },
+  {} as Record<string, string>
+);
 
 export class EnclosuresHelper {
   static readonly closingEnclosures: string[] = Object.values(enclosure2ClosingCharacterMap);
