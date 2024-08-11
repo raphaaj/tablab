@@ -40,7 +40,7 @@ export abstract class BaseInstructionWriter {
 
     try {
       writeResult = this.internalWriteOnTab(tab);
-    } catch (e) {
+    } catch {
       writeResult = this._getWriteResultOnError(tab);
     }
 
