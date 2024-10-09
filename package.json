@@ -56,7 +56,7 @@
   "homepage": "https://github.com/raphaaj/tablab#readme",
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
-    "@rollup/plugin-typescript": "^11.1.6",
+    "@rollup/plugin-typescript": "^12.1.0",
     "@types/jest": "^29.5.12",
     "@typescript-eslint/eslint-plugin": "^8.0.1",
     "@typescript-eslint/parser": "^8.0.1",
