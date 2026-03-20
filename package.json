@@ -37,8 +37,6 @@
     "lint:fix": "eslint ./src ./tests --ext .js,.jsx,.ts,.tsx --fix",
     "prettier:check": "prettier --check ./src ./tests",
     "prettier:write": "prettier --write ./src ./tests",
-    "release": "standard-version",
-    "release:dry-run": "npm run release -- --dry-run",
     "prepublishOnly": "npm run build"
   },
   "repository": {
@@ -60,8 +58,6 @@
     "@types/jest": "^30.0.0",
     "@typescript-eslint/eslint-plugin": "^8.56.1",
     "@typescript-eslint/parser": "^8.56.1",
-    "commitizen": "^4.3.1",
-    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^10.0.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-tsdoc": "^0.5.2",
@@ -70,15 +66,9 @@
     "rimraf": "^6.1.3",
     "rollup": "^4.59.0",
     "rollup-plugin-dts": "^6.3.0",
-    "standard-version": "^9.5.0",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "tslib": "^2.8.1",
     "typescript": "^5.9.3"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
   }
 }
