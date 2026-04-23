@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "lib": ["ES2017", "DOM"],
+    "lib": ["ES2017"],
     "module": "esnext",
     "moduleResolution": "bundler",
     "declaration": true,
